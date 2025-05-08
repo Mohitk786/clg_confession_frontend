@@ -199,42 +199,7 @@ export default function ConfessionsPage() {
               </div>
             </div>
           </Card>
-
-          {/* Secret Confession of the Day */}
-          <Card className="border-2 border-[#c9b27c] bg-[#f9f7f1] shadow-md overflow-hidden">
-            <div className="bg-[#c9b27c] text-[#2a2a2a] py-2 px-4 font-serif text-center font-medium">
-              Secret Confession of the Day
-            </div>
-            <div className="p-5">
-              <div className="relative">
-                <div className="absolute inset-0 backdrop-blur-md flex items-center justify-center">
-                  <Button className="bg-[#c9b27c] hover:bg-[#b39c64] text-[#2a2a2a]">
-                    <Unlock className="mr-2 h-4 w-4" /> Unlock Secret (15 SP)
-                  </Button>
-                </div>
-                <p className="font-['Caveat'] text-lg leading-relaxed mb-4 opacity-20">
-                  "If you think you're the most desirable guy on campus...
-                  you're right. Sadly, I'm into jerks. And you're too nice. But
-                  I can't stop thinking about..."
-                </p>
-              </div>
-
-              <div className="flex justify-between items-center mt-4 pt-3 border-t border-[#d4c8a8]">
-                <div className="flex items-center gap-4">
-                  <button className="text-[#8a7e55] hover:text-[#2a2a2a] transition-colors flex items-center gap-1">
-                    <Heart size={18} />
-                    <span className="text-sm">???</span>
-                  </button>
-                </div>
-                <div className="flex items-center gap-2">
-                  <button className="text-[#8a7e55] hover:text-[#2a2a2a] transition-colors flex items-center gap-1">
-                    <MessageSquare size={18} />
-                    <span className="text-sm">???</span>
-                  </button>
-                </div>
-              </div>
-            </div>
-          </Card>
+         
         </div>
       </main>
 

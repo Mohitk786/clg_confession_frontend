@@ -124,7 +124,6 @@ export function ConfessionModal({ open, onOpenChange }: ConfessionModalProps) {
             </div>
           </div>
 
-          {/* Blurred Image Upload */}
 
           {/* Reveal Identity */}
           <div className="space-y-3">
@@ -169,6 +168,13 @@ export function ConfessionModal({ open, onOpenChange }: ConfessionModalProps) {
                 </Label>
               </div>
             </RadioGroup>
+
+            {identityReveal === "reveal"  && <p className="text-xs text-[#8a7e55] italic">
+              If someone spends SP, they can see your identity.
+            </p>}
+
+            
+
           </div>
 
           {/* Confess to Specific User */}
@@ -259,6 +265,9 @@ export const PostImage = ({ open, onOpenChange }: ConfessionModalProps) => {
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogTitle className="font-serif text-2xl text-center text-[#2a2a2a]">
+        Post Photo
+      </DialogTitle>
       <DialogContent className="max-w-md text-gray-200 bg-[#0a1f1c] bg-[url('/paper-texture.png')] border border-[#d4c8a8]/10 shadow-xl">
         <div className="space-y-3  rounded-md p-3 bg-[#0a1f1c]/30">
           <Label className=" font-medium flex items-center gap-2">
