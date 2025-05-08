@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import OnboardingPage from '@/components/onboarding/Index';
 import ConfessionsPage from './confessions/page';
+import Index from '@/components/NewHome';
 
 const Page = () => {
   const [token, setToken] = useState<string | null>(null);
@@ -29,7 +30,7 @@ const Page = () => {
     };
   }, []);
 
-  return token ? <ConfessionsPage /> : <OnboardingPage />;
+  return token ? <Index /> : <OnboardingPage />;
 };
 
 export default Page;
