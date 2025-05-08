@@ -51,7 +51,7 @@ const Index = () => {
   // Mock data for memes
   const memes: MemeProps[] = [
     {
-      id: 2,
+      id: 1,
       imageUrl: "https://images.unsplash.com/photo-1483058712412-4245e9b90334",
       title: "Study session expectation vs. reality",
       votes: 205,
@@ -77,7 +77,6 @@ const Index = () => {
   return (
     <Layout>
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Left sidebar - New confession form */}
           <NewConfessionForm />
         
         {/* Main content area */}

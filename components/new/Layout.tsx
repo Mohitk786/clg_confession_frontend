@@ -1,5 +1,4 @@
 import React, { ReactNode } from 'react';
-import Link from 'next/link';
 import Navbar from '../Navbar';
 
 interface LayoutProps {
