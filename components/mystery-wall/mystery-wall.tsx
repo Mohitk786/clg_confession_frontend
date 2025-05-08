@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useState } from "react";
-import { PostImage } from "@/components/confession-modal";
+import { PostImage } from "@/components/modals/confession-modal";
 import BlurredImageGrid from "@/components/BlurredImageGrid";
 import Link from "next/link";
 import Navbar from "@/components/Navbar";

@@ -1,0 +1,115 @@
+"use client";
+
+import { FC, ReactNode } from "react";
+import { Card } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { MoreHorizontal } from "lucide-react";
+import { EmojiBar, ReactionIcons } from "../ReactionIcons";
+
+type CardType = "confession" | "news";
+
+interface PostCardProps {
+  type: CardType;
+  from: string;
+  tags: string[];
+  content: string;
+  imageUrl?: string; 
+  isMidnight?: boolean; 
+  unlockText?: string;
+  actions?: ReactNode;
+}
+
+export const PostCard: FC<PostCardProps> = ({
+  type,
+  from,
+  tags,
+  content,
+  imageUrl,
+  isMidnight = false,
+  unlockText,
+  actions,
+}) => {
+  const isConfession = type === "confession";
+
+  return (
+    <Card className="border border-[#d4c8a8] bg-[#f9f7f1] shadow-md overflow-hidden relative">
+      {isConfession && isMidnight && unlockText && (
+        <div className="absolute top-0 right-0 bg-[#2a2a2a] text-[#f5f2e8] text-xs px-3 py-1 font-medium z-20">
+          {unlockText}
+        </div>
+      )}
+
+      {type === "news" && imageUrl   && (
+        <img
+          src={imageUrl}
+          alt="News Image"
+          className="w-full h-64 object-cover"
+        />
+      )}
+
+      <div className="p-5 relative">
+        {isConfession && isMidnight && (
+          <div className="absolute inset-0 backdrop-blur-sm flex items-center justify-center z-10">
+            <Button className="bg-[#c9b27c] hover:bg-[#b39c64] text-[#2a2a2a]">
+              Unlock Midnight Confession (25 SP)
+            </Button>
+          </div>
+        )}
+
+        <div
+          className={`flex justify-between items-start mb-3 ${
+            isConfession && isMidnight ? "opacity-50" : ""
+          }`}
+        >
+          <div>
+            <p className="text-sm text-[#8a7e55] italic mb-1">
+              {type === "confession" ? `From: ${from}` : `Source: ${from}`}
+            </p>
+            <div className="flex gap-2 mb-3">
+              {tags.map((tag, i) => (
+                <Badge
+                  key={i}
+                  className="bg-[#c9b27c] hover:bg-[#b39c64] text-[#2a2a2a]"
+                >
+                  #{tag}
+                </Badge>
+              ))}
+            </div>
+          </div>
+
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-8 w-8 rounded-full"
+              >
+                <MoreHorizontal className="h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem>Report</DropdownMenuItem>
+              <DropdownMenuItem>Share</DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+
+        <p className="font-['Caveat'] text-lg leading-relaxed mb-4">
+          {content}
+        </p>
+
+        <ReactionIcons />
+        <div className="mt-4 pt-3 border-t border-[#d4c8a8]">
+          <EmojiBar />
+        </div>
+      </div>
+    </Card>
+  );
+};

@@ -5,33 +5,41 @@ import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { useGetUser } from "@/hooks/auth";
 import { useEffect } from "react";
-    
+
 const Navbar = () => {
- 
- const pathname = usePathname();
-    const isHomePage = pathname !== "/";
-    const {data:user, isPending, isError} = useGetUser();
+  const { data: user, isPending, isError } = useGetUser();
+  const path = usePathname();
+  
 
- 
   return (
-    <header className={`border-b border-[#c9b27c]/20 ${isHomePage ? 'bg-[#0a1f1c]/90' :'bg-[#f5f2e8]'  } backdrop-blur-sm sticky top-0 z-50`}>
-      <div className="container mx-auto px-4 py-3 flex items-center justify-between">
-        <div className="flex items-center gap-6">
-          <Link href={'/'} className={`font-serif text-xl ${isHomePage ? 'text-[#c9b27c]': 'text-[#2a2a2a]'}`}>
-            The Mystery Vault
-          </Link >
-          <button className={`${isHomePage ? 'text-[#c9b27c] hover:text-[#e8d9b5]': 'text-[#2a2a2a]'}  transition-colors`}>
-            <Bell size={18} />
-          </button>
-        </div>
-
-        <div className={`font-serif text-xl ${isHomePage ? 'text-[#c9b27c]': 'text-[#2a2a2a]'}`}>
-          Ivy League University
-        </div>
-
-        <div className={`flex items-center gap-2 ${isHomePage ? 'text-[#c9b27c]': 'text-[#2a2a2a]'}`}>
-          <Wallet size={18} />
-          <span className="font-medium">{isPending ? "--": user?.sp} SP</span>
+    <header className="border-b border-campus-gold/30">
+      <div className="container mx-auto py-4 px-6">
+        <div className="flex justify-between items-center">
+          <Link href="/" className="flex items-center space-x-2">
+            <h1 className="text-2xl md:text-3xl font-playfair font-bold text-campus-navy">
+              Campus <span className="italic text-campus-forest">Whispers</span>
+            </h1>
+          </Link>
+          <nav className="hidden md:flex items-center space-x-6 font-medium text-campus-navy/80">
+            <Link href="/confessions"  className={`${path==='/confessions'?'text-campus-gold':''} hover:text-campus-gold transition-colors`}>
+              Confessions
+            </Link>
+            <Link
+              href="/campus-corner"
+              className={`${path==='/campus-corner'?'text-campus-gold':''} hover:text-campus-gold transition-colors`}
+            >
+              Campus Corner
+            </Link>
+            {/* <Link href="/" className="hover:text-campus-gold transition-colors">
+              Leaderboard
+            </Link> */}
+          </nav>
+          <p className="font-bold font-mono text-campus-forest  hover:bg-campus-forest/90 transition-colors">
+            {user?.college || "IMS Engineering College"}
+          </p>
+          {/* <p className="font-bold text-red-500  hover:bg-campus-forest/90 transition-colors">
+            {user?.sp || "--"}SP
+          </p> */}
         </div>
       </div>
     </header>
