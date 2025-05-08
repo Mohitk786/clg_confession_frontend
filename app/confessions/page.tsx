@@ -24,7 +24,6 @@ export default function ConfessionsPage() {
             type="confession"
             from="Anonymous"
             tags={["secret", "love"]}
-            icon="💌"
             content="I still miss you..."
             isMidnight={false}
             unlockText="Locked Confession"
@@ -34,7 +33,6 @@ export default function ConfessionsPage() {
             type="confession"
             from="Your Wingmate from Last Night"
             tags={["LookingForHookup"]}
-            icon="💋"
             content={`"Those jeans are illegal. That walk in the corridor... you know what you did. I've been thinking about you since that party and I want to..."`}
             isMidnight={true}
             unlockText="Midnight Confession"
