@@ -21,6 +21,9 @@ const Navbar = () => {
             </h1>
           </Link>
           <nav className="hidden md:flex items-center space-x-6 font-medium text-campus-navy/80">
+           <Link href="/"  className={`${path==='/'?'text-campus-gold':''} hover:text-campus-gold transition-colors`}>
+              Home
+            </Link>
             <Link href="/confessions"  className={`${path==='/confessions'?'text-campus-gold':''} hover:text-campus-gold transition-colors`}>
               Confessions
             </Link>

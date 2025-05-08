@@ -40,7 +40,6 @@ export default function PostFeedPage({ type, title, posts }: PostFeedPageProps) 
             <PostCard
               type={isConfession ? "confession" : "news"}
               key={i}
-              from={post.from}
               tags={post.tags}
               content={post.content}
               isMidnight={isConfession && post.isMidnight}

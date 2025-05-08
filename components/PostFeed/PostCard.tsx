@@ -11,13 +11,13 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { MoreHorizontal } from "lucide-react";
-import { EmojiBar, ReactionIcons } from "../ReactionIcons";
+import { EmojiBar, ReactionIcons } from "./ReactionIcons";
+import { Heart, ThumbsDown, MessageSquare } from "lucide-react";
 
 type CardType = "confession" | "news";
 
 interface PostCardProps {
   type: CardType;
-  from: string;
   tags: string[];
   content: string;
   imageUrl?: string; 
@@ -26,15 +26,19 @@ interface PostCardProps {
   actions?: ReactNode;
 }
 
+const icons = [
+  { Icon: Heart, count: 214 },
+  { Icon: ThumbsDown, count: 10 },
+  { Icon: MessageSquare, count: 47 },
+];
+
 export const PostCard: FC<PostCardProps> = ({
   type,
-  from,
   tags,
   content,
   imageUrl,
   isMidnight = false,
   unlockText,
-  actions,
 }) => {
   const isConfession = type === "confession";
 
@@ -70,7 +74,7 @@ export const PostCard: FC<PostCardProps> = ({
         >
           <div>
             <p className="text-sm text-[#8a7e55] italic mb-1">
-              {type === "confession" ? `From: ${from}` : `Source: ${from}`}
+              {type === "confession" ? `From: Anonymous` : `Source: Anonymous`}
             </p>
             <div className="flex gap-2 mb-3">
               {tags.map((tag, i) => (
@@ -105,7 +109,7 @@ export const PostCard: FC<PostCardProps> = ({
           {content}
         </p>
 
-        <ReactionIcons />
+        <ReactionIcons  likeCount={34} commentCount={55}/>
         <div className="mt-4 pt-3 border-t border-[#d4c8a8]">
           <EmojiBar />
         </div>

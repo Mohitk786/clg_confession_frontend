@@ -22,7 +22,6 @@ export default function ConfessionsPage() {
         <div className="space-y-6 mb-20">
           <PostCard
             type="confession"
-            from="Anonymous"
             tags={["secret", "love"]}
             content="I still miss you..."
             isMidnight={false}
@@ -31,7 +30,6 @@ export default function ConfessionsPage() {
 
           <PostCard
             type="confession"
-            from="Your Wingmate from Last Night"
             tags={["LookingForHookup"]}
             content={`"Those jeans are illegal. That walk in the corridor... you know what you did. I've been thinking about you since that party and I want to..."`}
             isMidnight={true}

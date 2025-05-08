@@ -2,7 +2,6 @@
 
 import React, { useEffect, useState } from 'react';
 import OnboardingPage from '@/components/onboarding/Index';
-import ConfessionsPage from './confessions/page';
 import Index from '@/components/NewHome';
 
 const Page = () => {
