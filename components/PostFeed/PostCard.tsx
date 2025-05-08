@@ -21,6 +21,7 @@ interface PostCardProps {
   tags: string[];
   content: string;
   imageUrl?: string; 
+  title?: string;
   isMidnight?: boolean; 
   unlockText?: string;
   actions?: ReactNode;
@@ -36,6 +37,7 @@ export const PostCard: FC<PostCardProps> = ({
   type,
   tags,
   content,
+  title,
   imageUrl,
   isMidnight = false,
   unlockText,
@@ -48,6 +50,10 @@ export const PostCard: FC<PostCardProps> = ({
         <div className="absolute top-0 right-0 bg-[#2a2a2a] text-[#f5f2e8] text-xs px-3 py-1 font-medium z-20">
           {unlockText}
         </div>
+      )}
+
+      {type === "news" && title && (
+        <h2 className="text-xl font-bold text-[#2a2a2a] p-5">{title}</h2>
       )}
 
       {type === "news" && imageUrl   && (

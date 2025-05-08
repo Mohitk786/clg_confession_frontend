@@ -3,7 +3,6 @@
 import React, { useState } from "react";
 import Layout from "@/components/new/Layout";
 
-import MemeCard, { MemeProps } from "@/components/new/MemeCard";
 import NewConfessionForm from "@/components/new/NewConfessionForm";
 import { PostCard } from "./PostFeed/PostCard";
 
@@ -52,26 +51,24 @@ const Index = () => {
   ];
 
   // Mock data for memes
-  const memes: MemeProps[] = [
+  const memes = [
     {
       id: 1,
+      tags: ["funny"],
+      content:
+        "I walked into my 8am lecture yesterday and realized I was still wearing my pajama pants. No one said anything but I'm pretty sure everyone noticed.",
       imageUrl: "https://images.unsplash.com/photo-1483058712412-4245e9b90334",
       title: "Study session expectation vs. reality",
-      votes: 205,
-      comments: 31,
-      createdAt: "7 hours ago",
     },
     {
       id: 2,
-      imageUrl: "https://images.unsplash.com/photo-1483058712412-4245e9b90334",
-      title: "Study session expectation vs. reality",
-      votes: 205,
-      comments: 31,
-      createdAt: "7 hours ago",
+      tags: ["funny"],
+      content:
+        "Akriti pakdi gayi cse 2 k londe ke sath",
+      // imageUrl: "https://images.unsplash.com/photo-1483058712412-4245e9b90334",
+      title: "News 2",
     },
   ];
-
-
 
   return (
     <Layout>
@@ -102,11 +99,16 @@ const Index = () => {
           <h2 className="font-playfair text-2xl font-bold text-campus-navy mt-8">
             Trending {}
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {memes.map((meme) => (
-              <MemeCard key={meme.id} {...meme} />
-            ))}
-          </div>
+
+          {memes.length === 0 ? (
+            <p className="text-center py-8 text-campus-navy/50">
+              No trending memes found. Be the first to share one!
+            </p>
+          ) : (
+            memes.map((meme) => (
+              <PostCard key={meme.id} {...meme} type="news" />
+            ))
+          )}
         </div>
       </div>
     </Layout>
