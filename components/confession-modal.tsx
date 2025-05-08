@@ -190,57 +190,6 @@ export function ConfessionModal({ open, onOpenChange }: ConfessionModalProps) {
               They won't be notified unless they spend SP to find out.
             </p>
           </div>
-
-          {/* Schedule for Later */}
-          <div className="space-y-2">
-            <Label className="text-[#2a2a2a] font-medium flex items-center gap-2">
-              <CalendarIcon size={16} /> Drop this confession at:
-            </Label>
-            <Popover>
-              <PopoverTrigger asChild>
-                <Button
-                  variant="outline"
-                  className={cn(
-                    "w-full justify-start text-left font-normal bg-[#f9f7f1] border-[#d4c8a8] hover:bg-[#f5f2e8] hover:text-[#2a2a2a]",
-                    !scheduleDate && "text-muted-foreground"
-                  )}
-                >
-                  <CalendarIcon className="mr-2 h-4 w-4" />
-                  {scheduleDate ? (
-                    format(scheduleDate, "PPP")
-                  ) : (
-                    <span>Choose date</span>
-                  )}
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-auto p-0 bg-[#f9f7f1] border-[#d4c8a8]">
-                <Calendar
-                  mode="single"
-                  selected={scheduleDate}
-                  onSelect={setScheduleDate}
-                  initialFocus
-                  className="bg-[#f9f7f1]"
-                />
-              </PopoverContent>
-            </Popover>
-            <div className="flex gap-2">
-              <select className="border border-[#d4c8a8] rounded px-2 py-1 text-sm bg-[#f9f7f1] flex-1">
-                {Array.from({ length: 24 }, (_, i) => i).map((hour) => (
-                  <option key={hour} value={hour}>
-                    {hour.toString().padStart(2, "0")}
-                  </option>
-                ))}
-              </select>
-              <span className="flex items-center">:</span>
-              <select className="border border-[#d4c8a8] rounded px-2 py-1 text-sm bg-[#f9f7f1] flex-1">
-                {[0, 15, 30, 45].map((minute) => (
-                  <option key={minute} value={minute}>
-                    {minute.toString().padStart(2, "0")}
-                  </option>
-                ))}
-              </select>
-            </div>
-          </div>
         </div>
 
         <DialogFooter className="flex gap-2 sm:justify-between">
