@@ -1,6 +1,6 @@
 import { QUERY_KEYS } from "@/constants/queryKeys";
 import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
-import { getAllConfessions, createConfession, getDashboardData } from "@/services/confessions";
+import { getAllConfessions, createConfession} from "@/services/confessions";
 
 
 export const useConfessions = () => {
@@ -21,9 +21,9 @@ export const useCreateConfession = () => {
     });
 }
 
-export const useDashboardData = () => {
-    return useQuery({
-        queryKey: [QUERY_KEYS.GET_DASHBOARD_DATA],
-        queryFn: getDashboardData,
-    });
-}
+// export const useDashboardData = () => {
+//     return useQuery({
+//         queryKey: [QUERY_KEYS.GET_DASHBOARD_DATA],
+//         queryFn: getDashboardData,
+//     });
+// }
