@@ -106,12 +106,7 @@ const NotVerfiedForm = ({setVerified}:NotVerfiedFormProps) => {
 
   return (
     <>
-      <motion.div
-        key="otp-form"
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        exit={{ opacity: 0, y: -20 }}
-        transition={{ duration: 0.5 }}
+      <div
         className="space-y-6 sm:space-y-8"
       >
         <div className="text-center space-y-1 sm:space-y-2">
@@ -146,10 +141,7 @@ const NotVerfiedForm = ({setVerified}:NotVerfiedFormProps) => {
           </div>
 
           {otpSent && (
-            <motion.div
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: "auto" }}
-              transition={{ duration: 0.3 }}
+            <div
               className="space-y-3 sm:space-y-4"
             >
               <div className="space-y-1 sm:space-y-2">
@@ -185,7 +177,7 @@ const NotVerfiedForm = ({setVerified}:NotVerfiedFormProps) => {
                   )}
                 </p>
               </div>
-            </motion.div>
+            </div>
           )}
 
           <Button
@@ -218,7 +210,7 @@ const NotVerfiedForm = ({setVerified}:NotVerfiedFormProps) => {
           <Lock size={12} className="hidden sm:block" />
           <span>Your number is secure with us</span>
         </div>
-      </motion.div>
+      </div>
     </>
   );
 };

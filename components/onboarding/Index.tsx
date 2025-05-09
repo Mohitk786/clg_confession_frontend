@@ -61,23 +61,13 @@ function OnboardingPage() {
 
       {/* Content */}
       <div className="relative z-10 w-full max-w-md px-4 sm:px-6 py-8 sm:py-12">
-        <AnimatePresence mode="wait">
-          {!verified ? (
-            <NotVerfiedForm 
-              setVerified={setVerified}
-
-            />
-          ) : (
-            <motion.div
-              key="user-info"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.5, delay: 0.3 }}
-            >
-              <UserInfoForm />
-            </motion.div>
-          )}
-        </AnimatePresence>
+        {!verified ? (
+          <NotVerfiedForm setVerified={setVerified} />
+        ) : (
+          <div>
+            <UserInfoForm />
+          </div>
+        )}
       </div>
     </div>
   )

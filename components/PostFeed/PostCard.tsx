@@ -16,22 +16,18 @@ import { Heart, ThumbsDown, MessageSquare } from "lucide-react";
 
 type CardType = "confession" | "news";
 
-interface PostCardProps {
+export interface PostCardProps {
   type: CardType;
   tags: string[];
   content: string;
-  imageUrl?: string; 
+  imageUrl?: string;
   title?: string;
-  isMidnight?: boolean; 
+  isMidnight?: boolean;
+  likeCount?: number;
+  commentCount?: number;
   unlockText?: string;
   actions?: ReactNode;
 }
-
-const icons = [
-  { Icon: Heart, count: 214 },
-  { Icon: ThumbsDown, count: 10 },
-  { Icon: MessageSquare, count: 47 },
-];
 
 export const PostCard: FC<PostCardProps> = ({
   type,
@@ -56,7 +52,7 @@ export const PostCard: FC<PostCardProps> = ({
         <h2 className="text-xl font-bold text-[#2a2a2a] p-5">{title}</h2>
       )}
 
-      {type === "news" && imageUrl   && (
+      {type === "news" && imageUrl && (
         <img
           src={imageUrl}
           alt="News Image"
@@ -115,7 +111,19 @@ export const PostCard: FC<PostCardProps> = ({
           {content}
         </p>
 
-        <ReactionIcons  likeCount={34} commentCount={55}/>
+        <ReactionIcons
+          post={{
+            type,
+            tags,
+            content,
+            title,
+            imageUrl,
+            isMidnight,
+            unlockText,
+            likeCount: 0,
+            commentCount: 0,
+          }}
+        />
         <div className="mt-4 pt-3 border-t border-[#d4c8a8]">
           <EmojiBar />
         </div>
