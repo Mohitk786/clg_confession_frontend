@@ -21,9 +21,3 @@ export const useCreateConfession = () => {
     });
 }
 
-// export const useDashboardData = () => {
-//     return useQuery({
-//         queryKey: [QUERY_KEYS.GET_DASHBOARD_DATA],
-//         queryFn: getDashboardData,
-//     });
-// }
