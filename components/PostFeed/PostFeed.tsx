@@ -2,13 +2,13 @@
 
 import { useState } from "react";
 import Navbar from "@/components/Navbar";
-import { PostCard } from "@/components/PostFeed/PostCard"; 
+import { PostCard } from "@/components/PostFeed/PostCard";
 import { ConfessionModal } from "@/components/modals/confession-modal";
 import { Button } from "@/components/ui/button";
 import { PenSquare } from "lucide-react";
+import { NewsModal } from "../modals/NewsModal";
 
 type Post = {
-  from: string;
   tags: string[];
   content: string;
   isMidnight?: boolean;
@@ -22,8 +22,12 @@ interface PostFeedPageProps {
   posts: Post[];
 }
 
-export default function PostFeedPage({ type, title, posts }: PostFeedPageProps) {
-  const [confessionModalOpen, setConfessionModalOpen] = useState(false);
+export default function PostFeedPage({
+  type,
+  title,
+  posts,
+}: PostFeedPageProps) {
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const isConfession = type === "confession";
 
   return (
@@ -50,27 +54,40 @@ export default function PostFeedPage({ type, title, posts }: PostFeedPageProps) 
         </div>
       </main>
 
-      {isConfession && (
-        <>
-          <div className="fixed bottom-0 left-0 right-0 bg-[#2a2a2a] text-[#f5f2e8] py-2 text-center font-serif z-40">
-            This week: "Flirty Friday" — Confess to your crush before midnight! 🔥
-          </div>
+      <div>
+        {isConfession ? (
+          <>
+            <div className="fixed bottom-0 left-0 right-0 bg-[#2a2a2a] text-[#f5f2e8] py-2 text-center font-serif z-40">
+              This week: "Flirty Friday" — Confess to your crush before
+              midnight! 🔥
+            </div>
 
-          <div className="fixed bottom-20 right-6 z-50">
-            <Button
-              className="rounded-full w-14 h-14 bg-[#c9b27c] hover:bg-[#b39c64] text-[#2a2a2a] shadow-lg"
-              onClick={() => setConfessionModalOpen(true)}
-            >
-              <PenSquare size={24} />
-            </Button>
-          </div>
+            <div className="fixed bottom-20 right-6 z-50">
+              <Button
+                className="rounded-full w-14 h-14 bg-[#c9b27c] hover:bg-[#b39c64] text-[#2a2a2a] shadow-lg"
+                onClick={() => setIsModalOpen(true)}
+              >
+                <PenSquare size={24} />
+              </Button>
+            </div>
 
-          <ConfessionModal
-            open={confessionModalOpen}
-            onOpenChange={setConfessionModalOpen}
-          />
-        </>
-      )}
+            <ConfessionModal open={isModalOpen} onOpenChange={setIsModalOpen} />
+          </>
+        ) : (
+          <>
+            <div className="fixed bottom-20 right-6 z-50">
+              <Button
+                className="rounded-full w-14 h-14 bg-[#c9b27c] hover:bg-[#b39c64] text-[#2a2a2a] shadow-lg"
+                onClick={() => setIsModalOpen(true)}
+              >
+                <PenSquare size={24} />
+              </Button>
+            </div>
+
+            <NewsModal open={isModalOpen} onOpenChange={setIsModalOpen} />
+          </>
+        )}
+      </div>
     </div>
   );
 }

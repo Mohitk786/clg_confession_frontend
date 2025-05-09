@@ -1,9 +1,18 @@
 "use client";
 
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Label } from "@/components/ui/label";
+import { availableTags } from "@/constants/data";
 import { useState } from "react";
 
 interface NewsModalProps {
@@ -14,10 +23,22 @@ interface NewsModalProps {
 export const NewsModal: React.FC<NewsModalProps> = ({ open, onOpenChange }) => {
   const [formData, setFormData] = useState({
     headline: "",
-    tags: "",
     image: "",
     content: "",
   });
+
+  const [selectedImage, setSelectedImage] = useState<File | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+
+  const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setSelectedImage(file);
+      setPreviewUrl(URL.createObjectURL(file));
+    }
+  };
+
+  const [selectedTags, setSelectedTags] = useState<string[]>([]);
 
   const handleChange = (key: keyof typeof formData, value: string) => {
     setFormData((prev) => ({
@@ -26,55 +47,129 @@ export const NewsModal: React.FC<NewsModalProps> = ({ open, onOpenChange }) => {
     }));
   };
 
+  const handleTagToggle = (tag: string) => {
+    if (selectedTags.includes(tag)) {
+      setSelectedTags(selectedTags.filter((t) => t !== tag));
+    } else {
+      // Optional: limit to 3 tags
+      if (selectedTags.length < 3) {
+        setSelectedTags([...selectedTags, tag]);
+      }
+    }
+  };
+
   const handleSubmit = () => {
-    const formattedTags = formData.tags.split(",").map((tag) => tag.trim());
     const payload = {
       ...formData,
-      tags: formattedTags,
+      tags: selectedTags,
     };
-    console.log(payload); // You can replace this with an API call
+    console.log(payload); // Replace with API call
     onOpenChange(false);
   };
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="bg-[#f9f7f1] text-[#2a2a2a] border-[#d4c8a8] max-w-lg">
+      <DialogContent className="p-5 max-w-xl bg-[#f5f2e8] bg-[url('/paper-texture.png')] border border-[#d4c8a8] shadow-xl">
         <DialogHeader>
-          <DialogTitle className="font-serif text-xl italic">Submit News</DialogTitle>
+          <DialogTitle className="font-serif text-2xl text-center text-[#2a2a2a] italic">
+            Submit Campus News
+          </DialogTitle>
+          <p className="text-center text-[#8a7e55] text-sm italic">
+            Keep the community informed and engaged.
+          </p>
         </DialogHeader>
 
-        <Input
-          placeholder="Headline"
-          value={formData.headline}
-          onChange={(e) => handleChange("headline", e.target.value)}
-        />
+        <div className="space-y-4 mt-4">
+          <div>
+            <Label className="text-[#2a2a2a] font-medium">Headline</Label>
+            <Input
+              placeholder="News Headline"
+              value={formData.headline}
+              onChange={(e) => handleChange("headline", e.target.value)}
+              className="bg-[#f9f7f1] border-[#d4c8a8]"
+            />
+          </div>
 
-        <Input
-          placeholder="Tags (comma separated)"
-          value={formData.tags}
-          onChange={(e) => handleChange("tags", e.target.value)}
-        />
+          <div className="space-y-2">
+            <Label className="text-[#2a2a2a] font-medium">
+              Upload Image (Optional)
+            </Label>
 
-        <Input
-          placeholder="Image URL"
-          value={formData.image}
-          onChange={(e) => handleChange("image", e.target.value)}
-        />
+            <div className="flex gap-4 flex-wrap">
+              <div className="flex flex-col items-start">
+                <Input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleImageSelect}
+                  className="bg-[#f9f7f1] border-[#d4c8a8]"
+                />
+                <small className="text-xs text-muted-foreground">
+                  Upload a image to make your news more engaging.
+                </small>
+              </div>
+            </div>
 
-        <Textarea
-          placeholder="News content"
-          value={formData.content}
-          onChange={(e) => handleChange("content", e.target.value)}
-        />
+            {previewUrl && (
+              <div className="mt-2">
+                <img
+                  src={previewUrl}
+                  alt="Preview"
+                  className="max-h-48 rounded border border-[#d4c8a8]"
+                />
+              </div>
+            )}
+          </div>
 
-        <div className="flex justify-end mt-4">
-          <Button
-            className="bg-[#c9b27c] hover:bg-[#b39c64] text-[#2a2a2a]"
-            onClick={handleSubmit}
-          >
-            Submit
-          </Button>
+          <div>
+            <Label className="text-[#2a2a2a] font-medium">Describe</Label>
+            <Textarea
+              placeholder="Write the news content here..."
+              value={formData.content}
+              onChange={(e) => handleChange("content", e.target.value)}
+              className="min-h-[120px] bg-[#f9f7f1] border-[#d4c8a8] font-['Caveat'] text-lg"
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label className="text-[#2a2a2a] font-medium">
+              Select relevant tags:
+            </Label>
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+              {availableTags.map((tag) => (
+                <div key={tag.id} className="flex items-center space-x-2">
+                  <Checkbox
+                    id={tag.id}
+                    checked={selectedTags.includes(tag.id)}
+                    onCheckedChange={() => handleTagToggle(tag.id)}
+                    className="border-[#c9b27c] data-[state=checked]:bg-[#c9b27c] data-[state=checked]:text-[#2a2a2a]"
+                  />
+                  <Label
+                    htmlFor={tag.id}
+                    className="text-sm font-medium leading-none cursor-pointer flex items-center"
+                  >
+                    {tag.label} <span className="ml-1">{tag.emoji}</span>
+                  </Label>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
+
+        <DialogFooter className="mt-6 flex justify-between">
+          <Button
+            variant="outline"
+            onClick={() => onOpenChange(false)}
+            className="border-[#d4c8a8] hover:bg-[#f5f2e8] hover:text-[#2a2a2a]"
+          >
+            Cancel
+          </Button>
+          <Button
+            onClick={handleSubmit}
+            className="bg-[#c9b27c] hover:bg-[#b39c64] text-[#2a2a2a] font-medium"
+          >
+            Submit News
+          </Button>
+        </DialogFooter>
       </DialogContent>
     </Dialog>
   );

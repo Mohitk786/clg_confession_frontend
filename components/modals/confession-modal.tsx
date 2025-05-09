@@ -14,18 +14,10 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Input } from "@/components/ui/input";
-import { Slider } from "@/components/ui/slider";
-import { Calendar } from "@/components/ui/calendar";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { CalendarIcon, Upload } from "lucide-react";
-import { format } from "date-fns";
-import { cn } from "@/lib/utils";
+import { availableTags } from "@/constants/data";
 
-interface ConfessionModalProps {
+
+export interface ConfessionModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }
@@ -67,7 +59,7 @@ export function ConfessionModal({ open, onOpenChange }: ConfessionModalProps) {
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-md bg-[#f5f2e8] bg-[url('/paper-texture.png')] border border-[#d4c8a8] shadow-xl">
+      <DialogContent className="p-4 max-w-2xl bg-[#f5f2e8] bg-[url('/paper-texture.png')] border border-[#d4c8a8] shadow-xl">
         <DialogHeader>
           <DialogTitle className="font-serif text-2xl text-center text-[#2a2a2a]">
             Whisper Your Confession
@@ -98,14 +90,7 @@ export function ConfessionModal({ open, onOpenChange }: ConfessionModalProps) {
               Select up to 2 tags:
             </Label>
             <div className="grid grid-cols-2 gap-3">
-              {[
-                { id: "lust", label: "#Lust", emoji: "😈" },
-                { id: "love", label: "#Love", emoji: "🥺" },
-                { id: "closure", label: "#Closure", emoji: "🖤" },
-                { id: "missed", label: "#MissedConnection", emoji: "👀" },
-                { id: "funny", label: "#Funny", emoji: "😂" },
-                { id: "toxic", label: "#Toxic", emoji: "☠️" },
-              ].map((tag) => (
+              {availableTags.map((tag) => (
                 <div key={tag.id} className="flex items-center space-x-2">
                   <Checkbox
                     id={tag.id}
@@ -209,134 +194,4 @@ export function ConfessionModal({ open, onOpenChange }: ConfessionModalProps) {
   );
 }
 
-export const PostImage = ({ open, onOpenChange }: ConfessionModalProps) => {
-  const [blurLevel, setBlurLevel] = useState(50);
 
-  return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogTitle className="font-serif text-2xl text-center text-[#2a2a2a]">
-        Post Photo
-      </DialogTitle>
-      <DialogContent className="max-w-md text-gray-200 bg-[#0a1f1c] bg-[url('/paper-texture.png')] border border-[#d4c8a8]/10 shadow-xl">
-        <div className="space-y-3  rounded-md p-3 bg-[#0a1f1c]/30">
-          <Label className=" font-medium flex items-center gap-2">
-            <Upload size={16} /> Upload a Blurry Photo (Optional)
-          </Label>
-          <div className="flex items-center justify-center h-32 border-2 border-dashed border-[#d4c8a8] rounded-md bg-[#f9f7f1]/50 cursor-pointer hover:bg-[#f9f7f1]">
-            <div className="text-center">
-              <p className="text-sm  text-[#c9b27c]">
-                Drag & drop or click to upload
-              </p>
-            </div>
-          </div>
-
-          <div className="space-y-2">
-            <div className="flex justify-between text-xs text-[#8a7e55]">
-              <span>Blur Level:</span>
-              <span>
-                {blurLevel < 33 ? "Low" : blurLevel < 66 ? "Medium" : "High"} (
-                {blurLevel}%)
-              </span>
-            </div>
-            <Slider
-              value={[blurLevel]}
-              min={10}
-              max={90}
-              step={10}
-              onValueChange={(value) => setBlurLevel(value[0])}
-              className="[&_[role=slider]]:bg-[#c9b27c]"
-            />
-          </div>
-
-          <div className="space-y-2">
-            <Label className="text-[#8a7e55]/70 text-sm">
-              Want people to spend points to unblur?
-            </Label>
-            <div className="flex items-center gap-2">
-              <RadioGroup
-                defaultValue="yes"
-                className="flex gap-4"
-                orientation="horizontal"
-              >
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem
-                    value="yes"
-                    id="unblur-yes"
-                    className="border-[#c9b27c] text-[#c9b27c]"
-                  />
-                  <Label htmlFor="unblur-yes" className="text-sm">
-                    Yes
-                  </Label>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem
-                    value="no"
-                    id="unblur-no"
-                    className="border-[#c9b27c] text-[#c9b27c]"
-                  />
-                  <Label htmlFor="unblur-no" className="text-sm">
-                    No
-                  </Label>
-                </div>
-              </RadioGroup>
-            </div>
-
-            <div className="flex items-center gap-2">
-              <Label className="text-[#c9b27c] text-sm whitespace-nowrap">
-                Cost to unlock:
-              </Label>
-              <RadioGroup
-                defaultValue="20"
-                className="flex gap-4"
-                orientation="horizontal"
-              >
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem
-                    value="20"
-                    id="cost-20"
-                    className="border-[#c9b27c] text-[#c9b27c]"
-                  />
-                  <Label htmlFor="cost-20" className="text-sm">
-                    20 SP
-                  </Label>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem
-                    value="50"
-                    id="cost-50"
-                    className="border-[#c9b27c] text-[#c9b27c]"
-                  />
-                  <Label htmlFor="cost-50" className="text-sm">
-                    50 SP
-                  </Label>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem
-                    value="100"
-                    id="cost-100"
-                    className="border-[#c9b27c] text-[#c9b27c]"
-                  />
-                  <Label htmlFor="cost-100" className="text-sm">
-                    100 SP
-                  </Label>
-                </div>
-              </RadioGroup>
-            </div>
-          </div>
-        </div>
-        <DialogFooter className="flex gap-2 sm:justify-between">
-          <Button
-            variant="outline"
-            onClick={() => onOpenChange(false)}
-            className="border-[#d4c8a8]  text-[#2a2a2a]"
-          >
-            Cancel
-          </Button>
-          <Button className="bg-[#c9b27c] hover:bg-[#b39c64] text-[#2a2a2a] font-medium">
-            Post Confession
-          </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
-  );
-};
