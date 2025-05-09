@@ -1,0 +1,60 @@
+import { NextResponse } from "next/server";
+import User from "@/models/User";
+import jwt from "jsonwebtoken";
+import { dbConnect } from "@/lib/dbConnect";
+import OTPVerification from "@/models/Otp";
+
+
+export async function POST(req) {
+  await dbConnect();
+  const { phone, otp } = await req.json();
+
+  if (!phone || !otp) {
+    return NextResponse.json({ error: "Phone number and OTP are required!" });
+  }
+
+
+  try {
+    const otpRecord = await OTPVerification.findOne({ phone: phone, otp: otp });
+    if (!otpRecord) {
+      return NextResponse.json({ error: "Invalid OTP." });
+    }
+
+    if (new Date() > otpRecord.expiresAt) {
+      return NextResponse.json({ error: "OTP has expired." });
+    }
+
+    otpRecord.verified = true;
+    await otpRecord.save();
+
+    const user = await User.findOne({ phone });
+
+    if (user) {
+      const token = jwt.sign(
+        {
+          gender: user.gender,
+          name: user.name,
+          username: user.username,
+          userId: user._id,
+        },
+        process.env.JWT_SECRET
+      );
+
+      const response = NextResponse.json({ message: "OTP verified successfully!", redirect: "/" });
+
+      response.cookies.set("clg_app_cookie", token, {
+        secure: process.env.MODE === "PRODUCTION",
+        sameSite: "strict",
+        httpOnly: true,
+        maxAge: 7 * 24 * 60 * 60,
+      });
+
+      return response;
+    }
+
+    return NextResponse.json({ error: "User not found" }, { status: 404 });
+
+  } catch (error) {
+    return NextResponse.json({ error: error?.message }, { status: 500 });
+  }
+}

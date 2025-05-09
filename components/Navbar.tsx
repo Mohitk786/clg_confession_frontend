@@ -7,10 +7,14 @@ import { useGetUser } from "@/hooks/auth";
 import { useEffect } from "react";
 
 const Navbar = () => {
-  const { data: user, isPending, isError } = useGetUser();
+  // const { data: user, isPending, isError } = useGetUser();
   const path = usePathname();
+  const user = {
+    college: "IMS Engineering College",
+    sp: 0,
+  };
   
-
+ 
   return (
     <header className="border-b border-campus-gold/30">
       <div className="container mx-auto py-4 px-6">

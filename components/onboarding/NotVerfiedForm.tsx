@@ -73,7 +73,7 @@ const NotVerfiedForm = ({setVerified}:NotVerfiedFormProps) => {
             verifyOtp(
               { phone: "+91" + mobileNumber, otp: newOtp.join("") },
               {
-                onSuccess: (data) => {
+                onSuccess: (data:any) => {
                     if(data?.redirect){
                         router.push(data.redirect)
                     }else{

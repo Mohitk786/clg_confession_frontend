@@ -1,4 +1,4 @@
-import { axiosInstance } from "@/lib/axiosInstance";
+import  {axiosInstance}  from "@/lib/axiosInstance";
 
 interface LoginRequest {
     phone: string;
@@ -18,6 +18,7 @@ export const verifyOtp = async ({phone, otp}:LoginRequest) => {
         phone,
         otp
     });
+    console.log("verifyOtp", res.data);
     return res.data;
 }
 

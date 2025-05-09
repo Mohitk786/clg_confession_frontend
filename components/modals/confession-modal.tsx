@@ -15,6 +15,7 @@ import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Input } from "@/components/ui/input";
 import { availableTags } from "@/constants/data";
+import { useCreateConfession } from "@/hooks/confessions";
 
 
 export interface ConfessionModalProps {
@@ -35,8 +36,8 @@ export function ConfessionModal({ open, onOpenChange }: ConfessionModalProps) {
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [identityReveal, setIdentityReveal] = useState("anonymous");
   const [revealCost, setRevealCost] = useState("50");
-  const [scheduleDate, setScheduleDate] = useState<Date | undefined>(undefined);
   const [hintIndex, setHintIndex] = useState(0);
+  const {mutate:addConfession, isPending, isError} = useCreateConfession();
 
   // Rotate hint text every 5 seconds
   useState(() => {
@@ -56,6 +57,30 @@ export function ConfessionModal({ open, onOpenChange }: ConfessionModalProps) {
       }
     }
   };
+
+  const handleSubmit = () => {
+
+    const payload = {
+      content:confession,
+      tags: selectedTags,
+      isAnonymous: identityReveal === "anonymous",
+      ...(identityReveal==="reveal" && {spForRevealIdentity:revealCost}),
+    }
+
+    addConfession(payload, {
+      onSuccess: () => {
+        setConfession("");
+        setSelectedTags([]);
+        setIdentityReveal("anonymous");
+        setRevealCost("50");
+        onOpenChange(false);
+      },
+      onError: (error) => {
+        console.error("Error creating confession", error);
+      },
+    });
+    
+  }
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -185,7 +210,7 @@ export function ConfessionModal({ open, onOpenChange }: ConfessionModalProps) {
           >
             Cancel
           </Button>
-          <Button className="bg-[#c9b27c] hover:bg-[#b39c64] text-[#2a2a2a] font-medium">
+          <Button onClick={handleSubmit} className="bg-[#c9b27c] hover:bg-[#b39c64] text-[#2a2a2a] font-medium">
             Post Confession
           </Button>
         </DialogFooter>

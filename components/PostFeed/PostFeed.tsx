@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { PenSquare } from "lucide-react";
 import { NewsModal } from "../modals/NewsModal";
 
-type Post = {
+export type Post = {
   tags: string[];
   content: string;
   isMidnight?: boolean;
