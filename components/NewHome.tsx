@@ -1,7 +1,8 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import Layout from "@/components/new/Layout";
+import Link from "next/link";
 
 import NewConfessionForm from "@/components/new/NewConfessionForm";
 import { PostCard } from "./PostFeed/PostCard";
@@ -57,30 +58,43 @@ export const memes = [
   {
     id: 2,
     tags: ["funny"],
-    content:
-      "Akriti pakdi gayi cse 2 k londe ke sath",
+    content: "Akriti pakdi gayi cse 2 k londe ke sath",
     // imageUrl: "https://images.unsplash.com/photo-1483058712412-4245e9b90334",
     title: "News 2",
   },
 ];
 const Index = () => {
-  
-
-  // Mock data for confessions
-
-  // Mock data for memes
-
   return (
     <Layout>
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <NewConfessionForm />
+        <div>
+          <NewConfessionForm />
+
+          <div className="flex flex-col gap-2  mt-8">
+            <h2 className="font-playfair text-2xl font-bold text-campus-navy mt-8">
+              Latest Post
+            </h2>
+
+            <div className="flex flex-col gap-4">
+              {memes.length === 0 ? (
+                <p className="text-center py-8 text-campus-navy/50">
+                  No trending memes found. Be the first to share one!
+                </p>
+              ) : (
+                memes.map((meme) => (
+                  <PostCard key={meme.id} {...meme} type="news" path="/" />
+                ))
+              )}
+            </div>
+          </div>
+        </div>
 
         {/* Main content area */}
-        <div className="lg:col-span-2 space-y-6">
+        <div className="lg:col-span-2 flex flex-col">
           <h2 className="font-playfair text-2xl font-bold text-campus-navy">
-            Campus Confessions
+            Latest Confessions
           </h2>
-          <div className="space-y-4">
+          <div className="flex flex-col gap-4">
             {confessions.length === 0 ? (
               <p className="text-center py-8 text-campus-navy/50">
                 No confessions found. Be the first to share one!
@@ -90,25 +104,21 @@ const Index = () => {
                 <PostCard
                   key={confession.id}
                   type="confession"
+                  path="/"
                   {...confession}
                 />
               ))
             )}
+
+            <div className="flex justify-center">
+              <Link
+                href="/confessions"
+                className="bg-[#c9b27c] hover:bg-[#b39c64] text-white font-medium px-4 py-2 rounded"
+              >
+                See More
+              </Link>
+            </div>
           </div>
-
-          <h2 className="font-playfair text-2xl font-bold text-campus-navy mt-8">
-            Trending {}
-          </h2>
-
-          {memes.length === 0 ? (
-            <p className="text-center py-8 text-campus-navy/50">
-              No trending memes found. Be the first to share one!
-            </p>
-          ) : (
-            memes.map((meme) => (
-              <PostCard key={meme.id} {...meme} type="news" />
-            ))
-          )}
         </div>
       </div>
     </Layout>

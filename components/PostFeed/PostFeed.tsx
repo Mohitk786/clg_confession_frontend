@@ -39,7 +39,7 @@ export default function PostFeedPage({
           {title}
         </h1>
 
-        <div className="space-y-6 mb-20">
+        <div className="flex flex-col gap-4">
           {posts.map((post, i) => (
             <PostCard
               type={isConfession ? "confession" : "news"}
