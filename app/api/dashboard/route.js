@@ -18,7 +18,6 @@ export async function GET(req) {
     }
 
     await dbConnect();
-    console.log("User from getAuthUser:", user);
 
     const confessionLimit = 4;
     const newsLimit = 2;

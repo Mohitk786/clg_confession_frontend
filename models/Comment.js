@@ -2,7 +2,10 @@ import mongoose from "mongoose";
 
 
 const commentSchema = new mongoose.Schema({
-    confession: { type: mongoose.Schema.Types.ObjectId, ref: 'Confession' },
+  postId: {
+    type: mongoose.Schema.Types.ObjectId,
+    required: true,
+  },
     content: { type: String, required: true },
   
     createdBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' }, 

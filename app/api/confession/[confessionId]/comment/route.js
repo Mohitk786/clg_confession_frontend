@@ -4,13 +4,14 @@ import Comment from "@/models/Comment";
 import User from "@/models/User";
 import { dbConnect } from "@/lib/dbConnect";
 import { getAuthUser } from "@/lib/auth";
+import News from "@/models/News";
+import { SP_REWARD } from "@/constants/spCost";
 
 export async function POST(req, { params }) {
   try {
-    await dbConnect();
-
+    
     const user = await getAuthUser(req);
-    const { confessionId } = params;
+    const { postId } = params;
 
     if (!user || !user.userId) {
       return NextResponse.json(
@@ -18,49 +19,49 @@ export async function POST(req, { params }) {
         { status: 401 }
       );
     }
-
+    
     const body = await req.json();
     const { content } = body;
-
+    
     if (!content || content.trim() === "") {
       return NextResponse.json(
         { success: false, message: "Comment content is required" },
         { status: 400 }
       );
     }
-
-    if (!confessionId || confessionId.trim() === "") {
+    
+    if (!postId || postId.trim() === "") {
       return NextResponse.json(
-        { success: false, message: "Confession ID is required" },
+        { success: false, message: "Post ID is required" },
         { status: 400 }
       );
     }
-
-    const confession = await Confession.findById(confessionId);
-    if (!confession) {
+    
+    await dbConnect();
+    const post = (await Confession.findById(postId)) || (await News.findById(postId));
+    if (!post) {
       return NextResponse.json(
-        { success: false, message: "Confession not found" },
+        { success: false, message: "Post not found" },
         { status: 404 }
       );
     }
 
     const newComment = new Comment({
       content: content.trim(),
+      postId: postId,
       createdBy: user.userId,
-      confession: confessionId,
     });
 
     await newComment.save();
 
     const foundUser = await User.findById(user.userId);
     if (foundUser) {
-      foundUser.sp = (foundUser.sp || 0) + 2;
+      foundUser.sp +=  SP_REWARD.COMMENT;
       await foundUser.save();
     }
 
-    confession.comments.push(newComment._id);
-    confession.commentsCount += 1;
-    await confession.save();
+    post.comments.push(newComment._id);
+    await post.save();
 
     return NextResponse.json(
       {

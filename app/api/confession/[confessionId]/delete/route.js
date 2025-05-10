@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server";
+import {  NextResponse } from "next/server";
 import Confession from "@/models/Confession";
 import Comment from "@/models/Comment";
 import User from "@/models/User";
@@ -6,7 +6,7 @@ import { dbConnect } from "@/lib/dbConnect";
 import { getAuthUser } from "@/lib/auth";
 
 export async function DELETE(req, { params }) {
-  const user = getAuthUser(req);
+  const user =await getAuthUser(req);
 
   if (!user) {
     return NextResponse.json(

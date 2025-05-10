@@ -6,42 +6,43 @@ import User from '@/models/User';
 import News from '@/models/News';
 import College from '@/models/College';
 import uploadCloudinary from '@/utils/uploadCloudinary';
+import { SP_REWARD } from '@/constants/spCost';
 
 export async function POST(req) {
   try {
-    await dbConnect();
     const user = await getAuthUser(req);
-    const formData = await req.formData();
-
-    const title = formData.get('title');
-    const tags = formData.get('tags'); // If needed
-    const content = formData.get('content');
-    const image = formData.get('image'); // File from <input type="file" name="image" />
-
     if (!user || !user.userId) {
       return NextResponse.json({ success: false, message: 'Unauthorized' }, { status: 401 });
     }
-
+    
+    const formData = await req.formData();
+    const title = formData.get('title');
+    const tags = formData.get('tags'); 
+    const content = formData.get('content');
+    const image = formData.get('image'); 
+    
     if (!title || title.trim() === '') {
       return NextResponse.json({ success: false, message: 'News title is required' }, { status: 400 });
     }
-
+    
+    await dbConnect();
     const foundUser = await User.findById(user.userId);
     if (!foundUser || !foundUser.college) {
       return NextResponse.json({ success: false, message: 'User or college not found' }, { status: 400 });
     }
-
+    
     let picture = '';
     if (image && typeof image === 'object') {
       const buffer = Buffer.from(await image.arrayBuffer());
-      const uploadResult = await uploadCloudinary(buffer); // Assumes it supports Buffer
+      const uploadResult = await uploadCloudinary(buffer); 
       picture = uploadResult?.url || '';
     }
-
+    
     const news = new News({
       content: content?.trim() || '',
       title,
       createdBy: user.userId,
+      tags,
       college: foundUser.college,
       image: picture,
     });
@@ -50,7 +51,7 @@ export async function POST(req) {
 
     await College.findByIdAndUpdate(foundUser.college, { $push: { news: news._id } });
 
-    foundUser.sp = (foundUser.sp || 0) + 3;
+    foundUser.sp += SP_REWARD.POST_NEWS;
     await foundUser.save();
 
     return NextResponse.json({ success: true, message: 'News created', data: news }, { status: 201 });

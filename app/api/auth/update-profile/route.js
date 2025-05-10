@@ -1,12 +1,12 @@
 import User from "@/models/User";
 import Profile from "@/models/Profile";
-import dbConnect from "@/utils/dbConnect";
+import {dbConnect} from "@/lib/dbConnect";
 import { NextResponse } from "next/server";
 import { getAuthUser } from "@/lib/auth";
 
 export const POST = async (req) => {
   try {
-    const user = getAuthUser(req);
+    const user = await getAuthUser(req);
 
     if (!user) {
       return NextResponse.json(
@@ -82,8 +82,6 @@ export const POST = async (req) => {
       ...(section && { section }),
       ...(branch && { branch }),
     });
-
-    await profile.save();
 
     return NextResponse.json(
       {

@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { dbConnect } from "@/lib/dbConnect";
-import Reaction from "@/models/Reaction";
 import { getAuthUser } from "@/lib/auth";
+import Like from "../../../../models/Like";
 import Confession from "@/models/Confession";
 import News from "@/models/News";
 
@@ -18,9 +18,9 @@ export async function POST(req) {
 
   try {
     const body = await req.json();
-    const { postId, emoji } = body;
+    const { postId } = body;
 
-    if (!postId || !emoji) {
+    if (!postId) {
       return NextResponse.json(
         {
           success: false,
@@ -29,7 +29,6 @@ export async function POST(req) {
         { status: 400 }
       );
     }
-
     const post =
       (await Confession.findById(postId)) || (await News.findById(postId));
 
@@ -40,41 +39,36 @@ export async function POST(req) {
       );
     }
 
-    let reaction = await Reaction.findOne({
+    const existingLike = await Like.findOne({
       userId: user.userId,
       postId: postId,
     });
 
-    if (reaction) {
-      if (reaction.emoji !== emoji) {
-        reaction.emoji = emoji;
-        await reaction.save();
-      } else {
-
-        await Reaction.deleteOne({ _id: reaction._id });
-        post.reactions.pull(reaction._id); 
-        await post.save();
-
-        return NextResponse.json({
-          success: true,
-          message: "Reaction removed",
-        });
-      }
-    } else {
-      // New reaction
-      reaction = await Reaction.create({
+    if (existingLike) {
+      await existingLike.deleteOne({
         userId: user.userId,
-        postId,
-        emoji,
+        postId: postId,
       });
-      post.reactions.push(reaction._id);
-      await post.save();
+
+      await post.updateOne({ $pull: { likes: existingLike._id } });
+
+      return NextResponse.json({
+        success: true,
+        message: "Like removed",
+      });
     }
+
+    const newLike = await Like.create({
+      postId: postId,
+      userId: user.userId,
+    });
+
+    await post.updateOne({ $push: { likes: newLike._id } });
 
     return NextResponse.json({
       success: true,
-      message: "Reaction added/updated",
-      data: reaction,
+      message: "Reaction added",
+      data: newLike,
     });
   } catch (error) {
     console.error("Error in reaction API:", error);

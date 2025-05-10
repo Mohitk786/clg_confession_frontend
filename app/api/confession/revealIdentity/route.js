@@ -2,7 +2,7 @@ import Confession from "@/models/Confession";
 
 export const POST = async (req) => {
     try {
-        const user = getAuthUser(req);
+        const user = await getAuthUser(req);
     
         if (!user) {
         return NextResponse.json({

@@ -11,17 +11,14 @@ const collegeSchema = new mongoose.Schema({
   users: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
-    required: true
   }],
   confessions: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Confession',
-    required: true
   }],
   news: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'News',
-    required: true
   }],
   totalUsers: {
     type: Number,

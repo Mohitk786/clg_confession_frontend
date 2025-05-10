@@ -3,16 +3,12 @@ import Confession from "@/models/Confession";
 import User from "@/models/User";
 import { dbConnect } from "@/lib/dbConnect";
 import { getAuthUser } from "@/lib/auth";
+import { SP_DEDUCTION } from "@/constants/spCost";
 
 export async function GET(req) {
   try {
-    await dbConnect();
-
-    const user = await getAuthUser(req);
-    const body = await req.json();
-        const { confessionId } = body;
     
-
+    const user = await getAuthUser(req);
     // Validate user
     if (!user || !user.userId) {
       return NextResponse.json(
@@ -20,11 +16,25 @@ export async function GET(req) {
         { status: 401 }
       );
     }
-
+    const body = await req.json();
+    const { confessionId } = body;
+    
+    
     // Validate confession ID
     if (!confessionId) {
       return NextResponse.json(
         { success: false, message: "Confession ID is required" },
+        { status: 400 }
+      );
+    }
+    
+    
+    await dbConnect();
+    const foundUser = await User.findById(user.userId);
+
+    if(foundUser.sp < SP_DEDUCTION.CHECK_FOR_ME){
+      return NextResponse.json(
+        { success: false, message: "Not enough SP" },
         { status: 400 }
       );
     }
@@ -43,15 +53,13 @@ export async function GET(req) {
       return NextResponse.json({
         success: true,
         isForYou: false,
-        message: "This confession is not targeted to any user",
+        message: "This confession has not targeted  any user",
       });
     }
 
-    const isForYou = confession.targetUser.toString() === user.userId;
-
-    const foundUser = await User.findById(user.userId);
+    const isForYou = confession.targetUser === user.userId;
     if (foundUser) {
-      foundUser.sp = (foundUser.sp || 0) - 5;
+      foundUser.sp -= SP_DEDUCTION.CHECK_FOR_ME;
       await foundUser.save();
     }
 
