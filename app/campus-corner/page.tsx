@@ -5,12 +5,16 @@ import React from 'react'
 export const dynamic = "force-dynamic";
 
 const page = async () => {
-  const {news} = await getPosts(false);
+  try{
+    const {news} = await getPosts(false);
 
   return <PostFeedPage type='news'
     title='News'
     posts={news}
   />
+  }catch(err){
+    console.log("Error in NewsPage:", err); 
+  }
 }
 
 export default page
