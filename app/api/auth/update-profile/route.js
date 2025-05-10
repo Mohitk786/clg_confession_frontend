@@ -67,6 +67,12 @@ export const POST = async (req) => {
     }
 
     foundUser.profileCompleted = true;
+    const username = `${foundUser.name}(${course})_${year}` +
+                 (branch ? `_${branch}` : '') +
+                 (section ? `_${section}` : '');
+    
+    foundUser.username=username;
+
     await foundUser.save();
 
     const profile = await Profile.create({
@@ -76,6 +82,8 @@ export const POST = async (req) => {
       ...(section && { section }),
       ...(branch && { branch }),
     });
+
+    await profile.save();
 
     return NextResponse.json(
       {

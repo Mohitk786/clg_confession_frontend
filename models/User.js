@@ -14,7 +14,7 @@ const userSchema = new mongoose.Schema({
     required: [true, "Gender is required"],
   },
   name: { type: String },
-  username: { type: String, unique: true },
+  username: { type: String, unique: true ,sparse:true},
   profileImage: { type: String },
   college: {
     type: mongoose.Schema.Types.ObjectId,

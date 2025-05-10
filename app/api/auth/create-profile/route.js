@@ -19,11 +19,11 @@ export async function POST(req) {
     }
 
 
-    const username = name.slice(0, 3) + Math.floor(Math.random() * 1000) + phone.slice(-4);
-    const newUser = new User({ name, phone, gender, college: collegeId, username });
+    
+    const newUser = new User({ name, phone, gender, college: collegeId });
     await newUser.save();
 
-    const token = jwt.sign({ gender, name, username, userId: newUser._id}, process.env.JWT_SECRET);
+    const token = jwt.sign({ gender, name,  userId: newUser._id}, process.env.JWT_SECRET);
 
     const response = NextResponse.json({ message: "Profile created successfully!" }, { status: 201 });
 
