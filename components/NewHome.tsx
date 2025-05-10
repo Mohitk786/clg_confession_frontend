@@ -18,8 +18,6 @@ interface Confession {
   reactionCount?: number;
 }
 
-
-
 const Index = async () => {
  
   const user = await getUserAuth();
@@ -28,7 +26,7 @@ const Index = async () => {
   }
 
   const { confessions=[], news=[] }:{confessions:Confession[], news:any} = await getDashboardData();
- 
+
 
   return (
     <Layout>

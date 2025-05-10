@@ -22,8 +22,6 @@ export const getDashboardData = async () => {
       );
     }
 
-
-
     const collegeId = foundUser.college;
 
     const confessions = await Confession.find({ college: collegeId })
