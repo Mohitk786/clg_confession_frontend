@@ -7,5 +7,5 @@ const ReactionSchema = new mongoose.Schema({
     createdAt: { type: Date, default: Date.now },
 });
 
-const Reaction = mongoose.model("Reaction", ReactionSchema);
+const Reaction = mongoose.model.Reaction || mongoose.model("Reaction", ReactionSchema);
 export default Reaction;
