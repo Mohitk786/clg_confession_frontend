@@ -2,15 +2,16 @@
 
 import type React from "react"
 import { useState, useEffect } from "react"
-import { motion, AnimatePresence } from "framer-motion"
-import UserInfoForm from "./userInfo"
+import UserInfoForm from "./setupPage"
 import NotVerfiedForm from "./NotVerfiedForm"
 
-function OnboardingPage() {
+function OnboardingPage({colleges}: { colleges: any }) {
   const [timer, setTimer] = useState(30)
   const [timerActive, setTimerActive] = useState(false)
   const [verified, setVerified] = useState(false)
   const [currentBackground, setCurrentBackground] = useState(0)
+  const [mobileNumber, setMobileNumber] = useState("")
+  
 
 
   const backgrounds = [
@@ -39,7 +40,6 @@ function OnboardingPage() {
     return () => clearInterval(interval)
   }, [timerActive, timer])
  
-
  
 
   return (
@@ -62,10 +62,10 @@ function OnboardingPage() {
       {/* Content */}
       <div className="relative z-10 w-full max-w-md px-4 sm:px-6 py-8 sm:py-12">
         {!verified ? (
-          <NotVerfiedForm setVerified={setVerified} />
+          <NotVerfiedForm mobileNumber={mobileNumber} setMobileNumber={setMobileNumber} setVerified={setVerified} />
         ) : (
           <div>
-            <UserInfoForm />
+            <UserInfoForm phone = {mobileNumber} colleges={colleges} />
           </div>
         )}
       </div>

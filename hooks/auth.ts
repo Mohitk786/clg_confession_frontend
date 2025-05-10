@@ -15,12 +15,6 @@ export const useVerifyOtp = () => {
     return useMutation({
         mutationFn:  verifyOtp,
         mutationKey: [QUERY_KEYS.VERIFY_OTP],
-        onSuccess: (data) => {  
-            console.log("OTP verified successfully", data);
-        },
-        onError: (error) => {
-            console.error("Error verifying OTP", error);
-        },
 })
 }
 

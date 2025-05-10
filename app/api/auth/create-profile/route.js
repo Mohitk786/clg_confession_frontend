@@ -15,8 +15,8 @@ export async function POST(req) {
       return NextResponse.json({ error: "User already exists!" }, { status: 409 });
     }
 
-    const username = name.slice(0, 3) + Math.floor(Math.random() * 1000) + phone.slice(-4);
 
+    const username = name.slice(0, 3) + Math.floor(Math.random() * 1000) + phone.slice(-4);
     const newUser = new User({ name, phone, gender, college: collegeId, username });
     await newUser.save();
 

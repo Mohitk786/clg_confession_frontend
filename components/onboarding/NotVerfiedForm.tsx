@@ -4,18 +4,20 @@ import type React from "react"
 import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { motion } from "framer-motion"
 import { ChevronRight, Lock } from "lucide-react"
 import { useSendOtp, useVerifyOtp } from "@/hooks/auth"
 import { useRouter } from "next/navigation"
 
+
+
 interface NotVerfiedFormProps {
   setVerified: React.Dispatch<React.SetStateAction<boolean>>
+  mobileNumber: string
+  setMobileNumber: React.Dispatch<React.SetStateAction<string>>
 }
 
 
-const NotVerfiedForm = ({setVerified}:NotVerfiedFormProps) => {
-      const [mobileNumber, setMobileNumber] = useState("")
+const NotVerfiedForm = ({setVerified, mobileNumber, setMobileNumber}:NotVerfiedFormProps) => {
       const [otpSent, setOtpSent] = useState(false)
       const [otp, setOtp] = useState(["", "", "", "", "", ""])
       const [timer, setTimer] = useState(30)
@@ -77,6 +79,7 @@ const NotVerfiedForm = ({setVerified}:NotVerfiedFormProps) => {
                     if(data?.redirect){
                         router.push(data.redirect)
                     }else{
+                        console.log("OTP verified successfully")
                         setVerified(true)
                     }
                 },

@@ -1,3 +1,5 @@
+"use server"
+
 import { dbConnect } from "@/lib/dbConnect";
 import {getUserAuth} from "@/lib/auth";
 import User from "@/models/User";
@@ -46,3 +48,4 @@ export const getDashboardData = async () => {
     };
   }
 };
+

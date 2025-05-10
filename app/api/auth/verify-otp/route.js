@@ -28,7 +28,7 @@ export async function POST(req) {
     await otpRecord.save();
 
     const user = await User.findOne({ phone });
-
+    console.log("User found:", user);
     if (user) {
       const token = jwt.sign(
         {
@@ -52,7 +52,7 @@ export async function POST(req) {
       return response;
     }
 
-    return NextResponse.json({ error: "User not found" }, { status: 404 });
+    return NextResponse.json({ message: "OTP Verified Successfull" }, { status: 200 });
 
   } catch (error) {
     return NextResponse.json({ error: error?.message }, { status: 500 });
