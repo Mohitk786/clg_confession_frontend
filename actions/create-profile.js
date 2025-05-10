@@ -4,6 +4,7 @@ import User from "@/models/User";
 import jwt from "jsonwebtoken";
 import { redirect } from "next/navigation";
 import { cookies } from "next/headers";
+import College from "@/models/College";
 
 export async function createProfile(formData) {
   const name = formData.get("name");
@@ -66,10 +67,11 @@ export async function createProfile(formData) {
       maxAge: 7 * 24 * 60 * 60,
       path: "/",
     });
+    redirect("/");
   } catch (error) {
-    console.log("Error creating user:", error);
-    console.log("Error message user:", error.message);
+    if (error?.message === "NEXT_REDIRECT") redirect("/");
 
-    throw new Error(error?.message);
+    throw new Error(error?.message || "Something went wrong");
+
   }
 }
