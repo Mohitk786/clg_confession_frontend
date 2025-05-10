@@ -9,7 +9,7 @@ export async function GET(req) {
     if (!user) {
       return NextResponse.json({
         success: false,
-        message: "User not found"
+        message: "UNAUTHORIZED"
       }, { status: 404 });
     }
 

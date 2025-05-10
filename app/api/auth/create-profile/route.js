@@ -1,8 +1,11 @@
 import { NextResponse } from "next/server";
 import User from "@/models/User";
 import jwt from "jsonwebtoken";
+import { dbConnect } from "@/lib/dbConnect";
+
 
 export async function POST(req) {
+  await dbConnect();
   const { name, phone, collegeId, gender } = await req.json();
 
   if (!name || !phone || !gender || !collegeId) {

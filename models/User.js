@@ -6,6 +6,7 @@ const userSchema = new mongoose.Schema({
     required: true,
     unique: true,
   },
+  profileCompleted: { type: Boolean, default: false },
   isPhoneVerified: { type: Boolean, default: false },
   gender: {
     type: String,

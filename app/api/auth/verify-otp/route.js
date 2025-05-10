@@ -28,7 +28,6 @@ export async function POST(req) {
     await otpRecord.save();
 
     const user = await User.findOne({ phone });
-    console.log("User found:", user);
     if (user) {
       const token = jwt.sign(
         {
@@ -47,6 +46,7 @@ export async function POST(req) {
         sameSite: "strict",
         httpOnly: true,
         maxAge: 7 * 24 * 60 * 60,
+        path: "/",
       });
 
       return response;

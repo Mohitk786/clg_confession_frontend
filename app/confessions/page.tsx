@@ -11,7 +11,6 @@ export default async function ConfessionsPage() {
       <PostFeedPage type="confession" title="Confessions" posts={confessions} />
     );
   } catch (err) {
-    console.log("Error in ConfessionsPage:", err); 
     throw new Error("Failed to load confessions"); 
   }
 }

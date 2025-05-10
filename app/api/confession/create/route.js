@@ -8,28 +8,24 @@ import { getAuthUser } from "@/lib/auth";
 export async function POST(req) {
   try {
     const user = await getAuthUser(req);
-    console.log("Authenticated user:", user);
-
+ 
     if (!user) {
       return NextResponse.json(
         {
           success: false,
-          message: "User not found",
+          message: "Unauthorized",
         },
         { status: 404 }
       );
     }
+
     await dbConnect();
     const body = await req.json();
     const { content, targetUser, tags, isAnonymous, spForRevealIdentity } =
       body;
 
-    if (!user?.userId) {
-      return NextResponse.json(
-        { success: false, message: "Not authenticated" },
-        { status: 401 }
-      );
-    }
+
+  
     if (!content?.trim()) {
       return NextResponse.json(
         { success: false, message: "Confession content is required" },
@@ -38,11 +34,26 @@ export async function POST(req) {
     }
 
     const foundUser = await User.findById(user.userId);
-    if (!foundUser)
+
+    if (!foundUser){
       return NextResponse.json(
         { success: false, message: "User not found" },
         { status: 404 }
       );
+    }
+     
+
+    if(!isAnonymous){
+      const profileCompleted = foundUser.profileCompleted;
+      if(!profileCompleted){
+        return NextResponse.json(
+          { success: false, message: "Please complete your profile first" },
+          { status: 400 }
+        );
+      }
+    }
+
+
 
     let confessTo = null;
     if (targetUser) confessTo = await User.findOne({ username: targetUser });
