@@ -84,7 +84,7 @@ export const PostCard: FC<PostCardProps> = ({
                   : `Source: Anonymous`}
               </p>
               <div className="flex gap-2 mb-3">
-                {tags.map((tag, i) => (
+                {tags?.map((tag, i) => (
                   <Badge
                     key={i}
                     className="bg-[#c9b27c] hover:bg-[#b39c64] text-[#2a2a2a]"

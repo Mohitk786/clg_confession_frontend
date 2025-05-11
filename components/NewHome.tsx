@@ -27,6 +27,8 @@ const Index = async () => {
 
   const { confessions=[], news=[] }:{confessions:Confession[], news:any} = await getDashboardData();
 
+  console.log("confessions", confessions);
+  console.log("news", news);
 
   return (
     <Layout>

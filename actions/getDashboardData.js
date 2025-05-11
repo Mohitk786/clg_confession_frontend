@@ -8,9 +8,14 @@ import News from "@/models/News";
 
 export const getDashboardData = async () => {
   try {
-    await dbConnect();
     const user = await getUserAuth();
-
+    if(!user) {
+      return NextResponse.json(
+        { success: false, message: "Not authenticated" },
+        { status: 401 }
+      );
+    }
+    await dbConnect();
     const confessionLimit = 4;
     const newsLimit = 2;
 
@@ -25,12 +30,12 @@ export const getDashboardData = async () => {
     const collegeId = foundUser.college;
 
     const confessions = await Confession.find({ college: collegeId })
-      .select("content commentsCount tags")
+      .select("content commentsCount tags reactions")
       .sort({ createdAt: -1 })
       .limit(confessionLimit)
 
     const news = await News.find({ college: collegeId })
-      .select("content commentsCount image")
+      .select("content commentsCount image tags reactions")
       .sort({ createdAt: -1 })
       .limit(newsLimit)
 
