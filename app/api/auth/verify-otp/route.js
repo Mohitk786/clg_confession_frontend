@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import User from "@/models/User";
 import jwt from "jsonwebtoken";
 import { dbConnect } from "@/lib/dbConnect";
+import "@/models/College"; 
 import OTPVerification from "@/models/Otp";
 
 
