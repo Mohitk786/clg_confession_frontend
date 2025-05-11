@@ -21,7 +21,7 @@ export const getPosts = async (req, isConfession) => {
 
     const { searchParams } = new URL(req.url);
     const page = parseInt(searchParams.get("page") || "1");
-    const limit = 3;
+    const limit = 5;
     const skip = (page-1)*limit;
 
     if (page < 1) {
