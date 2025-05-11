@@ -3,11 +3,12 @@ import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
 import { getAllConfessions, createConfession} from "@/services/confessions";
 
 
-export const useConfessions = () => {
+export const useConfessions = ({enabled=true}:{ enabled?: boolean }) => {
     return useQuery({
         queryKey: [QUERY_KEYS.GET_ALL_CONFESSIONS],
         queryFn: getAllConfessions,
-        retry: 1,
+        staleTime: 0,
+        enabled
     });
 }
 
@@ -16,8 +17,10 @@ export const useCreateConfession = () => {
     return useMutation({
         mutationFn: createConfession,
         onSuccess: () => {
+            console.log("Confession created successfully");
             queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.GET_ALL_CONFESSIONS] });
         },
     });
 }
+
 

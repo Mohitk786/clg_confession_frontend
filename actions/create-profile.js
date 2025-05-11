@@ -23,15 +23,11 @@ export async function createProfile(formData) {
     throw new Error("Invalid college ID!");
   }
 
-  console.log("College found:", college);
-
   try {
     const existingUser = await User.findOne({ phone });
     if (existingUser) {
       throw new Error("User already exists!");
     }
-
-    console.log("No existing user found, creating new user...");
 
     const username =
       name.slice(0, 3).toLowerCase() +
@@ -48,7 +44,6 @@ export async function createProfile(formData) {
       hookupInterest,
     });
 
-    console.log("New user created:", newUser);
 
     await newUser.save();
 

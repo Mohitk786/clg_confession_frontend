@@ -7,6 +7,8 @@ import { ConfessionModal } from "@/components/modals/confession-modal";
 import { Button } from "@/components/ui/button";
 import { PenSquare } from "lucide-react";
 import { NewsModal } from "../modals/NewsModal";
+import { useConfessions } from "@/hooks/confessions";
+import {useNews} from "@/hooks/news";
 
 export type Post = {
   tags: string[];
@@ -19,16 +21,41 @@ export type Post = {
 interface PostFeedPageProps {
   type: "confession" | "news";
   title: string;
-  posts: Post[];
 }
 
 export default function PostFeedPage({
   type,
   title,
-  posts,
+ 
 }: PostFeedPageProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const isConfession = type === "confession";
+
+  
+  const {
+    data: confessions,
+    isLoading: confessionLoading,
+    isError: confessionError,
+  } = useConfessions({ enabled: isConfession });
+
+  const {
+    data: news,
+    isLoading: newsLoading,
+    isError: newsError,
+  } = useNews({ enabled: !isConfession });
+
+
+  const posts:any = isConfession
+    ? confessions || []
+    : news || [];
+
+  const isLoading = isConfession ? confessionLoading : newsLoading;
+  const isError = isConfession ? confessionError : newsError;
+
+  if (isLoading) return <p>Loading posts...</p>;
+  if (isError) return <p>Failed to load posts</p>;
+
+  console.log("Posts: ", posts);
 
   return (
     <div className="min-h-screen bg-[#f5f2e8] bg-[url('/paper-texture.png')] bg-repeat text-[#2a2a2a]">
@@ -40,7 +67,7 @@ export default function PostFeedPage({
         </h1>
 
         <div className="flex flex-col gap-4">
-          {posts.map((post, i) => (
+          {posts.map((post:any, i:number) => (
             <PostCard
               type={isConfession ? "confession" : "news"}
               key={i}

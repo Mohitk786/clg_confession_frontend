@@ -8,37 +8,44 @@ import News from "@/models/News";
 
 export const getPosts = async (isConfession) => {
   try {
-    await dbConnect();
     const user = await getUserAuth();
+
+    if (!user) {
+      return {
+        success: false,
+        message: "Not authenticated",
+      };
+    }
+
+    await dbConnect();
 
     const foundUser = await User.findById(user.userId);
     if (!foundUser) {
-      return NextResponse.json(
-        { success: false, message: "User not found" },
-        { status: 404 }
-      );
+      return {
+        success: false,
+        message: "User not found",
+      };
     }
 
     const collegeId = foundUser.college;
+    let data;
 
-    let confessions;
-    let news;
-    if(isConfession) {
-        confessions = await Confession.find({ college: collegeId});
-    }else {
-        news = await News.find({ college: collegeId});
+    if (isConfession) {
+      const confessions = await Confession.find({ college: collegeId });
+      data = { confessions: JSON.parse(JSON.stringify(confessions)) };
+    } else {
+      const news = await News.find({ college: collegeId });
+      data = { news: JSON.parse(JSON.stringify(news)) };
     }
-    
 
     return {
-      ...(isConfession && {confessions: JSON.parse(JSON.stringify(confessions))}),
-      ...(!isConfession && {news: JSON.parse(JSON.stringify(news))}),
-
+      success: true,
+      ...data,
     };
   } catch (error) {
     return {
       success: false,
-      message: "Error in getHomeData",
+      message: "Error fetching posts",
       error: error.message,
     };
   }

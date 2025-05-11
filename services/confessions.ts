@@ -2,8 +2,7 @@ import { axiosInstance } from "@/lib/axiosInstance"
 
 export const getAllConfessions = async () =>{
     try{
-        const res = await axiosInstance.get("/getAllConfessions");
-        console.log(res?.data);
+        const res = await axiosInstance.get("/confession/all");
         return res.data;
     }catch(e){
        
