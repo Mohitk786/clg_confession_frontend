@@ -7,7 +7,7 @@ cloudinary.config({
   api_secret: process.env.API_SECRET
 });
 
-exports.uploadCloudinary = async (base64Image) => {
+const uploadCloudinary = async (base64Image) => {
   try {
     if (!base64Image) return null;
 
@@ -20,3 +20,5 @@ exports.uploadCloudinary = async (base64Image) => {
     return null;
   }
 };
+
+export default uploadCloudinary;

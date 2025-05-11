@@ -4,7 +4,7 @@ import { getAuthUser } from '@/lib/auth';
 import User from '@/models/User';
 import News from '@/models/News';
 import College from '@/models/College';
-import uploadCloudinary from '@/utils/uploadCloudinary';
+import uploadCloudinaryBase64 from '@/utils/uploadCloudinary';
 import { SP_REWARD } from '@/constants/spCost';
 
 export async function POST(req) {
@@ -14,11 +14,7 @@ export async function POST(req) {
       return NextResponse.json({ success: false, message: 'Unauthorized' }, { status: 401 });
     }
     
-    const formData = await req.formData();
-    const title = formData.get('title');
-    const tags = formData.get('tags'); 
-    const content = formData.get('content');
-    const image = formData.get('image'); 
+    const {title, tags, content, image} = await req.json();
     
     if (!title || title.trim() === '') {
       return NextResponse.json({ success: false, message: 'News title is required' }, { status: 400 });
@@ -30,10 +26,9 @@ export async function POST(req) {
       return NextResponse.json({ success: false, message: 'User or college not found' }, { status: 400 });
     }
     
-    let picture = '';
-    if (image && typeof image === 'object') {
-      const buffer = Buffer.from(await image.arrayBuffer());
-      const uploadResult = await uploadCloudinary(buffer); 
+    let picture = null;
+    if (image && typeof image === 'string') {
+      const uploadResult = await uploadCloudinaryBase64(image); 
       picture = uploadResult?.url || '';
     }
     
@@ -43,7 +38,7 @@ export async function POST(req) {
       createdBy: user.userId,
       tags,
       college: foundUser.college,
-      image: picture,
+      ...(picture && {image: picture}),
     });
 
     await news.save();

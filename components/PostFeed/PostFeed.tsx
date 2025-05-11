@@ -55,7 +55,6 @@ export default function PostFeedPage({
   if (isLoading) return <p>Loading posts...</p>;
   if (isError) return <p>Failed to load posts</p>;
 
-  console.log("Posts: ", posts);
 
   return (
     <div className="min-h-screen bg-[#f5f2e8] bg-[url('/paper-texture.png')] bg-repeat text-[#2a2a2a]">
@@ -71,6 +70,7 @@ export default function PostFeedPage({
             <PostCard
               type={isConfession ? "confession" : "news"}
               key={i}
+              title={post?.title}
               tags={post.tags}
               content={post.content}
               isMidnight={isConfession && post.isMidnight}
