@@ -5,6 +5,7 @@ import jwt from "jsonwebtoken";
 import { redirect } from "next/navigation";
 import { cookies } from "next/headers";
 import College from "@/models/College";
+import { dbConnect } from "@/lib/dbConnect";
 
 export async function createProfile(formData) {
   const name = formData.get("name");
@@ -16,7 +17,7 @@ export async function createProfile(formData) {
   if (!name || !phone || !gender || !collegeId) {
     throw new Error("Missing required fields!");
   }
-
+  await dbConnect();
   const college = await College.findById(collegeId);
   if (!college) {
     throw new Error("Invalid college ID!");
