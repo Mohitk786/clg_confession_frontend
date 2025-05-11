@@ -2,6 +2,6 @@ import axios from "axios";
 
 
 export const axiosInstance = axios.create({
-  baseURL: process.env.BASE_URL as string || "http://clg-confession-frontend.vercel.app/api",
+  baseURL: process.env.BASE_URL as string || "https://clg-confession-frontend.vercel.app/api",
   withCredentials: true,
 });
