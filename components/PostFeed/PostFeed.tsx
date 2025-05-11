@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Navbar from "@/components/Navbar";
 import { PostCard } from "@/components/PostFeed/PostCard";
 import { ConfessionModal } from "@/components/modals/confession-modal";
@@ -31,26 +31,47 @@ export default function PostFeedPage({
   const [isModalOpen, setIsModalOpen] = useState(false);
   const isConfession = type === "confession";
 
-  
+  // Always call both hooks
+  const confessionQuery = useConfessions({ enabled: isConfession });
+  const newsQuery = useNews({ enabled: !isConfession });
+
+  // Use conditional logic to extract data
   const {
-    data: confessions,
-    isLoading: confessionLoading,
-    isError: confessionError,
-  } = useConfessions({ enabled: isConfession });
+    data: postsData,
+    isLoading,
+    isError,
+    fetchNextPage,
+    hasNextPage,
+  } = isConfession
+    ? {
+        data: confessionQuery.data?.pages.flatMap((page:any) => page?.confessions) || [],
+        isLoading: confessionQuery.isLoading,
+        isError: confessionQuery.isError,
+        fetchNextPage: confessionQuery.fetchNextPage,
+        hasNextPage: confessionQuery.hasNextPage,
+      }
+    : {
+        data: newsQuery.data?.pages.flatMap((page:any) => page?.news) || [],
+        isLoading: newsQuery.isLoading,
+        isError: newsQuery.isError,
+        fetchNextPage: newsQuery.fetchNextPage,
+        hasNextPage: newsQuery.hasNextPage,
+      };
 
-  const {
-    data: news,
-    isLoading: newsLoading,
-    isError: newsError,
-  } = useNews({ enabled: !isConfession });
+  const handleScroll = () => {
+    const scrollTop = window.scrollY;
+    const screenHeight = window.innerHeight;
 
+    if (scrollTop + screenHeight > (document.body.scrollHeight)&&  hasNextPage) {
+      fetchNextPage();
+    }
+  };
 
-  const posts:any = isConfession
-    ? confessions || []
-    : news || [];
+  useEffect(() => {
+    window.addEventListener("scroll", handleScroll);
 
-  const isLoading = isConfession ? confessionLoading : newsLoading;
-  const isError = isConfession ? confessionError : newsError;
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [hasNextPage]);
 
   if (isLoading) return <p>Loading posts...</p>;
   if (isError) return <p>Failed to load posts</p>;
@@ -66,7 +87,7 @@ export default function PostFeedPage({
         </h1>
 
         <div className="flex flex-col gap-4">
-          {posts.map((post:any, i:number) => (
+          {postsData.map((post:any, i:number) => (
             <PostCard
               type={isConfession ? "confession" : "news"}
               key={i}
@@ -79,6 +100,8 @@ export default function PostFeedPage({
             />
           ))}
         </div>
+        {hasNextPage && <p className="text-center my-4">Loading more...</p>}
+        {!hasNextPage && <p className="text-center my-4">You've reached the end.</p>}
       </main>
 
       <div>

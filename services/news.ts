@@ -1,8 +1,8 @@
 import { axiosInstance } from "@/lib/axiosInstance"
 
-export const getAllNews = async () =>{
+export const getAllNews = async ({pageParam=1}:{pageParam?:number}) =>{
     try{
-        const res = await axiosInstance.get("/news/all");
+        const res = await axiosInstance.get(`/news/all?page=${pageParam}`);
         return res.data;
     }catch(e){
        
@@ -11,7 +11,6 @@ export const getAllNews = async () =>{
 
 export const createNews = async (data: any) => {
     try {
-        console.log("data", data);
         const res = await axiosInstance.post("/news/create", {...data});
         return res.data;
     } catch (e) {

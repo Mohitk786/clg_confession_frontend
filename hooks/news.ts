@@ -1,12 +1,15 @@
 import { QUERY_KEYS } from "@/constants/queryKeys";
-import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
+import { useInfiniteQuery, useQueryClient, useMutation } from "@tanstack/react-query";
 import { getAllNews, createNews} from "@/services/news";
 
 export const useNews = ({enabled=true}:{ enabled?: boolean }) => {
-    return useQuery({
+    return useInfiniteQuery({
         queryKey: [QUERY_KEYS.GET_ALL_NEWS],
         queryFn: getAllNews,
-        retry: 1,
+        initialPageParam: 1,
+        staleTime: 0,
+        getNextPageParam: (lastPage:any, allPages:any) =>
+            lastPage.hasMore ? allPages.length + 1 : undefined,
         enabled
     });
 }
