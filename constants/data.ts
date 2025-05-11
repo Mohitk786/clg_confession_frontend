@@ -10,3 +10,19 @@ export const availableTags = [
   { id: "funny", label: "#Funny", emoji: "😂" },
   { id: "toxic", label: "#Toxic", emoji: "☠️" },
 ];
+
+
+export const courses = [
+  "BTECH",
+  "MTECH",
+  "MBA",
+  "MSC",
+  "BSC",
+  "BCA",
+  "MCA",
+  "BBA",
+  "MA",
+  "BA",
+  "PHD",
+  "OTHER"
+]

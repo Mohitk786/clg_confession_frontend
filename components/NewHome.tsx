@@ -1,6 +1,6 @@
 
 import React from "react";
-import Layout from "@/components/new/Layout";
+import Layout from "@/components/home/Layout";
 import Link from "next/link";
 
 import NewConfessionForm from "@/components/new/NewConfessionForm";

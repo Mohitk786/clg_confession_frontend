@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Navbar from "@/components/Navbar";
 import { PostCard } from "@/components/PostFeed/PostCard";
 import { ConfessionModal } from "@/components/modals/confession-modal";
 import { Button } from "@/components/ui/button";
@@ -10,6 +9,7 @@ import { NewsModal } from "../modals/NewsModal";
 import { useConfessions } from "@/hooks/confessions";
 import { useNews } from "@/hooks/news";
 import { ShimmerCard } from "../ui/shimmer-card";
+import  Layout  from "@/components/home/Layout";
 
 export type Post = {
   tags: string[];
@@ -73,10 +73,8 @@ export default function PostFeedPage({ type, title }: PostFeedPageProps) {
 
 
   return (
-    <div className="min-h-screen bg-[#f5f2e8] bg-[url('/paper-texture.png')] bg-repeat text-[#2a2a2a]">
-      <Navbar />
-
-      <main className="container mx-auto px-4 py-8 max-w-3xl">
+    <Layout>
+       <main className="container mx-auto px-4 py-8 max-w-3xl">
         <h1 className="font-serif text-3xl text-[#2a2a2a] mb-8 text-center italic">
           {title}
         </h1>
@@ -137,6 +135,7 @@ export default function PostFeedPage({ type, title }: PostFeedPageProps) {
           </>
         )}
       </div>
-    </div>
+    </Layout>
+     
   );
 }

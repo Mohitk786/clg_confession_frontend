@@ -37,3 +37,14 @@ export const logout = async () => {
     const res = await axiosInstance.post("/auth/logout");
     return res.data;
 }
+
+
+export const updateProfile = async (data: any) => {
+    const res = await axiosInstance.post("/auth/update-profile", data);
+    return res.data;
+}
+
+export const getProfile = async () => {
+    const res = await axiosInstance.get("/auth/get-profile");
+    return res.data;
+}

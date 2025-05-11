@@ -179,6 +179,9 @@ export function ConfessionModal({ open, onOpenChange }: ConfessionModalProps) {
               </div>
             </RadioGroup>
 
+
+            
+
             {identityReveal === "reveal"  && <p className="text-xs text-[#8a7e55] italic">
               If someone spends SP, they can see your identity.
             </p>}
