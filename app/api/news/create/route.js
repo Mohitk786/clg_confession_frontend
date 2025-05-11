@@ -1,11 +1,10 @@
-// app/api/news/route.js or route.ts
 import { NextResponse } from 'next/server';
 import { dbConnect } from '@/lib/dbConnect';
 import { getAuthUser } from '@/lib/auth';
 import User from '@/models/User';
 import News from '@/models/News';
 import College from '@/models/College';
-import uploadCloudinaryBase64 from '@/utils/uploadCloudinary';
+import uploadCloudinary from '@/utils/uploadCloudinary';
 import { SP_REWARD } from '@/constants/spCost';
 
 export async function POST(req) {
@@ -15,7 +14,11 @@ export async function POST(req) {
       return NextResponse.json({ success: false, message: 'Unauthorized' }, { status: 401 });
     }
     
-    const {title, tags, content, image} = req.json();
+    const formData = await req.formData();
+    const title = formData.get('title');
+    const tags = formData.get('tags'); 
+    const content = formData.get('content');
+    const image = formData.get('image'); 
     
     if (!title || title.trim() === '') {
       return NextResponse.json({ success: false, message: 'News title is required' }, { status: 400 });
@@ -27,9 +30,10 @@ export async function POST(req) {
       return NextResponse.json({ success: false, message: 'User or college not found' }, { status: 400 });
     }
     
-    let picture = null;
-    if (image && typeof image === 'string') {
-      const uploadResult = await uploadCloudinaryBase64(image); 
+    let picture = '';
+    if (image && typeof image === 'object') {
+      const buffer = Buffer.from(await image.arrayBuffer());
+      const uploadResult = await uploadCloudinary(buffer); 
       picture = uploadResult?.url || '';
     }
     
@@ -39,7 +43,7 @@ export async function POST(req) {
       createdBy: user.userId,
       tags,
       college: foundUser.college,
-      ...(picture && {image: picture}),
+      image: picture,
     });
 
     await news.save();
@@ -52,31 +56,6 @@ export async function POST(req) {
     return NextResponse.json({ success: true, message: 'News created', data: news }, { status: 201 });
   } catch (error) {
     console.error('Error creating news:', error);
-    return NextResponse.json({ success: false, message: 'Server error' }, { status: 500 });
-  }
-}
-
-export async function GET(req) {
-  try {
-    await dbConnect();
-    const user = await getAuthUser(req);
-
-    if (!user || !user.userId) {
-      return NextResponse.json({ success: false, message: 'Unauthorized' }, { status: 401 });
-    }
-
-    const foundUser = await User.findById(user.userId);
-    if (!foundUser) {
-      return NextResponse.json({ success: false, message: 'User not found' }, { status: 404 });
-    }
-
-    const newsList = await News.find({ college: foundUser.college, isDeleted: false })
-      .select('content commentsCount image')
-      .sort({ createdAt: -1 });
-
-    return NextResponse.json({ success: true, data: newsList }, { status: 200 });
-  } catch (error) {
-    console.error('Error fetching news:', error);
     return NextResponse.json({ success: false, message: 'Server error' }, { status: 500 });
   }
 }

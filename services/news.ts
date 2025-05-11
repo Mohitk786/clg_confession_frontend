@@ -11,6 +11,7 @@ export const getAllNews = async () =>{
 
 export const createNews = async (data: any) => {
     try {
+        console.log("data", data);
         const res = await axiosInstance.post("/news/create", {...data});
         return res.data;
     } catch (e) {

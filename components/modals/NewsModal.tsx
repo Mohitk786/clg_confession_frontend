@@ -14,6 +14,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { availableTags } from "@/constants/data";
 import { useState } from "react";
+import { useCreateNews } from "@/hooks/news";
 
 interface NewsModalProps {
   open: boolean;
@@ -21,14 +22,18 @@ interface NewsModalProps {
 }
 
 export const NewsModal: React.FC<NewsModalProps> = ({ open, onOpenChange }) => {
-  const [formData, setFormData] = useState({
-    headline: "",
+  
+  const initialData = {
+    title: "",
     image: "",
     content: "",
-  });
+  }
+  const [formData, setFormData] = useState(initialData);
 
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+
+  const {mutate:createNews} = useCreateNews();
 
   const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -58,14 +63,58 @@ export const NewsModal: React.FC<NewsModalProps> = ({ open, onOpenChange }) => {
     }
   };
 
-  const handleSubmit = () => {
-    const payload = {
-      ...formData,
-      tags: selectedTags,
-    };
-    console.log(payload); // Replace with API call
-    onOpenChange(false);
+  const handleSubmit = async () => {
+    try {
+      let imageBase64 = "";
+  
+      if (selectedImage) {
+        const reader = new FileReader();
+        reader.readAsDataURL(selectedImage);
+  
+        reader.onloadend = () => {
+          imageBase64 = reader.result as string;
+  
+          const payload = {
+            ...formData,
+            image: imageBase64,
+            tags: selectedTags,
+          };
+  
+          createNews(payload, {
+            onSuccess: () => {
+              setFormData(initialData);
+              setSelectedImage(null);
+              setPreviewUrl(null);
+              onOpenChange(false);
+            },
+            onError: (error) => {
+              console.error("Error submitting news:", error);
+            },
+          });
+        };
+      } else {
+        const payload = {
+          ...formData,
+          tags: selectedTags,
+        };
+  
+        createNews(payload, {
+          onSuccess: () => {
+            setFormData(initialData);
+            setSelectedImage(null);
+            setPreviewUrl(null);
+            onOpenChange(false);
+          },
+          onError: (error) => {
+            console.error("Error submitting news:", error);
+          },
+        });
+      }
+    } catch (err) {
+      console.error("Error:", err);
+    }
   };
+  
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -81,11 +130,11 @@ export const NewsModal: React.FC<NewsModalProps> = ({ open, onOpenChange }) => {
 
         <div className="space-y-4 mt-4">
           <div>
-            <Label className="text-[#2a2a2a] font-medium">Headline</Label>
+            <Label className="text-[#2a2a2a] font-medium">Title</Label>
             <Input
-              placeholder="News Headline"
-              value={formData.headline}
-              onChange={(e) => handleChange("headline", e.target.value)}
+              placeholder="News Title"
+              value={formData.title}
+              onChange={(e) => handleChange("title", e.target.value)}
               className="bg-[#f9f7f1] border-[#d4c8a8]"
             />
           </div>
@@ -99,6 +148,7 @@ export const NewsModal: React.FC<NewsModalProps> = ({ open, onOpenChange }) => {
               <div className="flex flex-col items-start">
                 <Input
                   type="file"
+                  name="picture"
                   accept="image/*"
                   onChange={handleImageSelect}
                   className="bg-[#f9f7f1] border-[#d4c8a8]"

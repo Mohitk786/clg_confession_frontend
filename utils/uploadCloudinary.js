@@ -1,5 +1,5 @@
-const cloudinary = require("cloudinary").v2;
-const fs = require("fs");
+import { v2 as cloudinary } from 'cloudinary';
+
 
 cloudinary.config({ 
   cloud_name: process.env.CLOUD_NAME, 
@@ -7,18 +7,16 @@ cloudinary.config({
   api_secret: process.env.API_SECRET
 });
 
-exports.uploadCloudinary = async (localFilePath) => {
+exports.uploadCloudinary = async (base64Image) => {
   try {
-    if (!localFilePath) return null;
+    if (!base64Image) return null;
 
-    const response = await cloudinary.uploader.upload(localFilePath, {
+    const response = await cloudinary.uploader.upload(base64Image, {
       resource_type: "auto",
     });
 
-    fs.unlinkSync(localFilePath); // Clean up local file
     return response.secure_url;
   } catch (error) {
-    fs.unlinkSync(localFilePath); // Clean up even on failure
     return null;
   }
 };
