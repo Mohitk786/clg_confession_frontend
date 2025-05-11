@@ -32,7 +32,7 @@ export const useCreateProfile = () => {
     })
 }
     
-export const useGetUser = () => {
+export const useUser = () => {
     return useQuery({
         queryKey: [QUERY_KEYS.GET_USER],
         queryFn:  getUser,

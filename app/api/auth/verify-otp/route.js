@@ -27,14 +27,14 @@ export async function POST(req) {
     otpRecord.verified = true;
     await otpRecord.save();
 
-    const user = await User.findOne({ phone });
+    const user = await User.findOne({ phone }).populate("college", "name");
     if (user) {
       const token = jwt.sign(
         {
-          gender: user.gender,
           name: user.name,
-          username: user.username,
           userId: user._id,
+          college: user.college.name || "",
+          profileCompleted: user.profileCompleted,
         },
         process.env.JWT_SECRET
       );

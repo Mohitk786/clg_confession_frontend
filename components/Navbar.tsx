@@ -1,18 +1,14 @@
 "use client";
 
-import { Bell, Wallet } from "lucide-react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
-import { useGetUser } from "@/hooks/auth";
-import { useEffect } from "react";
+import { useUser } from "@/hooks/auth";
 
 const Navbar = () => {
-  // const { data: user, isPending, isError } = useGetUser();
   const path = usePathname();
-  const user = {
-    college: "IMS Engineering College",
-    sp: 0,
-  };
+  const {data:{data:user} }:any = useUser();
+
+  console.log("user", user);
   
  
   return (
@@ -42,7 +38,7 @@ const Navbar = () => {
             </Link> */}
           </nav>
           <p className="font-bold font-mono text-campus-forest  hover:bg-campus-forest/90 transition-colors">
-            {user?.college || "IMS Engineering College"}
+            {user?.college || "Your University"}
           </p>
           {/* <p className="font-bold text-red-500  hover:bg-campus-forest/90 transition-colors">
             {user?.sp || "--"}SP

@@ -29,7 +29,7 @@ export const createProfile = async (data: any) => {
 
 
 export const getUser = async () => {
-    const res = await axiosInstance.get("/auth/user");
+    const res = await axiosInstance.get("/auth/me");
     return res.data;
 }
 

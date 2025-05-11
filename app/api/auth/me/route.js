@@ -16,7 +16,7 @@ export async function GET(req) {
     return NextResponse.json({
       success: true,
       message: "User fetched",
-      data: req.user
+      data: user
     });
 
   } catch (err) {
