@@ -22,11 +22,15 @@ export async function createProfile(formData) {
     throw new Error("Invalid college ID!");
   }
 
+  console.log("College found:", college);
+
   try {
     const existingUser = await User.findOne({ phone });
     if (existingUser) {
       throw new Error("User already exists!");
     }
+
+    console.log("No existing user found, creating new user...");
 
     const username =
       name.slice(0, 3).toLowerCase() +
@@ -42,6 +46,8 @@ export async function createProfile(formData) {
       username,
       hookupInterest,
     });
+
+    console.log("New user created:", newUser);
 
     await newUser.save();
 
@@ -60,7 +66,7 @@ export async function createProfile(formData) {
 
     // Set HTTP-only cookie using Next.js `cookies` API
     const cookieStore = await cookies();
-    cookieStore.set("clg_app_cookie", token, {
+    await cookieStore.set("clg_app_cookie", token, {
       httpOnly: true,
       secure: process.env.MODE === "PRODUCTION",
       sameSite: "strict",
@@ -68,9 +74,10 @@ export async function createProfile(formData) {
       path: "/",
     });
     redirect("/");
+
   } catch (error) {
     if (error?.message === "NEXT_REDIRECT") redirect("/");
-
+    console.error("Error creating profile:", error);
     throw new Error(error?.message || "Something went wrong");
 
   }
