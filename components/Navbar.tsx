@@ -78,7 +78,7 @@ const Navbar = () => {
           </nav>
 
           {/* Mobile hamburger menu - visible only on small screens */}
-          <div className="md:hidden flex items-center">
+          <div className="md:hidden flex items-center ">
             <Sheet open={isOpen} onOpenChange={setIsOpen}>
               <SheetTrigger asChild>
                 <Button
@@ -100,36 +100,45 @@ const Navbar = () => {
 
                 <Separator className="text-campus-forest" />
 
-              
+               <div className="flex flex-col justify-between h-full">
+               <nav className="flex flex-col md:hidden gap-3 mt-5 font-medium text-campus-navy/80">
+                  <Link
+                    href="/"
+                    className={`${
+                      path === "/" ? "text-campus-gold" : ""
+                    } hover:text-campus-gold transition-colors`}
+                  >
+                    Home
+                  </Link>
+                  <Link
+                    href="/confessions"
+                    className={`${
+                      path === "/confessions" ? "text-campus-gold" : ""
+                    } hover:text-campus-gold transition-colors`}
+                  >
+                    Confessions
+                  </Link>
+                  <Link
+                    href="/campus-corner"
+                    className={`${
+                      path === "/campus-corner" ? "text-campus-gold" : ""
+                    } hover:text-campus-gold transition-colors`}
+                  >
+                    Campus Corner
+                  </Link>
+                </nav>
 
-                {/* User options in mobile menu */}
-                <div className="absolute bottom-8 left-6 right-6 border-t pt-4">
-                  <div className="flex flex-col space-y-2">
-                    <Link
-                      href="/profile"
-                      className="flex items-center text-campus-navy hover:text-campus-gold cursor-pointer transition-colors"
-                      onClick={() => setIsOpen(false)}
-                    >
-                      <User className="mr-2 h-4 w-4 text-campus-forest" />
-                      <span>Profile</span>
-                    </Link>
-                    <Link
-                      href="/settings"
-                      className="flex items-center text-campus-navy hover:text-campus-gold cursor-pointer transition-colors"
-                      onClick={() => setIsOpen(false)}
-                    >
-                      <Settings className="mr-2 h-4 w-4 text-campus-forest" />
-                      <span>Settings</span>
-                    </Link>
-                    <button
-                      className="flex items-center text-red-500 hover:text-red-600 transition-colors"
-                      onClick={() => setIsOpen(false)}
-                    >
-                      <LogOut className="mr-2 h-4 w-4" />
-                      <span>Log out</span>
-                    </button>
-                  </div>
+                <div className="w-full mb-4">
+                  <Separator />
+                  <button
+                    className="flex items-center justify-center bg-campus-forest p-4 text-white w-full transition-colors"
+                    onClick={() => setIsOpen(false)}
+                  >
+                    <LogOut className="mr-2 h-4 w-4" />
+                    <span>Log out</span>
+                  </button>
                 </div>
+               </div>
               </SheetContent>
             </Sheet>
           </div>
