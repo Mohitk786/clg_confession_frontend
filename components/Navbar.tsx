@@ -38,7 +38,7 @@ const Navbar = () => {
             </Link> */}
           </nav>
           <p className="font-bold font-mono text-campus-forest  hover:bg-campus-forest/90 transition-colors">
-            {user?.college || "Your University"}
+            {user?.collegeName || "Your University"}
           </p>
           {/* <p className="font-bold text-red-500  hover:bg-campus-forest/90 transition-colors">
             {user?.sp || "--"}SP
