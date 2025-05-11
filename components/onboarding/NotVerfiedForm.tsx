@@ -193,7 +193,7 @@ const NotVerfiedForm = ({setVerified, mobileNumber, setMobileNumber}:NotVerfiedF
               : otpSent
               ? verifyOtpLoading
                 ? "Verifying..."
-                : "OTP Sent"
+                : "Redirecting..."
               : "Send OTP"}
             <ChevronRight className="ml-1 sm:ml-2 h-3 w-3 sm:h-4 sm:w-4" />
           </Button>
