@@ -30,3 +30,6 @@ unlockedConfessionSchema.pre("save", function (next) {
 const UnlockedConfession =
   mongoose.models.UnlockedConfession ||
   mongoose.model("UnlockedConfession", unlockedConfessionSchema);
+
+
+  export default UnlockedConfession;
