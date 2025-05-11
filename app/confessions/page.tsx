@@ -1,6 +1,5 @@
 
 import PostFeedPage from "@/components/PostFeed/PostFeed";
-import {getPosts} from "@/actions/getPosts"
 
 export const dynamic = "force-dynamic";
 

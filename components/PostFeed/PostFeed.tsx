@@ -8,7 +8,8 @@ import { Button } from "@/components/ui/button";
 import { PenSquare } from "lucide-react";
 import { NewsModal } from "../modals/NewsModal";
 import { useConfessions } from "@/hooks/confessions";
-import {useNews} from "@/hooks/news";
+import { useNews } from "@/hooks/news";
+import { ShimmerCard } from "../ui/shimmer-card";
 
 export type Post = {
   tags: string[];
@@ -23,11 +24,7 @@ interface PostFeedPageProps {
   title: string;
 }
 
-export default function PostFeedPage({
-  type,
-  title,
- 
-}: PostFeedPageProps) {
+export default function PostFeedPage({ type, title }: PostFeedPageProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const isConfession = type === "confession";
 
@@ -41,28 +38,28 @@ export default function PostFeedPage({
     isLoading,
     isError,
     fetchNextPage,
-    hasNextPage,
+    isFetchingNextPage,
   } = isConfession
     ? {
-        data: confessionQuery.data?.pages.flatMap((page:any) => page?.confessions) || [],
+        data:
+          confessionQuery.data?.pages.flatMap(
+            (page: any) => page?.confessions
+          ) || [],
         isLoading: confessionQuery.isLoading,
         isError: confessionQuery.isError,
         fetchNextPage: confessionQuery.fetchNextPage,
-        hasNextPage: confessionQuery.hasNextPage,
+        isFetchingNextPage: confessionQuery.isFetchingNextPage,
       }
     : {
-        data: newsQuery.data?.pages.flatMap((page:any) => page?.news) || [],
+        data: newsQuery.data?.pages.flatMap((page: any) => page?.news) || [],
         isLoading: newsQuery.isLoading,
         isError: newsQuery.isError,
         fetchNextPage: newsQuery.fetchNextPage,
-        hasNextPage: newsQuery.hasNextPage,
+        isFetchingNextPage: confessionQuery.isFetchingNextPage,
       };
 
   const handleScroll = () => {
-    const scrollTop = window.scrollY;
-    const screenHeight = window.innerHeight;
-
-    if (scrollTop + screenHeight > (document.body.scrollHeight)&&  hasNextPage) {
+    if (window.scrollY + window.innerHeight >= document.body.scrollHeight) {
       fetchNextPage();
     }
   };
@@ -71,10 +68,8 @@ export default function PostFeedPage({
     window.addEventListener("scroll", handleScroll);
 
     return () => window.removeEventListener("scroll", handleScroll);
-  }, [hasNextPage]);
+  }, []);
 
-  if (isLoading) return <p>Loading posts...</p>;
-  if (isError) return <p>Failed to load posts</p>;
 
 
   return (
@@ -86,22 +81,26 @@ export default function PostFeedPage({
           {title}
         </h1>
 
-        <div className="flex flex-col gap-4">
-          {postsData.map((post:any, i:number) => (
-            <PostCard
-              type={isConfession ? "confession" : "news"}
-              key={i}
-              title={post?.title}
-              tags={post.tags}
-              content={post.content}
-              isMidnight={isConfession && post.isMidnight}
-              unlockText={post.unlockText}
-              imageUrl={!isConfession ? post.imageUrl : undefined}
-            />
-          ))}
-        </div>
-        {hasNextPage && <p className="text-center my-4">Loading more...</p>}
-        {!hasNextPage && <p className="text-center my-4">You've reached the end.</p>}
+        {/* {isLoading ? ( */}
+          <div className="flex flex-col gap-4">
+            {!isLoading ? postsData.map((post: any, i: number) => (
+              <PostCard
+                type={isConfession ? "confession" : "news"}
+                key={i}
+                title={post?.title}
+                tags={post.tags}
+                content={post.content}
+                isMidnight={isConfession && post.isMidnight}
+                unlockText={post.unlockText}
+                imageUrl={!isConfession ? post.imageUrl : undefined}
+              />
+            ))
+            : new Array(3).fill(null).map((_, i) => <ShimmerCard key={i} />)
+            }
+          
+            {isFetchingNextPage && new Array(3).fill(null).map((_, i) => <ShimmerCard key={i} />)}
+          </div>
+      
       </main>
 
       <div>

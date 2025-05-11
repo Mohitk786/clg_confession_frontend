@@ -4,7 +4,8 @@ import { FC, ReactNode } from "react";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
+
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -40,10 +41,19 @@ export const PostCard: FC<PostCardProps> = ({
   isMidnight = false,
   unlockText,
 }) => {
+  const currentPath = usePathname();
   const isConfession = type === "confession";
+  const router = useRouter();
+
+  const handlePostClick = () => {
+    if (currentPath === "/") {
+      const redirectLink = isConfession ? "/confessions" : "/campus-corner";
+      router.push(redirectLink); 
+    } 
+  };
 
   return (
-    <Link href={isConfession ?  "/confessions": "/campus-corner"} className="w-full"> 
+    <div onClick={handlePostClick} className="w-full"> 
       <Card className="border border-[#d4c8a8] bg-[#f9f7f1] shadow-md overflow-hidden relative">
         {isConfession && isMidnight && unlockText && (
           <div className="absolute top-0 right-0 bg-[#2a2a2a] text-[#f5f2e8] text-xs px-3 py-1 font-medium z-20">
@@ -136,6 +146,6 @@ export const PostCard: FC<PostCardProps> = ({
           </div>
         </div>
       </Card>
-    </Link>
+    </div>
   );
 };
