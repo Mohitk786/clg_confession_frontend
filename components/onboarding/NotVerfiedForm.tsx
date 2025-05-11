@@ -25,6 +25,7 @@ const NotVerfiedForm = ({setVerified, mobileNumber, setMobileNumber}:NotVerfiedF
       const router = useRouter()
       const { mutate: sendOtp, isPending: sendOtpLoading } = useSendOtp()
       const { mutate: verifyOtp, isPending: verifyOtpLoading } = useVerifyOtp()
+      const [error, setError] = useState<string | null>(null)
     
   
    
@@ -49,6 +50,7 @@ const NotVerfiedForm = ({setVerified, mobileNumber, setMobileNumber}:NotVerfiedF
             { phone },
             {
               onSuccess: () => {
+               
                 setOtpSent(true)
                 setTimerActive(true)
               },
@@ -78,10 +80,15 @@ const NotVerfiedForm = ({setVerified, mobileNumber, setMobileNumber}:NotVerfiedF
                 onSuccess: (data:any) => {
                     if(data?.redirect){
                         router.push(data.redirect)
+                    }else if(data?.error){
+                        setError(data?.error)
+                        setOtp(["", "", "", "", "", ""])
+                        setTimer(30)
+                        return
                     }else{
-                        console.log("OTP verified successfully")
-                        setVerified(true)
+                      setVerified(true)
                     }
+                    setError(null)
                 },
                 onError: (error) => {
                   console.error("OTP verification failed", error)
@@ -151,7 +158,7 @@ const NotVerfiedForm = ({setVerified, mobileNumber, setMobileNumber}:NotVerfiedF
                 <label className="text-xs sm:text-sm text-[#EAEAEA]/70">
                   Enter OTP
                 </label>
-                <div className="flex justify-between gap-1 sm:gap-2">
+                <div className="flex  justify-between gap-1 sm:gap-2">
                   {otp.map((digit, index) => (
                     <Input
                       key={index}
@@ -167,6 +174,14 @@ const NotVerfiedForm = ({setVerified, mobileNumber, setMobileNumber}:NotVerfiedF
                     />
                   ))}
                 </div>
+                  {
+                    error && (
+                      <p className="text-red-500 text-xs sm:text-sm text-center">
+                        {error}
+                      </p>
+                    )
+                  }
+
                 <p className="text-[10px] sm:text-xs text-[#EAEAEA]/50 text-center">
                   {timerActive ? (
                     <span>Resend OTP in {timer}s</span>
@@ -193,7 +208,7 @@ const NotVerfiedForm = ({setVerified, mobileNumber, setMobileNumber}:NotVerfiedF
               : otpSent
               ? verifyOtpLoading
                 ? "Verifying..."
-                : "Redirecting..."
+                : !error ?  "Redirecting..." : "Invalid OTP"
               : "Send OTP"}
             <ChevronRight className="ml-1 sm:ml-2 h-3 w-3 sm:h-4 sm:w-4" />
           </Button>
