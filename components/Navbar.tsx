@@ -6,9 +6,9 @@ import { useUser } from "@/hooks/auth";
 
 const Navbar = () => {
   const path = usePathname();
-  const {data:{data:user} }:any = useUser();
+  const {data}:any = useUser();
 
-  console.log("user", user);
+  const user = data?.data;
   
  
   return (

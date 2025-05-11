@@ -7,7 +7,7 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useState } from "react";
 import { PostImage } from "@/components/modals/PostImageModal";
-import BlurredImageGrid from "@/components/BlurredImageGrid";
+// import BlurredImageGrid from "@/components/BlurredImageGrid";
 import Link from "next/link";
 import Navbar from "@/components/Navbar";
 
@@ -27,7 +27,7 @@ export default function MysteryWall() {
         </h2>
 
         {/* Blurred Image Grid */}
-        <BlurredImageGrid />
+        {/* <BlurredImageGrid /> */}
 
         {/* Trending Section */}
         <div className="mb-12">
