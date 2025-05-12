@@ -10,92 +10,74 @@ import Like from "@/models/Like";
 export const getPosts = async (req, isConfession) => {
   try {
     const user = await getUserAuth();
-
-    if (!user) {
-      return {
-        success: false,
-        message: "Not authenticated",
-      };
-    }
+    if (!user) return { success: false, message: "Not authenticated" };
 
     await dbConnect();
 
     const { searchParams } = new URL(req.url);
-    const page = parseInt(searchParams.get("page") || "1");
+    const page = Number(searchParams.get("page") || 1);
     const limit = 5;
     const skip = (page - 1) * limit;
 
-    if (page < 1) {
+    if (isNaN(page) || page < 1) {
       return {
         success: false,
         message: "Invalid page number",
       };
     }
-    if (isNaN(page)) {
-      return {
-        success: false,
-        message: "Page number must be a number",
-      };
-    }
 
-    const foundUser = await User.findById(user.userId);
+    const [foundUser] = await Promise.all([
+      User.findById(user.userId).lean().select("college"),
+    ]);
+
     if (!foundUser) {
-      return {
-        success: false,
-        message: "User not found",
-      };
+      return { success: false, message: "User not found" };
     }
 
     const collegeId = foundUser.college;
-    const likedPosts = await Like.find({ userId: user.userId, postType: isConfession ? "confession" : "news" });
-    const likedPostIds = new Set(
-      likedPosts.map((like) => like.postId.toString())
-    );
-    let data;
-    let hasMore = false;
 
-    if (isConfession) {
-        const confessions = await Confession.find({ college: collegeId })
-          .sort({ createdAt: -1 })
-          .skip(skip)
-          .limit(limit)
-          .select("content tags likesCount commentsCount createdAt")
-          .lean();
+    // Define models and fields based on post type
+    const Model = isConfession ? Confession : News;
+    const selectFields = isConfession
+      ? "content tags likesCount commentsCount createdAt"
+      : "title content tags image likesCount commentsCount createdAt";
 
-      const confessionCount = await Confession.countDocuments({
-        college: collegeId,
-      });
-      hasMore = confessionCount > skip + confessions?.length;
-
-      const confessionsWithIsLiked = confessions.map((conf) => ({
-        ...conf,
-        isLiked: likedPostIds.has(conf._id.toString()),
-      }));
-
-      data = { confessions: confessionsWithIsLiked };
-    } else {
-      const news = await News.find({ college: collegeId })
+    // Run post query and likes in parallel
+    const [posts, likes] = await Promise.all([
+      Model.find({ college: collegeId })
         .sort({ createdAt: -1 })
         .skip(skip)
         .limit(limit)
-        .select("title content tags image likesCount commentsCount createdAt ")
-        .lean();
+        .select(selectFields)
+        .lean(),
 
-      const newsCount = await News.countDocuments({ college: collegeId });
-      hasMore = newsCount > skip + news?.length;
+      Like.find({
+        userId: user.userId,
+        postType: isConfession ? "confession" : "news",
+      }).select("postId"),
+    ]);
 
-      const newsWithIsLiked = news.map((n) => ({
-        ...n,
-        isLiked: likedPostIds.has(n._id.toString()),
-      }));
+    const likedPostIds = new Set(likes.map((like) => like.postId.toString()));
 
-      data = { news: newsWithIsLiked };
-    }
+    const postsWithIsLiked = posts.map((post) => ({
+      ...post,
+      isLiked: likedPostIds.has(post._id.toString()),
+    }));
+
+    // Check if more posts exist without an extra count call
+    const hasMore =
+      posts.length === limit
+        ? (await Model.exists({ college: collegeId }).skip(skip + limit).limit(1))
+          ? true
+          : false
+        : false;
 
     return {
       success: true,
       hasMore,
-      ...data,
+      ...(isConfession
+        ? { confessions: postsWithIsLiked }
+        : { news: postsWithIsLiked }),
     };
   } catch (error) {
     return {

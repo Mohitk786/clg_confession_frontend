@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { PostCard } from "@/components/PostFeed/PostCard";
 import { ConfessionModal } from "@/components/modals/confession-modal";
 import { Button } from "@/components/ui/button";
@@ -9,6 +9,7 @@ import { NewsModal } from "../modals/NewsModal";
 import { useConfessions } from "@/hooks/confessions";
 import { useNews } from "@/hooks/news";
 import { ShimmerCard } from "../ui/shimmer-card";
+import { motion } from "framer-motion";
 
 export type Post = {
   tags: string[];
@@ -27,47 +28,43 @@ export default function PostFeedPage({ type, title }: PostFeedPageProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const isConfession = type === "confession";
 
-  // Always call both hooks
   const confessionQuery = useConfessions({ enabled: isConfession });
   const newsQuery = useNews({ enabled: !isConfession });
 
-  // Use conditional logic to extract data
-  const {
-    data: postsData,
-    isLoading,
-    isError,
-    fetchNextPage,
-    isFetchingNextPage,
-  } = isConfession
-    ? {
-        data:
-          confessionQuery.data?.pages.flatMap(
-            (page: any) => page?.confessions
-          ) || [],
-        isLoading: confessionQuery.isLoading,
-        isError: confessionQuery.isError,
-        fetchNextPage: confessionQuery.fetchNextPage,
-        isFetchingNextPage: confessionQuery.isFetchingNextPage,
-      }
-    : {
-        data: newsQuery.data?.pages.flatMap((page: any) => page?.news) || [],
-        isLoading: newsQuery.isLoading,
-        isError: newsQuery.isError,
-        fetchNextPage: newsQuery.fetchNextPage,
-        isFetchingNextPage: confessionQuery.isFetchingNextPage,
-      };
+  const postsData =
+    (isConfession
+      ? confessionQuery.data?.pages.flatMap((page: any) => page?.confessions)
+      : newsQuery.data?.pages.flatMap((page: any) => page?.news)) || [];
 
-  const handleScroll = () => {
-    if (window.scrollY + window.innerHeight >= document.body.scrollHeight) {
-      fetchNextPage();
-    }
-  };
+  const isLoading = isConfession
+    ? confessionQuery.isLoading
+    : newsQuery.isLoading;
+
+  const isError = isConfession
+    ? confessionQuery.isError
+    : newsQuery.isError;
+
+  const fetchNextPage = isConfession
+    ? confessionQuery.fetchNextPage
+    : newsQuery.fetchNextPage;
+
+  const isFetchingNextPage = isConfession
+    ? confessionQuery.isFetchingNextPage
+    : newsQuery.isFetchingNextPage;
+
+  const loadMoreRef = useRef(null);
 
   useEffect(() => {
-    window.addEventListener("scroll", handleScroll);
-
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+    if (!loadMoreRef.current) return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) fetchNextPage();
+      },
+      { threshold: 1 }
+    );
+    observer.observe(loadMoreRef.current);
+    return () => observer.disconnect();
+  }, [loadMoreRef.current, fetchNextPage]);
 
   return (
     <>
@@ -76,29 +73,36 @@ export default function PostFeedPage({ type, title }: PostFeedPageProps) {
           {title}
         </h1>
 
-        {/* {isLoading ? ( */}
         <div className="flex flex-col gap-4">
           {!isLoading
             ? postsData.map((post: any, i: number) => (
-                <PostCard
-                  _id={post._id}
-                  likesCount={post?.likesCount || 0}
-                  commentsCount={post?.commentsCount || 0}
-                  type={isConfession ? "confession" : "news"}
-                  key={i}
-                  isLiked={post.isLiked}
-                  title={post?.title}
-                  tags={post.tags}
-                  content={post.content}
-                  isMidnight={isConfession && post.isMidnight}
-                  unlockText={post.unlockText}
-                  imageUrl={!isConfession ? post.image : undefined}
-                />
+                <motion.div
+                  key={post._id || i}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  <PostCard
+                    _id={post._id}
+                    likesCount={post?.likesCount || 0}
+                    commentsCount={post?.commentsCount || 0}
+                    type={isConfession ? "confession" : "news"}
+                    isLiked={post.isLiked}
+                    title={post?.title}
+                    tags={post.tags}
+                    content={post.content}
+                    isMidnight={isConfession && post.isMidnight}
+                    unlockText={post.unlockText}
+                    imageUrl={!isConfession ? post.image : undefined}
+                  />
+                </motion.div>
               ))
             : new Array(3).fill(null).map((_, i) => <ShimmerCard key={i} />)}
 
           {isFetchingNextPage &&
-            new Array(3).fill(null).map((_, i) => <ShimmerCard key={i} />)}
+            new Array(3).fill(null).map((_, i) => <ShimmerCard key={`shimmer-${i}`} />)}
+
+          <div ref={loadMoreRef} className="h-10" />
         </div>
       </main>
 
@@ -106,8 +110,7 @@ export default function PostFeedPage({ type, title }: PostFeedPageProps) {
         {isConfession ? (
           <>
             <div className="fixed bottom-0 left-0 right-0 bg-[#2a2a2a] text-[#f5f2e8] py-2 text-center font-serif z-40">
-              This week: "Flirty Friday" — Confess to your crush before
-              midnight! 🔥
+              This week: "Flirty Friday" — Confess to your crush before midnight! 🔥
             </div>
 
             <div className="fixed bottom-20 right-6 z-50">
