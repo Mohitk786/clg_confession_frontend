@@ -33,12 +33,23 @@ export async function POST(req) {
     await newUser.save();
 
     const token = jwt.sign(
-      { name, userId: newUser._id, college: college?.name, profileCompleted: false },
+      {
+        name,
+        userId: newUser._id,
+        college: college?.name,
+        profileCompleted: false,
+      },
       process.env.JWT_SECRET
     );
 
     const response = NextResponse.json(
-      { message: "Profile created successfully!" },
+      {
+        message: "Profile created successfully!",
+        data: {
+          name,
+          college: college?.name,
+        },
+      },
       { status: 201 }
     );
 

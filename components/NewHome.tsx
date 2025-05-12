@@ -18,9 +18,8 @@ interface Confession {
   reactionCount?: number;
 }
 
-const Index = async () => {
+const Index = async ({user}:any) => {
  
-  const user = await getUserAuth();
   if (!user) {
     return <div className="text-center py-8 text-campus-navy/50">Loading...</div>;
   }

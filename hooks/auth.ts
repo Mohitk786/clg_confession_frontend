@@ -23,8 +23,8 @@ export const useCreateProfile = () => {
     return useMutation({
         mutationFn: createProfile,
         mutationKey: [QUERY_KEYS.CREATE_PROFILE],
-        onSuccess: (data) => {
-            console.log("Profile created successfully", data);
+        onSuccess: ({data}:any) => {
+            localStorage.setItem("user", JSON.stringify(data));
         },
         onError: (error) => {
             console.error("Error creating profile", error);

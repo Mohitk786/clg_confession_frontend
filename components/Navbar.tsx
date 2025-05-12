@@ -30,9 +30,8 @@ const Navbar = () => {
   const { data }: any = useUser();
   const [isOpen, setIsOpen] = useState(false);
 
-  const user = data?.data;
 
-  // Get first letter of name for avatar fallback
+  const user = data?.data;
   const getInitials = () => {
     if (!user?.name) return "U";
     return user.name.charAt(0).toUpperCase();

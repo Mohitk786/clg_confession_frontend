@@ -1,17 +1,15 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
-import { getUserAuth } from "./lib/auth";
 
 export async function middleware(req: NextRequest) {
   const token = await req.cookies.get("clg_app_cookie")?.value;
   const path = req.nextUrl.pathname;
 
-  const user = await getUserAuth()
 
   const isOnboardingPage = path === "/onboarding";
-  const isProtectedRoute = ["/", "/confessions", "/campus-corner"].includes(path);
+  const isProtectedRoute = ["/confessions", "/campus-corner"].includes(path);
 
-  if ((token || user) && isOnboardingPage) {
+  if (token  && isOnboardingPage) {
     return NextResponse.redirect(new URL("/", req.url));
   }
 
@@ -23,5 +21,5 @@ export async function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/", "/confessions", "/campus-corner", "/onboarding"], 
+  matcher: ["/confessions", "/campus-corner", "/onboarding"], 
 };

@@ -1,7 +1,15 @@
 
+import React, { useEffect, useState } from "react";
+import Index from "@/components/NewHome";
+import { redirect, useRouter } from "next/navigation";
+import { getUserAuth } from "@/lib/auth";
 
-import Index from '@/components/NewHome';
+export default async function HomePage() {
+  const user = await getUserAuth();
 
-export default function HomePage() {
-  return <Index /> ;
-} 
+  if(!user){
+    redirect("/onboarding");
+  }
+
+  return  <Index user={user} /> ;
+}
