@@ -40,9 +40,7 @@ export default function PostFeedPage({ type, title }: PostFeedPageProps) {
     ? confessionQuery.isLoading
     : newsQuery.isLoading;
 
-  const isError = isConfession
-    ? confessionQuery.isError
-    : newsQuery.isError;
+  const isError = isConfession ? confessionQuery.isError : newsQuery.isError;
 
   const fetchNextPage = isConfession
     ? confessionQuery.fetchNextPage
@@ -74,8 +72,9 @@ export default function PostFeedPage({ type, title }: PostFeedPageProps) {
         </h1>
 
         <div className="flex flex-col gap-4">
-          {!isLoading
-            ? postsData.map((post: any, i: number) => (
+          {!isLoading ? (
+            postsData.length > 0 ? (
+              postsData.map((post: any, i: number) => (
                 <motion.div
                   key={post._id || i}
                   initial={{ opacity: 0, y: 20 }}
@@ -97,10 +96,23 @@ export default function PostFeedPage({ type, title }: PostFeedPageProps) {
                   />
                 </motion.div>
               ))
-            : new Array(3).fill(null).map((_, i) => <ShimmerCard key={i} />)}
+            ) : (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                className="text-center text-gray-500 font-medium py-12 italic"
+              >
+                {isConfession ? "No confessions found." : "No news found."}
+              </motion.div>
+            )
+          ) : (
+            new Array(3).fill(null).map((_, i) => <ShimmerCard key={i} />)
+          )}
 
           {isFetchingNextPage &&
-            new Array(3).fill(null).map((_, i) => <ShimmerCard key={`shimmer-${i}`} />)}
+            new Array(3)
+              .fill(null)
+              .map((_, i) => <ShimmerCard key={`shimmer-${i}`} />)}
 
           <div ref={loadMoreRef} className="h-10" />
         </div>
@@ -110,7 +122,8 @@ export default function PostFeedPage({ type, title }: PostFeedPageProps) {
         {isConfession ? (
           <>
             <div className="fixed bottom-0 left-0 right-0 bg-[#2a2a2a] text-[#f5f2e8] py-2 text-center font-serif z-40">
-              This week: "Flirty Friday" — Confess to your crush before midnight! 🔥
+              This week: "Flirty Friday" — Confess to your crush before
+              midnight! 🔥
             </div>
 
             <div className="fixed bottom-20 right-6 z-50">
