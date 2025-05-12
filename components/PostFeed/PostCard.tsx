@@ -18,28 +18,34 @@ import { EmojiBar, ReactionIcons } from "./ReactionIcons";
 type CardType = "confession" | "news";
 
 export interface PostCardProps {
+  _id: string;
   type: CardType;
   tags: string[];
   content: string;
   imageUrl?: string;
   path?: string;
+  isLiked: boolean;
   title?: string;
   isMidnight?: boolean;
-  likeCount?: number;
-  commentCount?: number;
+  likesCount: number;
+  commentsCount: number;
   unlockText?: string;
   actions?: ReactNode;
 }
 
 export const PostCard: FC<PostCardProps> = ({
   type,
+  _id,
   tags,
   content,
   path,
   title,
+  isLiked,
   imageUrl,
   isMidnight = false,
   unlockText,
+  likesCount,
+  commentsCount,
 }) => {
   const currentPath = usePathname();
   const isConfession = type === "confession";
@@ -130,15 +136,17 @@ export const PostCard: FC<PostCardProps> = ({
 
           <ReactionIcons
             post={{
+              _id,
               type,
               tags,
               content,
               title,
+              isLiked,
               imageUrl,
               isMidnight,
               unlockText,
-              likeCount: 0,
-              commentCount: 0,
+              likesCount,
+              commentsCount,
             }}
           />
           <div className="mt-4 pt-3 border-t border-[#d4c8a8]">

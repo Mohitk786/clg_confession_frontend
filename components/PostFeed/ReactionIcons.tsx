@@ -5,6 +5,7 @@ import { Heart, MessageSquare } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { CommentModal } from "../modals/CommentModal";
 import { PostCardProps } from "./PostCard";
+import { useLikePost } from "@/hooks/post";
 
 
 
@@ -13,18 +14,31 @@ interface ReactionIconsProps {
 }
 
 export const ReactionIcons: React.FC<ReactionIconsProps> = ({ post }) => {
-  const [isLiked, setIsLiked] = useState(false);
-  const [likes, setLikes] = useState(post?.likeCount || 0);
-  const [commentCount, setCommentCount] = useState(post?.commentCount || 0);
+  const [isLiked, setIsLiked] = useState(post?.isLiked);
+  const [likes, setLikes] = useState(post?.likesCount);
   const [isCommentModalOpen, setIsCommentModalOpen] = useState(false);
+  const {mutate:likePost} = useLikePost();
 
   const handleLikeClick = () => {
-    if (isLiked) {
-      setLikes(likes - 1);
-    } else {
-      setLikes(likes + 1);
-    }
-    setIsLiked(!isLiked);
+    likePost({postId: post._id, postType: post.type}
+      ,
+      {
+        onSuccess: ({data}:any) => {
+          console.log(data);
+          setIsLiked(data.isLiked);
+          setLikes(data.likesCount);
+        },
+
+        onError: (error) => {
+          console.error(error);
+          setIsLiked((prev) => {
+            const next = !prev;
+            setLikes((prevLikes) => prevLikes + (next ? 1 : -1));
+            return next;
+          });
+        },
+      }
+    );
   };
 
   return (
@@ -32,16 +46,16 @@ export const ReactionIcons: React.FC<ReactionIconsProps> = ({ post }) => {
       <PostReactionIcons 
         isLiked={isLiked}
         handleLikeClick={handleLikeClick}
-        commentCount={commentCount}
+        commentCount={post.commentsCount}
         setIsCommentModalOpen={setIsCommentModalOpen}
-        likes={likes}
+        likesCount={likes}
       />
 
       <CommentModal
         isLiked={isLiked}
         handleLikeClick={handleLikeClick}
-        likes={likes}
-        commentCount={commentCount}
+        likesCount={likes}
+        commentCount={post.commentsCount}
         setIsCommentModalOpen={setIsCommentModalOpen}
         post={post}
         isOpen={isCommentModalOpen}
@@ -71,12 +85,12 @@ export const EmojiBar: React.FC = () => (
 export interface PostReactionIconsProps {
   isLiked: boolean;
   handleLikeClick: () => void;
-  likes: number;
+  likesCount: number;
   commentCount: number;
   setIsCommentModalOpen: (isOpen: boolean) => void;
 }
 
-export const PostReactionIcons = ({isLiked, likes, handleLikeClick, commentCount, setIsCommentModalOpen}:PostReactionIconsProps) => {
+export const PostReactionIcons = ({isLiked, likesCount, handleLikeClick, commentCount, setIsCommentModalOpen}:PostReactionIconsProps) => {
   return (
     <>
       <div className="flex items-center gap-1">
@@ -92,7 +106,7 @@ export const PostReactionIcons = ({isLiked, likes, handleLikeClick, commentCount
           }`}
         />
       </Button>
-      <span className="text-sm font-medium text-[#2a2a2a]">{likes}</span>
+      <span className="text-sm font-medium text-[#2a2a2a]">{likesCount}</span>
     </div>
      <div className="flex items-center gap-1">
      <Button

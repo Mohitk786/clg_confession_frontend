@@ -71,7 +71,6 @@ export async function POST(req) {
       data: newLike,
     });
   } catch (error) {
-    console.error("Error in reaction API:", error);
     return NextResponse.json(
       { success: false, message: "Server error while handling reaction" },
       { status: 500 }

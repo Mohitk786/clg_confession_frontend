@@ -83,8 +83,12 @@ export default function PostFeedPage({ type, title }: PostFeedPageProps) {
           <div className="flex flex-col gap-4">
             {!isLoading ? postsData.map((post: any, i: number) => (
               <PostCard
+                _id={post._id}
+                likesCount={post?.likesCount || 0}
+                commentsCount={post?.commentsCount || 0}
                 type={isConfession ? "confession" : "news"}
                 key={i}
+                isLiked={post.isLiked}
                 title={post?.title}
                 tags={post.tags}
                 content={post.content}

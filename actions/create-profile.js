@@ -73,7 +73,6 @@ export async function createProfile(formData) {
 
   } catch (error) {
     if (error?.message === "NEXT_REDIRECT") redirect("/");
-    console.error("Error creating profile:", error);
     throw new Error(error?.message || "Something went wrong");
 
   }

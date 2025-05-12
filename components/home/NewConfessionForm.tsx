@@ -7,7 +7,7 @@ const NewConfessionForm: React.FC = () => {
   
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // In a real app, we would submit to the backend
+   
     console.log({ content, category });
     
     // Reset form

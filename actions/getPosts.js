@@ -5,6 +5,7 @@ import { getUserAuth } from "@/lib/auth";
 import User from "@/models/User";
 import Confession from "@/models/Confession";
 import News from "@/models/News";
+import Like from "@/models/Like";
 
 export const getPosts = async (req, isConfession) => {
   try {
@@ -22,7 +23,7 @@ export const getPosts = async (req, isConfession) => {
     const { searchParams } = new URL(req.url);
     const page = parseInt(searchParams.get("page") || "1");
     const limit = 5;
-    const skip = (page-1)*limit;
+    const skip = (page - 1) * limit;
 
     if (page < 1) {
       return {
@@ -36,7 +37,7 @@ export const getPosts = async (req, isConfession) => {
         message: "Page number must be a number",
       };
     }
-    
+
     const foundUser = await User.findById(user.userId);
     if (!foundUser) {
       return {
@@ -46,19 +47,47 @@ export const getPosts = async (req, isConfession) => {
     }
 
     const collegeId = foundUser.college;
+    const likedPosts = await Like.find({ userId: user.userId, postType: isConfession ? "confession" : "news" });
+    const likedPostIds = new Set(
+      likedPosts.map((like) => like.postId.toString())
+    );
     let data;
     let hasMore = false;
 
     if (isConfession) {
-      const confessions = await Confession.find({ college: collegeId }).sort({ createdAt: -1 }).skip(skip).limit(limit);
-      const confessionCount = await Confession.countDocuments({ college: collegeId });
-      hasMore  = confessionCount > (skip + confessions?.length);
-      data = { confessions: JSON.parse(JSON.stringify(confessions)) };
+      const confessions = await Confession.find({ college: collegeId })
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(limit)
+        .lean();
+
+      const confessionCount = await Confession.countDocuments({
+        college: collegeId,
+      });
+      hasMore = confessionCount > skip + confessions?.length;
+
+      const confessionsWithIsLiked = confessions.map((conf) => ({
+        ...conf,
+        isLiked: likedPostIds.has(conf._id.toString()),
+      }));
+
+      data = { confessions: confessionsWithIsLiked };
     } else {
-      const news = await News.find({ college: collegeId }).sort({ createdAt: -1 }).skip(skip).limit(limit);
+      const news = await News.find({ college: collegeId })
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(limit)
+        .lean();
+
       const newsCount = await News.countDocuments({ college: collegeId });
-      hasMore  = newsCount > (skip + news?.length);
-      data = { news: JSON.parse(JSON.stringify(news)) };
+      hasMore = newsCount > skip + news?.length;
+
+      const newsWithIsLiked = news.map((n) => ({
+        ...n,
+        isLiked: likedPostIds.has(n._id.toString()),
+      }));
+
+      data = { news: newsWithIsLiked };
     }
 
     return {

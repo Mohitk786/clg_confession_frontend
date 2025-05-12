@@ -30,7 +30,6 @@ try{
 
 
 }catch(er){
-    console.log(er)
     return new Response(JSON.stringify({message: "Error"}), {status: 500})
 }
 }

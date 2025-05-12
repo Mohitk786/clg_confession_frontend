@@ -59,7 +59,8 @@ export async function POST(req, { params }) {
       foundUser.sp +=  SP_REWARD.COMMENT;
       await foundUser.save();
     }
-
+    
+    post.commentsCount = (post.commentsCount || 0) + 1;
     post.comments.push(newComment._id);
     await post.save();
 

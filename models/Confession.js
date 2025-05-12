@@ -17,7 +17,8 @@ const confessionSchema = new mongoose.Schema({
   
   reactions: [{ type: mongoose.Schema.Types.ObjectId, ref: "Reaction" }],
   likes : [{ type: mongoose.Schema.Types.ObjectId, ref: "Like" }],
-  
+  likesCount: { type: Number, default: 0 },
+  commentsCount: { type: Number, default: 0 },
   isTrending: { type: Boolean, default: false },
   isDeleted: { type: Boolean, default: false },
   createdAt: { type: Date, default: Date.now }
