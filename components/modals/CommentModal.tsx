@@ -1,13 +1,10 @@
 "use client";
 
 import React, { useState } from "react";
-import { X } from "lucide-react";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Avatar } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Input } from "@/components/ui/input";
-import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
 import { PostCardProps } from "../PostFeed/PostCard";
 import {
@@ -15,6 +12,7 @@ import {
   PostReactionIcons,
 } from "../PostFeed/ReactionIcons";
 import { DialogTitle } from "@radix-ui/react-dialog";
+import { useComments, usePostComment } from "@/hooks/post";
 
 interface CommentModalProps extends PostReactionIconsProps {
   post: PostCardProps;
@@ -24,7 +22,6 @@ interface CommentModalProps extends PostReactionIconsProps {
 
 interface Comment {
   id: string;
-  author: string;
   content: string;
   timestamp: string;
 }
@@ -35,100 +32,23 @@ export const CommentModal: React.FC<CommentModalProps> = ({
   onClose,
   isLiked,
   handleLikeClick,
-  likes,
+  likesCount,
   commentCount,
   setIsCommentModalOpen,
 }) => {
   const { toast } = useToast();
   const [commentText, setCommentText] = useState("");
-  // In a real app, these would come from an API
-  const [comments, setComments] = useState<Comment[]>([
-    {
-      id: "1",
-      author: "jane_doe",
-      content: "This is so relatable! 💯",
-      timestamp: "2h ago",
-    },
-    {
-      id: "2",
-      author: "john_smith",
-      content: "I've been through something similar last summer. Stay strong!",
-      timestamp: "5h ago",
-    },
-    {
-      id: "3",
-      author: "alex_walker",
-      content: "Thanks for sharing this 🙏",
-      timestamp: "1d ago",
-    },
-    {
-        id: "1",
-        author: "jane_doe",
-        content: "This is so relatable! 💯",
-        timestamp: "2h ago",
-      },
-      {
-        id: "2",
-        author: "john_smith",
-        content: "I've been through something similar last summer. Stay strong!",
-        timestamp: "5h ago",
-      },
-      {
-        id: "3",
-        author: "alex_walker",
-        content: "Thanks for sharing this 🙏",
-        timestamp: "1d ago",
-      },
-      {
-        id: "1",
-        author: "jane_doe",
-        content: "This is so relatable! 💯",
-        timestamp: "2h ago",
-      },
-      {
-        id: "2",
-        author: "john_smith",
-        content: "I've been through something similar last summer. Stay strong!",
-        timestamp: "5h ago",
-      },
-      {
-        id: "3",
-        author: "alex_walker",
-        content: "Thanks for sharing this 🙏",
-        timestamp: "1d ago",
-      },
-      {
-        id: "1",
-        author: "jane_doe",
-        content: "This is so relatable! 💯",
-        timestamp: "2h ago",
-      },
-      {
-        id: "2",
-        author: "john_smith",
-        content: "I've been through something similar last summer. Stay strong!",
-        timestamp: "5h ago",
-      },
-      {
-        id: "3",
-        author: "alex_walker",
-        content: "Thanks for sharing this 🙏",
-        timestamp: "1d ago",
-      },
-  ]);
+
+  const { data, isLoading }: any = useComments(post._id);
+ const {mutate: postComment} = usePostComment()
+
+ const comments: Comment[] = data?.data || [];
+ console.log("comments", comments);
 
   const handleCommentSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!commentText.trim()) return;
-
-    const newComment: Comment = {
-      id: Date.now().toString(),
-      author: "current_user", 
-      content: commentText,
-      timestamp: "Just now",
-    };
-
-    setComments([newComment, ...comments]);
+    postComment({postId: post._id, content:commentText})
     setCommentText("");
     toast({
       title: "Comment added",
@@ -141,7 +61,7 @@ export const CommentModal: React.FC<CommentModalProps> = ({
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogTitle className="hidden" />
-      <DialogContent className="max-w-[90vw] max-h-[90vh] overflow-y-scroll custome-scrollbar md:overflow-hidden ">
+      <DialogContent className="max-w-[90vw] h-[90vh] overflow-y-scroll custome-scrollbar md:overflow-hidden ">
         <div className="grid grid-cols-1 md:grid-cols-3">
           {/* Left side - Post */}
           <div className="bg-[#f9f7f1] border-r border-[#d4c8a8] flex flex-col col-span-2 max-h-[90vh] overflow-y-scroll custom-scrollbar">
@@ -183,15 +103,15 @@ export const CommentModal: React.FC<CommentModalProps> = ({
 
             {/* Scrollable Comments List */}
             <div className="flex-1 overflow-auto custom-scrollbar px-4 py-2">
-              {comments.length === 0 ? (
+              {!isLoading && comments.length === 0 ? (
                 <div className="flex flex-col items-center justify-center text-gray-500">
                   <p>No comments yet</p>
                   <p className="text-sm">Be the first to comment</p>
                 </div>
               ) : (
-                comments.map((comment) => (
+                !isLoading ? comments.map((comment: any) => (
                   <div
-                    key={comment.id}
+                    key={comment?._id}
                     className="p-3 hover:bg-gray-50 rounded-md flex items-start gap-3"
                   >
                     <Avatar className="h-8 w-8 rounded-full bg-[#c9b27c] flex items-center justify-center text-[#2a2a2a] font-medium">
@@ -202,17 +122,21 @@ export const CommentModal: React.FC<CommentModalProps> = ({
                         <div className="flex gap-2 items-center">
                           <span className="font-medium text-sm">Anonymous</span>
                           <span className="text-xs text-gray-500">
-                            {comment.timestamp}
+                            {comment?.timestamp}
                           </span>
                         </div>
                         <button className="text-gray-400 hover:text-red-500 transition">
                           ❤️
                         </button>
                       </div>
-                      <p className="text-sm mt-1">{comment.content}</p>
+                      <p className="text-sm mt-1">{comment?.content}</p>
                     </div>
                   </div>
-                ))
+              )
+                ):
+                <div className="flex items-center justify-center h-full">
+                  <p className="text-gray-500">Loading comments...</p>
+                </div>
               )}
             </div>
 
@@ -222,7 +146,7 @@ export const CommentModal: React.FC<CommentModalProps> = ({
                 <PostReactionIcons
                   isLiked={isLiked}
                   handleLikeClick={handleLikeClick}
-                  likes={likes}
+                  likesCount={likesCount}
                   commentCount={commentCount}
                   setIsCommentModalOpen={setIsCommentModalOpen}
                 />

@@ -1,3 +1,5 @@
+import { POST } from "@/app/api/confession/create/route";
+
 export const QUERY_KEYS = {
   SEND_OTP: "SEND_OTP",
   VERIFY_OTP: "VERIFY_OTP",
@@ -11,4 +13,5 @@ export const QUERY_KEYS = {
   GET_PROFILE: "GET_PROFILE",
   GET_ALL_COMMENTS: "GET_ALL_COMMENTS",
   LIKE_POST: "LIKE_POST",
+  POST_COMMENT: "POST_COMMENT",
 };

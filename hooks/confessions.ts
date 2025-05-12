@@ -24,7 +24,6 @@ export const useCreateConfession = () => {
   return useMutation({
     mutationFn: createConfession,
     onSuccess: () => {
-      console.log("Confession created successfully");
       queryClient.invalidateQueries({
         queryKey: [QUERY_KEYS.GET_ALL_CONFESSIONS],
       });
