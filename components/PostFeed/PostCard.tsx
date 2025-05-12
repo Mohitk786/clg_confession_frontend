@@ -54,12 +54,12 @@ export const PostCard: FC<PostCardProps> = ({
   const handlePostClick = () => {
     if (currentPath === "/") {
       const redirectLink = isConfession ? "/confessions" : "/campus-corner";
-      router.push(redirectLink); 
-    } 
+      router.push(redirectLink);
+    }
   };
 
   return (
-    <div onClick={handlePostClick} className="w-full"> 
+    <div onClick={handlePostClick} className="w-full">
       <Card className="border border-[#d4c8a8] bg-[#f9f7f1] shadow-md overflow-hidden relative">
         {isConfession && isMidnight && unlockText && (
           <div className="absolute top-0 right-0 bg-[#2a2a2a] text-[#f5f2e8] text-xs px-3 py-1 font-medium z-20">
@@ -75,7 +75,7 @@ export const PostCard: FC<PostCardProps> = ({
           <img
             src={imageUrl}
             alt="News Image"
-            className="w-full h-64 object-cover"
+            className="w-full h-64 object-contain mx-auto"
           />
         )}
 
