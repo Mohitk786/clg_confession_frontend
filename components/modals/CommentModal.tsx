@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import Image from "next/image";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Avatar } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
@@ -40,7 +41,7 @@ export const CommentModal: React.FC<CommentModalProps> = ({
   const [commentText, setCommentText] = useState("");
 
   const { data, isLoading }: any = useComments(post._id);
- const {mutate: postComment} = usePostComment()
+ const {mutate: postComment} = usePostComment(post._id)
 
  const comments: Comment[] = data?.data || [];
  console.log("comments", comments);
@@ -72,10 +73,12 @@ export const CommentModal: React.FC<CommentModalProps> = ({
             </div>
             <div className="p-4">
               {post?.imageUrl && (
-                <img
+                <Image
                   src={post.imageUrl}
                   alt="Post Image"
-                  className="w-full object-cover mb-4 rounded-md"
+                 width={1000}
+                  height={300}
+                  className="object-contain  mb-4 rounded-md"
                 />
               )}
               <p className="text-sm text-[#8a7e55] italic mb-2">

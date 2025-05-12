@@ -17,9 +17,6 @@ export default function MysteryWall() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#0a1f1c] to-[#0f2e29] text-[#e8d9b5]">
-      {/* Header */}
-      <Navbar />
-
       {/* Main Content */}
       <main className="container mx-auto px-4 py-8">
         <h2 className="font-serif text-2xl text-[#c9b27c] mb-6">

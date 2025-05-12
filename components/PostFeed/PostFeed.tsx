@@ -9,7 +9,6 @@ import { NewsModal } from "../modals/NewsModal";
 import { useConfessions } from "@/hooks/confessions";
 import { useNews } from "@/hooks/news";
 import { ShimmerCard } from "../ui/shimmer-card";
-import  Layout  from "@/components/home/Layout";
 
 export type Post = {
   tags: string[];
@@ -70,39 +69,37 @@ export default function PostFeedPage({ type, title }: PostFeedPageProps) {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-
-
   return (
-    <Layout>
-       <main className="container mx-auto px-4 py-8 max-w-3xl">
+    <>
+      <main className="container mx-auto px-4 py-8 max-w-3xl">
         <h1 className="font-serif text-3xl text-[#2a2a2a] mb-8 text-center italic">
           {title}
         </h1>
 
         {/* {isLoading ? ( */}
-          <div className="flex flex-col gap-4">
-            {!isLoading ? postsData.map((post: any, i: number) => (
-              <PostCard
-                _id={post._id}
-                likesCount={post?.likesCount || 0}
-                commentsCount={post?.commentsCount || 0}
-                type={isConfession ? "confession" : "news"}
-                key={i}
-                isLiked={post.isLiked}
-                title={post?.title}
-                tags={post.tags}
-                content={post.content}
-                isMidnight={isConfession && post.isMidnight}
-                unlockText={post.unlockText}
-                imageUrl={!isConfession ? post.image : undefined}
-              />
-            ))
-            : new Array(3).fill(null).map((_, i) => <ShimmerCard key={i} />)
-            }
-          
-            {isFetchingNextPage && new Array(3).fill(null).map((_, i) => <ShimmerCard key={i} />)}
-          </div>
-      
+        <div className="flex flex-col gap-4">
+          {!isLoading
+            ? postsData.map((post: any, i: number) => (
+                <PostCard
+                  _id={post._id}
+                  likesCount={post?.likesCount || 0}
+                  commentsCount={post?.commentsCount || 0}
+                  type={isConfession ? "confession" : "news"}
+                  key={i}
+                  isLiked={post.isLiked}
+                  title={post?.title}
+                  tags={post.tags}
+                  content={post.content}
+                  isMidnight={isConfession && post.isMidnight}
+                  unlockText={post.unlockText}
+                  imageUrl={!isConfession ? post.image : undefined}
+                />
+              ))
+            : new Array(3).fill(null).map((_, i) => <ShimmerCard key={i} />)}
+
+          {isFetchingNextPage &&
+            new Array(3).fill(null).map((_, i) => <ShimmerCard key={i} />)}
+        </div>
       </main>
 
       <div>
@@ -139,7 +136,6 @@ export default function PostFeedPage({ type, title }: PostFeedPageProps) {
           </>
         )}
       </div>
-    </Layout>
-     
+    </>
   );
 }

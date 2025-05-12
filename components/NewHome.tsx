@@ -1,6 +1,5 @@
 
 import React from "react";
-import Layout from "@/components/home/Layout";
 import Link from "next/link";
 
 import NewConfessionForm from "@/components/new/NewConfessionForm";
@@ -31,7 +30,6 @@ const Index = async () => {
  
 
   return (
-    <Layout>
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div>
           <NewConfessionForm />
@@ -87,7 +85,6 @@ const Index = async () => {
           </div>
         </div>
       </div>
-    </Layout>
   );
 };
 

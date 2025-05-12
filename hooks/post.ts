@@ -25,13 +25,13 @@ export const useComments = (postId: string) => {
   });
 };
 
-export const usePostComment = () => {
+export const usePostComment = (postId:string) => {
     const queryClient = useQueryClient();
   return useMutation({
     mutationKey: [QUERY_KEYS.POST_COMMENT],
     mutationFn: postComment,
     onSuccess: ()=>{
-        queryClient.invalidateQueries({queryKey : [QUERY_KEYS.GET_ALL_COMMENTS]})
+        queryClient.invalidateQueries({queryKey : [QUERY_KEYS.GET_ALL_COMMENTS, postId]})
     }
   });
 };
