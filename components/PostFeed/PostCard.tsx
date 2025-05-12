@@ -58,6 +58,7 @@ export const PostCard: FC<PostCardProps> = ({
     }
   };
 
+
   return (
     <div  className="w-full">
       <Card className="border border-[#d4c8a8] bg-[#f9f7f1] shadow-md overflow-hidden relative">

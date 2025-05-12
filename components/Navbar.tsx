@@ -103,6 +103,7 @@ const Navbar = () => {
                <nav className="flex flex-col md:hidden gap-3 mt-5 font-medium text-campus-navy/80">
                   <Link
                     href="/"
+                    onClick={() => setIsOpen(false)}
                     className={`${
                       path === "/" ? "text-campus-gold" : ""
                     } hover:text-campus-gold transition-colors`}
@@ -111,6 +112,7 @@ const Navbar = () => {
                   </Link>
                   <Link
                     href="/confessions"
+                    onClick={() => setIsOpen(false)}
                     className={`${
                       path === "/confessions" ? "text-campus-gold" : ""
                     } hover:text-campus-gold transition-colors`}
@@ -119,6 +121,7 @@ const Navbar = () => {
                   </Link>
                   <Link
                     href="/campus-corner"
+                    onClick={() => setIsOpen(false)}
                     className={`${
                       path === "/campus-corner" ? "text-campus-gold" : ""
                     } hover:text-campus-gold transition-colors`}

@@ -44,7 +44,6 @@ export const CommentModal: React.FC<CommentModalProps> = ({
  const {mutate: postComment} = usePostComment(post._id)
 
  const comments: Comment[] = data?.data || [];
- console.log("comments", comments);
 
   const handleCommentSubmit = (e: React.FormEvent) => {
     e.preventDefault();

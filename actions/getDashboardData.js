@@ -5,6 +5,7 @@ import {getUserAuth} from "@/lib/auth";
 import User from "@/models/User";
 import Confession from "@/models/Confession";
 import News from "@/models/News";
+import { console } from "inspector";
 
 export const getDashboardData = async () => {
   try {
@@ -33,15 +34,46 @@ export const getDashboardData = async () => {
       .select("content commentsCount likesCount tags reactions")
       .sort({ createdAt: -1 })
       .limit(confessionLimit)
+      .populate({
+        path: "likes",
+        select: "userId",
+      })
 
     const news = await News.find({ college: collegeId })
-      .select("content commentsCount likesCount image tags reactions")
+      .select("content commentsCount likesCount image tags reactions, likes")
       .sort({ createdAt: -1 })
       .limit(newsLimit)
+      .populate({
+        path: "likes",
+        select: "userId",
+      })
+
+      const confessionsWithIsLiked = confessions.map((confession) => {
+        const isLiked = confession.likes.some(
+          (like) => like.userId.toString() === user.userId.toString()
+        );
+        delete confession.likes;
+        return {
+          ...confession.toObject(),
+          isLiked,
+        };
+      });
+
+      const newsWithIsLiked = news.map((newsItem) => {
+        const isLiked = newsItem.likes.some(
+          (like) => like.userId.toString() === user.userId.toString()
+        );
+        delete newsItem.likes;
+        return {
+          ...newsItem.toObject(),
+          isLiked,
+        };
+      });
+   
 
       return {
-        confessions: JSON.parse(JSON.stringify(confessions)),
-        news: JSON.parse(JSON.stringify(news)),
+        confessions: JSON.parse(JSON.stringify(confessionsWithIsLiked)),
+        news: JSON.parse(JSON.stringify(newsWithIsLiked)),
       };
   } catch (error) {
     return {

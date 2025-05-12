@@ -26,8 +26,6 @@ const Index = async ({user}:any) => {
 
   const { confessions=[], news=[] }:{confessions:Confession[], news:any} = await getDashboardData();
 
- 
-
   return (
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div>
