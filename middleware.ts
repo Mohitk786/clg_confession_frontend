@@ -7,7 +7,13 @@ interface ExtendedNextRequest extends NextRequest {
 
 export async function middleware(req:ExtendedNextRequest) {
   const token = req.cookies.get("clg_app_cookie")?.value;
-  console.log("Token from middleware:", token);
+
+  const isOnboardingPage = req.nextUrl.pathname === "/onboarding";
+  
+  if (isOnboardingPage && token) {
+    return NextResponse.redirect(new URL("/", req.url));
+  }
+
   if (!token) {
     return NextResponse.redirect(new URL("/onboarding", req.url));
   }
@@ -16,5 +22,5 @@ export async function middleware(req:ExtendedNextRequest) {
 }
 
 export const config = {
-  matcher: ["/", "/confessions", "/campus-corner"], 
+  matcher: ["/", "/confessions", "/campus-corner", "/onboarding"], 
 };
