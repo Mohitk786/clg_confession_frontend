@@ -1,18 +1,44 @@
 "use client"
 import React, { useState } from 'react';
+import { Label } from '../ui/label';
+import { availableTags } from '@/constants/data';
+import {Checkbox} from '../ui/checkbox';
+import { useCreateConfession } from '@/hooks/confessions';
+import { toast } from '@/hooks/use-toast';
 
 const NewConfessionForm: React.FC = () => {
   const [content, setContent] = useState('');
-  const [category, setCategory] = useState<'love' | 'rant' | 'nsfw' | 'funny'>('funny');
+  const [selectedTags, setSelectedTags] = useState<string[]>([]);
+  const {mutate:addConfession, isPending, isError} = useCreateConfession();
   
+  const handleTagToggle = (tag: string) => {
+    if (selectedTags.includes(tag)) {
+      setSelectedTags(selectedTags.filter((t) => t !== tag));
+    } else {
+      if (selectedTags.length < 2) {
+        setSelectedTags([...selectedTags, tag]);
+      }
+    }
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // In a real app, we would submit to the backend
-    console.log({ content, category });
+   
+    addConfession({content, tags: selectedTags}, {
+      onSuccess: () => {
+        setContent('');
+        setSelectedTags([]);
+      },
     
-    // Reset form
-    setContent('');
-    setCategory('funny');
+      onError: (error) => {
+        toast({
+          title: "Error",
+          description: "Failed to post confession. Please try again.",
+          variant: "destructive",
+        });
+      }
+   })
+   
   };
   
   return (
@@ -29,41 +55,31 @@ const NewConfessionForm: React.FC = () => {
           ></textarea>
         </div>
         
-        <div className="mb-4">
-          <label className="block text-sm font-medium mb-1">Category</label>
-          <div className="flex flex-wrap gap-2">
-            <button
-              type="button"
-              className={`category-badge ${category === 'love' ? 'category-love' : 'bg-gray-100'}`}
-              onClick={() => setCategory('love')}
-            >
-              💔 Love
-            </button>
-            <button
-              type="button"
-              className={`category-badge ${category === 'rant' ? 'category-rant' : 'bg-gray-100'}`}
-              onClick={() => setCategory('rant')}
-            >
-              🧠 Rant
-            </button>
-            <button
-              type="button"
-              className={`category-badge ${category === 'nsfw' ? 'category-nsfw' : 'bg-gray-100'}`}
-              onClick={() => setCategory('nsfw')}
-            >
-              🫣 NSFW
-            </button>
-            <button
-              type="button"
-              className={`category-badge ${category === 'funny' ? 'category-funny' : 'bg-gray-100'}`}
-              onClick={() => setCategory('funny')}
-            >
-              😂 Funny
-            </button>
+        <div className="space-y-3">
+            <Label className="text-[#2a2a2a] font-medium">
+              Category:
+            </Label>
+            <div className="grid grid-cols-2 gap-3">
+              {availableTags.slice(0,4).map((tag) => (
+                <div key={tag.id} className="flex items-center space-x-2">
+                  <Checkbox
+                    id={tag.id}
+                    checked={selectedTags.includes(tag.id)}
+                    onCheckedChange={() => handleTagToggle(tag.id)}
+                    className="border-[#c9b27c] data-[state=checked]:bg-[#c9b27c] data-[state=checked]:text-[#2a2a2a]"
+                  />
+                  <Label
+                    htmlFor={tag.id}
+                    className="text-sm font-medium leading-none cursor-pointer flex items-center"
+                  >
+                    {tag.label} <span className="ml-1">{tag.emoji}</span>
+                  </Label>
+                </div>
+              ))}
+            </div>
           </div>
-        </div>
         
-        <div className="text-right">
+        <div className="text-right mt-4 md:mt-2">
           <button
             type="submit"
             className="px-4 py-2 rounded-md bg-campus-forest text-white hover:bg-campus-forest/90 transition-colors"

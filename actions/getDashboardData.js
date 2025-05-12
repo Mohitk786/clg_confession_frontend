@@ -5,7 +5,6 @@ import {getUserAuth} from "@/lib/auth";
 import User from "@/models/User";
 import Confession from "@/models/Confession";
 import News from "@/models/News";
-import { console } from "inspector";
 
 export const getDashboardData = async () => {
   try {
@@ -52,7 +51,6 @@ export const getDashboardData = async () => {
         const isLiked = confession.likes.some(
           (like) => like.userId.toString() === user.userId.toString()
         );
-        delete confession.likes;
         return {
           ...confession.toObject(),
           isLiked,
@@ -63,7 +61,6 @@ export const getDashboardData = async () => {
         const isLiked = newsItem.likes.some(
           (like) => like.userId.toString() === user.userId.toString()
         );
-        delete newsItem.likes;
         return {
           ...newsItem.toObject(),
           isLiked,
