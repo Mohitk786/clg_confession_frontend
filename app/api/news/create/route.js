@@ -28,7 +28,6 @@ export async function POST(req) {
     
     let picture = null;
     if (image) {
-
       const uploadResult = await uploadCloudinaryBase64(image); 
       picture = uploadResult || '';
     }
