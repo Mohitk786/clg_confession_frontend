@@ -30,12 +30,12 @@ export const getDashboardData = async () => {
     const collegeId = foundUser.college;
 
     const confessions = await Confession.find({ college: collegeId })
-      .select("content commentsCount tags reactions")
+      .select("content commentsCount likesCount tags reactions")
       .sort({ createdAt: -1 })
       .limit(confessionLimit)
 
     const news = await News.find({ college: collegeId })
-      .select("content commentsCount image tags reactions")
+      .select("content commentsCount likesCount image tags reactions")
       .sort({ createdAt: -1 })
       .limit(newsLimit)
 

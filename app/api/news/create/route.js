@@ -27,9 +27,11 @@ export async function POST(req) {
     }
     
     let picture = null;
-    if (image && typeof image === 'string') {
+    if (image) {
+
       const uploadResult = await uploadCloudinaryBase64(image); 
-      picture = uploadResult?.url || '';
+        console.log('Upload result:', uploadResult);
+      picture = uploadResult || '';
     }
     
     const news = new News({

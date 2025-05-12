@@ -15,6 +15,7 @@ interface Confession {
   tags: string[];
   likeCount?: number;
   commentCount?: number;
+  likesCount?: number;
   reactionCount?: number;
 }
 
@@ -27,6 +28,7 @@ const Index = async () => {
 
   const { confessions=[], news=[] }:{confessions:Confession[], news:any} = await getDashboardData();
 
+ 
 
   return (
     <Layout>

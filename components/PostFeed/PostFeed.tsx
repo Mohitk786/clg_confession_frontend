@@ -94,7 +94,7 @@ export default function PostFeedPage({ type, title }: PostFeedPageProps) {
                 content={post.content}
                 isMidnight={isConfession && post.isMidnight}
                 unlockText={post.unlockText}
-                imageUrl={!isConfession ? post.imageUrl : undefined}
+                imageUrl={!isConfession ? post.image : undefined}
               />
             ))
             : new Array(3).fill(null).map((_, i) => <ShimmerCard key={i} />)
