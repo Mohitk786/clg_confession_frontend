@@ -24,7 +24,6 @@ export const ReactionIcons: React.FC<ReactionIconsProps> = ({ post }) => {
       ,
       {
         onSuccess: ({data}:any) => {
-          console.log(data);
           setIsLiked(data.isLiked);
           setLikes(data.likesCount);
         },

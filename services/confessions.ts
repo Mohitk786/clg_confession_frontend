@@ -2,7 +2,6 @@ import { axiosInstance } from "@/lib/axiosInstance"
 
 export const getAllConfessions = async ({pageParam=1}) =>{
     try{
-        console.log("new pageParam", pageParam)
         const res = await axiosInstance.get(`/confession/all?page=${pageParam}`);
         return res.data;
     }catch(e){

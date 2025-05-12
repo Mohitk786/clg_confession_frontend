@@ -132,8 +132,16 @@ const ProfileForm = () => {
 
 
   return (
-    <div className=" p-6 rounded-lg shadow border border-campus-gold/20  border-[#d4c8a8] bg-[#f9f7f1]">
-      
+    <div className=" p-6 rounded-lg shadow border border-campus-gold/20 max-w-md mx-auto border-[#d4c8a8] bg-[#f9f7f1]">
+      <div className="mb-6">
+        <h2 className="text-2xl font-playfair font-bold text-campus-navy mb-2">
+          Academic Profile
+        </h2>
+        <p className="text-sm text-muted-foreground">
+          Please fill in your academic details. This information will be visible
+          to people who interact with your content.
+        </p>
+      </div>
 
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 ">

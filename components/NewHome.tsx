@@ -5,7 +5,6 @@ import Link from "next/link";
 import NewConfessionForm from "@/components/new/NewConfessionForm";
 import { PostCard } from "./PostFeed/PostCard";
 import {getDashboardData} from "@/actions/getDashboardData"
-import { getUserAuth } from "@/lib/auth";
 
 
 interface Confession {

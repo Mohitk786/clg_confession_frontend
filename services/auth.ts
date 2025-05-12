@@ -18,7 +18,6 @@ export const verifyOtp = async ({phone, otp}:LoginRequest) => {
         phone,
         otp
     });
-    console.log("verifyOtp", res.data);
     return res.data;
 }
 

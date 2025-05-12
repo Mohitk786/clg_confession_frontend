@@ -8,7 +8,6 @@ import { getAuthUser } from "@/lib/auth";
 export async function GET(req) {
   try {
     const user = await getAuthUser(req);
-    console.log("User from getAuthUser:", user);
 
     if (!user || !user.userId) {
       return NextResponse.json(
@@ -42,8 +41,6 @@ export async function GET(req) {
       .sort({ createdAt: -1 })
       .limit(newsLimit);
 
-    console.log("Confessions:", confessions);
-    console.log("News:", news);
 
     return NextResponse.json({
       success: true,
