@@ -55,11 +55,12 @@ export const getPosts = async (req, isConfession) => {
     let hasMore = false;
 
     if (isConfession) {
-      const confessions = await Confession.find({ college: collegeId })
-        .sort({ createdAt: -1 })
-        .skip(skip)
-        .limit(limit)
-        .lean();
+        const confessions = await Confession.find({ college: collegeId })
+          .sort({ createdAt: -1 })
+          .skip(skip)
+          .limit(limit)
+          .select("content tags likesCount commentsCount createdAt")
+          .lean();
 
       const confessionCount = await Confession.countDocuments({
         college: collegeId,
@@ -77,6 +78,7 @@ export const getPosts = async (req, isConfession) => {
         .sort({ createdAt: -1 })
         .skip(skip)
         .limit(limit)
+        .select("title content tags image likesCount commentsCount createdAt ")
         .lean();
 
       const newsCount = await News.countDocuments({ college: collegeId });

@@ -6,13 +6,13 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { usePathname, useRouter } from "next/navigation";
 
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { MoreHorizontal } from "lucide-react";
+// import {
+//   DropdownMenu,
+//   DropdownMenuContent,
+//   DropdownMenuItem,
+//   DropdownMenuTrigger,
+// } from "@/components/ui/dropdown-menu";
+// import { MoreHorizontal } from "lucide-react";
 import { EmojiBar, ReactionIcons } from "./ReactionIcons";
 
 type CardType = "confession" | "news";
@@ -59,7 +59,7 @@ export const PostCard: FC<PostCardProps> = ({
   };
 
   return (
-    <div onClick={handlePostClick} className="w-full">
+    <div  className="w-full">
       <Card className="border border-[#d4c8a8] bg-[#f9f7f1] shadow-md overflow-hidden relative">
         {isConfession && isMidnight && unlockText && (
           <div className="absolute top-0 right-0 bg-[#2a2a2a] text-[#f5f2e8] text-xs px-3 py-1 font-medium z-20">
@@ -88,11 +88,7 @@ export const PostCard: FC<PostCardProps> = ({
             </div>
           )}
 
-          <div
-            className={`flex justify-between items-start mb-3 ${
-              isConfession && isMidnight ? "opacity-50" : ""
-            }`}
-          >
+          <div onClick={handlePostClick} className={`flex flex-col justify-between items-start mb-3`}>
             <div>
               <p className="text-sm text-[#8a7e55] italic mb-1">
                 {type === "confession"
@@ -111,7 +107,7 @@ export const PostCard: FC<PostCardProps> = ({
               </div>
             </div>
 
-            <DropdownMenu>
+            {/* <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button
                   variant="ghost"
@@ -125,14 +121,14 @@ export const PostCard: FC<PostCardProps> = ({
                 <DropdownMenuItem>Report</DropdownMenuItem>
                 <DropdownMenuItem>Share</DropdownMenuItem>
               </DropdownMenuContent>
-            </DropdownMenu>
-          </div>
+            </DropdownMenu> */}
 
-          <p className="font-['Caveat'] text-lg leading-relaxed mb-4">
-            {path === "/" && content.length > 100
-              ? `${content.slice(0, 100)}...`
-              : content}
-          </p>
+            <p className="font-['Caveat'] text-lg leading-relaxed mb-4">
+              {path === "/" && content.length > 100
+                ? `${content.slice(0, 100)}...`
+                : content}
+            </p>
+          </div>
 
           <ReactionIcons
             post={{

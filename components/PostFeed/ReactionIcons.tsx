@@ -51,7 +51,7 @@ export const ReactionIcons: React.FC<ReactionIconsProps> = ({ post }) => {
         likesCount={likes}
       />
 
-      <CommentModal
+     {isCommentModalOpen && <CommentModal
         isLiked={isLiked}
         handleLikeClick={handleLikeClick}
         likesCount={likes}
@@ -60,7 +60,7 @@ export const ReactionIcons: React.FC<ReactionIconsProps> = ({ post }) => {
         post={post}
         isOpen={isCommentModalOpen}
         onClose={() => setIsCommentModalOpen(false)}
-      />
+      />}
     </div>
   );
 };
@@ -91,6 +91,7 @@ export interface PostReactionIconsProps {
 }
 
 export const PostReactionIcons = ({isLiked, likesCount, handleLikeClick, commentCount, setIsCommentModalOpen}:PostReactionIconsProps) => {
+
   return (
     <>
       <div className="flex items-center gap-1">

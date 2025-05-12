@@ -49,6 +49,15 @@ const Index = async () => {
                   <PostCard key={data?._id} {...data} type="news" path="/" />
                 ))
               )}
+
+          <div className="flex justify-center mb-4 md:mb-0">
+              <Link
+                href="/campus-corner"
+                className="bg-[#c9b27c] hover:bg-[#b39c64] text-white font-medium px-4 py-2 rounded"
+              >
+                See what happening in Campus
+              </Link>
+            </div>
             </div>
           </div>
         </div>
@@ -74,12 +83,12 @@ const Index = async () => {
               ))
             )}
 
-            <div className="flex justify-center">
+            <div className="flex justify-center mb-4 md:mb-0">
               <Link
                 href="/confessions"
                 className="bg-[#c9b27c] hover:bg-[#b39c64] text-white font-medium px-4 py-2 rounded"
               >
-                See More
+                View All Confessions
               </Link>
             </div>
           </div>

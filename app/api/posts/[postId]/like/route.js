@@ -26,7 +26,6 @@ export async function POST(req, { params }) {
       );
     }
    
-    console.log("Post ID:", postId);
     const {postType} = await req.json();
     if (!postType || (postType !== "confession" && postType !== "news")) {
       return NextResponse.json(
