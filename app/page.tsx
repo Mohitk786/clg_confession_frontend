@@ -1,10 +1,8 @@
 
 import React from "react";
-import dynamic from 'next/dynamic';
-import { redirect } from "next/navigation";
+import Index from "@/components/NewHome";
+import { redirect, useRouter } from "next/navigation";
 import { getUserAuth } from "@/lib/auth";
-
-const Index = dynamic(() => import('@/components/NewHome'))
 
 export default async function HomePage() {
   const user = await getUserAuth();
