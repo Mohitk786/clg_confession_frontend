@@ -7,6 +7,7 @@ interface ExtendedNextRequest extends NextRequest {
 
 export async function middleware(req:ExtendedNextRequest) {
   const token = req.cookies.get("clg_app_cookie")?.value;
+  console.log("Token from middleware:", token);
   if (!token) {
     return NextResponse.redirect(new URL("/onboarding", req.url));
   }
