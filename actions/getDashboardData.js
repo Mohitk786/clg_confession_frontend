@@ -4,12 +4,12 @@ import { dbConnect } from "@/lib/dbConnect";
 import User from "@/models/User";
 import Confession from "@/models/Confession";
 import News from "@/models/News";
-import { getAuthUser } from "@/lib/auth";
+import { verifySession } from "@/lib/dal";
 
 export const getDashboardData = async () => {
   try {
-    const user = await getAuthUser();
-    if (!user) {
+    const {user} = await verifySession();
+  if (!user) {
       return {
         success: false,
         message: "Not authenticated",
