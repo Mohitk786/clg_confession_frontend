@@ -2,7 +2,7 @@
 
 import type React from "react";
 
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef } from "react";
 import {
   Dialog,
   DialogContent,
@@ -18,6 +18,8 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Input } from "@/components/ui/input";
 import { availableTags } from "@/constants/data";
 import { useCreateConfession } from "@/hooks/confessions";
+import { useUser } from "@/hooks/auth";
+import Link from "next/link";
 
 export interface ConfessionModalProps {
   open: boolean;
@@ -47,9 +49,16 @@ export function ConfessionModal({ open, onOpenChange }: ConfessionModalProps) {
   const [inputValue, setInputValue] = useState("");
   const [isTagging, setIsTagging] = useState(false);
   const [taggedUser, setTaggedUser] = useState<TaggedUser | null>(null);
+  const [error, setError] = useState({
+    confession: false,
+    tags: false,
+    identityReveal: false,
+  });
+
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-
+  const { data }: any = useUser();
+  const user = data?.data!;
 
   const { mutate: addConfession, isPending, isError } = useCreateConfession();
 
@@ -69,10 +78,6 @@ export function ConfessionModal({ open, onOpenChange }: ConfessionModalProps) {
       }
     };
   }, []);
-
-
-
- 
 
   const clearTaggedUser = () => {
     setTaggedUser(null);
@@ -99,6 +104,36 @@ export function ConfessionModal({ open, onOpenChange }: ConfessionModalProps) {
       ...(identityReveal === "reveal" && { spForRevealIdentity: revealCost }),
       ...(taggedUser && { taggedUserId: taggedUser._id }),
     };
+
+    // Validate confession
+    if (confession.length < 10) {
+      setError((prev) => {
+        return {
+          ...prev,
+          confession: true,
+        };
+      });
+      return;
+    }
+    if (selectedTags.length === 0) {
+      setError((prev) => {
+        return {
+          ...prev,
+          tags: true,
+        };
+      });
+      return;
+    }
+
+    if (identityReveal === "reveal" && user?.profileCompleted) {
+      setError((prev) => {
+        return {
+          ...prev,
+          identityReveal: true,
+        };
+      });
+      return;
+    }
 
     addConfession(payload, {
       onSuccess: () => {
@@ -139,8 +174,15 @@ export function ConfessionModal({ open, onOpenChange }: ConfessionModalProps) {
               onChange={(e) => setConfession(e.target.value)}
               maxLength={600}
             />
-            <div className="text-right text-xs text-[#8a7e55]">
-              {confession.length}/600 characters
+            <div className="flex justify-between items-center flex-row-reverse">
+              <div className="text-right text-xs text-[#8a7e55]">
+                {confession.length}/600 characters
+              </div>
+              {error.confession && (
+                <p className="text-xs text-red-700 italic">
+                  Confession must be at least 10 characters long
+                </p>
+              )}
             </div>
           </div>
 
@@ -166,6 +208,11 @@ export function ConfessionModal({ open, onOpenChange }: ConfessionModalProps) {
                   </Label>
                 </div>
               ))}
+            {selectedTags.length === 0 && error.tags && (
+              <p className="text-xs text-red-700 italic">
+                Please select at least one tag
+              </p>
+            )}
             </div>
           </div>
 
@@ -199,25 +246,27 @@ export function ConfessionModal({ open, onOpenChange }: ConfessionModalProps) {
                   htmlFor="reveal"
                   className="text-sm flex items-center gap-2"
                 >
-                  Allow identity reveal for
-                  <select
-                    value={revealCost}
-                    onChange={(e) => setRevealCost(e.target.value)}
-                    className="border border-[#d4c8a8] rounded px-2 py-1 text-xs bg-[#f9f7f1]"
-                    disabled={identityReveal !== "reveal"}
-                  >
-                    <option value="50">50 SP</option>
-                    <option value="100">100 SP</option>
-                  </select>
+                  Identity Reveal
+                  <span className="text-xs text-[#8a7e55] italic">
+                    (only the tagged user can see your identity)
+                  </span>
                 </Label>
               </div>
             </RadioGroup>
 
-            {identityReveal === "reveal" && (
-              <p className="text-xs text-[#8a7e55] italic">
-                If someone spends SP, they can see your identity.
-              </p>
-            )}
+            {((identityReveal === "reveal" && !user?.profileCompleted) || (error.identityReveal))
+              && (
+                <p className="text-xs  text-red-700 italic">
+                  Complete your{" "}
+                  <Link
+                    href={"/profile"}
+                    className="cursor-poniter text-blue-600"
+                  >
+                    Profile
+                  </Link>{" "}
+                  or Post Anonymously
+                </p>
+              )}
           </div>
 
           {/* Confess to Specific User */}
