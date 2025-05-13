@@ -1,7 +1,7 @@
 "use server";
 
 import { dbConnect } from "@/lib/dbConnect";
-import { verifySession } from "@/lib/dal"";
+import { verifySession } from "@/lib/dal";
 import User from "@/models/User";
 import Confession from "@/models/Confession";
 import News from "@/models/News";

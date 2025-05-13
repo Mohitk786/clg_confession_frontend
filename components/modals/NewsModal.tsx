@@ -65,7 +65,7 @@ export const NewsModal: React.FC<NewsModalProps> = ({ open, onOpenChange }) => {
 
   const handleSubmit = async () => {
     try {
-      let imageBase64 = "";
+      let imageBase64 = ";
   
       if (selectedImage) {
         const reader = new FileReader();

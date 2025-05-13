@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { dbConnect } from "@/lib/dbConnect";
-import { verifySession } from "@/lib/dal"";
+import { verifySession } from "@/lib/dal";
 import User from "@/models/User";
 import News from "@/models/News";
 import College from "@/models/College";
@@ -39,7 +39,7 @@ export async function POST(req) {
     if (image) {
       try {
         const uploadResult = await uploadCloudinaryBase64(image);
-        picture = uploadResult || "";
+        picture = uploadResult || ";
       } catch (error) {
         console.error("Error uploading image:", error);
         return NextResponse.json(

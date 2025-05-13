@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import Confession from "@/models/Confession";
 import User from "@/models/User";
 import { dbConnect } from "@/lib/dbConnect";
-import { verifySession } from "@/lib/dal"";
+import { verifySession } from "@/lib/dal";
 import { SP_DEDUCTION } from "@/constants/spCost";
 
 export async function GET(req) {

@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { verifySession } from "@/lib/dal"";
+import { verifySession } from "@/lib/dal";
 import razorpayInstance from "@/utils/razorpay";
 import { PAYMENTS } from "@/constants/payment";
 import User from "@/models/User";

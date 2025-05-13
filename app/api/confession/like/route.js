@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { dbConnect } from "@/lib/dbConnect";
-import { verifySession } from "@/lib/dal"";
+import { verifySession } from "@/lib/dal";
 import Like from "../../../../models/Like";
 import Confession from "@/models/Confession";
 import News from "@/models/News";

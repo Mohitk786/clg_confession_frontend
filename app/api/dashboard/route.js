@@ -3,7 +3,7 @@ import { dbConnect } from "@/lib/dbConnect";
 import User from "@/models/User";
 import Confession from "@/models/Confession";
 import News from "@/models/News";
-import { verifySession } from "@/lib/dal"";
+import { verifySession } from "@/lib/dal";
 
 export async function GET(req) {
   try {

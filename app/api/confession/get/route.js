@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import {dbConnect} from "@/lib/dbConnect";
 import Confession from "@/models/Confession";
 import User from "@/models/User";
-import { verifySession } from "@/lib/dal"";
+import { verifySession } from "@/lib/dal";
 
 export async function GET(req) {
   const user = await verifySession();

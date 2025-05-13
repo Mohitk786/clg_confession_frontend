@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { verifySession } from "@/lib/dal"";
+import { verifySession } from "@/lib/dal";
 
 
 export async function GET(req) {

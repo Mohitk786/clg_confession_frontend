@@ -4,7 +4,7 @@ import Like from "@/models/Like";
 import User from "@/models/User";
 import News from "@/models/News";
 import { dbConnect } from "@/lib/dbConnect";
-import { verifySession } from "@/lib/dal"";
+import { verifySession } from "@/lib/dal";
 import { SP_REWARD } from "@/constants/spCost";
 
 export async function POST(req, { params }) {

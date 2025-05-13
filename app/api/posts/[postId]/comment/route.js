@@ -3,7 +3,7 @@ import Confession from "@/models/Confession";
 import Comment from "@/models/Comment";
 import User from "@/models/User";
 import { dbConnect } from "@/lib/dbConnect";
-import { verifySession } from "@/lib/dal"";
+import { verifySession } from "@/lib/dal";
 import News from "@/models/News";
 import { SP_REWARD } from "@/constants/spCost";
 
