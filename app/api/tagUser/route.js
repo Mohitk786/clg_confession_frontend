@@ -5,7 +5,7 @@ import { verifySession } from "@/lib/dal";
 
 export const GET = async (req) => {
   try {
-    const user = await verifySession();
+    const {user} = await verifySession();
     if (!user || !user.userId) {
       return NextResponse.json(
         { success: false, message: "Unauthorized" },

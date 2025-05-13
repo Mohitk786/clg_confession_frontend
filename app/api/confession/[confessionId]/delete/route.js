@@ -6,7 +6,7 @@ import { dbConnect } from "@/lib/dbConnect";
 import { verifySession } from "@/lib/dal";
 
 export async function DELETE(req, { params }) {
-  const user =await verifySession();
+  const {user} =await verifySession();
 
   if (!user) {
     return NextResponse.json(

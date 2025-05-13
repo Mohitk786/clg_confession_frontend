@@ -8,7 +8,7 @@ import { SP_DEDUCTION } from "@/constants/spCost";
 export async function GET(req) {
   try {
     
-    const user = await verifySession();
+    const {user} = await verifySession();
     // Validate user
     if (!user || !user.userId) {
       return NextResponse.json(

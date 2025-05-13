@@ -5,7 +5,7 @@ import User from "@/models/User";
 import { verifySession } from "@/lib/dal";
 
 export async function GET(req) {
-  const user = await verifySession();
+  const {user} = await verifySession();
   
   if(!user) {
     return NextResponse.json({ success: false, message: "User not found" }, { status: 404 });

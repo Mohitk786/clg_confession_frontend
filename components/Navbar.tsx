@@ -31,8 +31,9 @@ const Navbar = () => {
   const { data }: any = useUser();
   const [isOpen, setIsOpen] = useState(false);
   const [state, action, pending] = useActionState(logout, undefined);
-
-  const user = data?.data;
+  
+  const user = data?.data?.user;
+  console.log("user", user);
   const getInitials = () => {
     if (!user?.name) return "U";
     return user.name.charAt(0).toUpperCase();

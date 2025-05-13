@@ -76,23 +76,23 @@ export default function PostFeedPage({ type, title }: PostFeedPageProps) {
             postsData.length > 0 ? (
               postsData.map((post: any, i: number) => (
                 <motion.div
-                  key={post._id || i}
+                  key={post?._id || i}
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.3 }}
                 >
                   <PostCard
-                    _id={post._id}
+                    _id={post?._id}
                     likesCount={post?.likesCount || 0}
                     commentsCount={post?.commentsCount || 0}
                     type={isConfession ? "confession" : "news"}
-                    isLiked={post.isLiked}
+                    isLiked={post?.isLiked}
                     title={post?.title}
-                    tags={post.tags}
-                    content={post.content}
-                    isMidnight={isConfession && post.isMidnight}
-                    unlockText={post.unlockText}
-                    image={!isConfession ? post.image : undefined}
+                    tags={post?.tags}
+                    content={post?.content}
+                    isMidnight={isConfession && post?.isMidnight}
+                    unlockText={post?.unlockText}
+                    image={!isConfession ? post?.image : undefined}
                   />
                 </motion.div>
               ))

@@ -9,7 +9,7 @@ import Like from "@/models/Like";
 
 export const getPosts = async (req, isConfession) => {
   try {
-    const user = await getAuthUser();
+    const {user} = await verifySession();
     
     if (!user) return { success: false, message: "Not authenticated" };
 

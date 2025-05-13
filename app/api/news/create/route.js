@@ -9,7 +9,7 @@ import { SP_REWARD } from "@/constants/spCost";
 
 export async function POST(req) {
   try {
-    const user = await verifySession();
+    const {user} = await verifySession();
     if (!user || !user.userId) {
       return NextResponse.json(
         { success: false, message: "Unauthorized" },

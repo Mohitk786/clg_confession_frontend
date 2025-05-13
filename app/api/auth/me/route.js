@@ -4,7 +4,7 @@ import { verifySession } from "@/lib/dal";
 
 export async function GET(req) {
   try {
-    let user = await verifySession();
+    let {user} = await verifySession();
 
     if (!user) {
       return NextResponse.json({

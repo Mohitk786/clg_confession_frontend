@@ -9,7 +9,7 @@ import { SP_REWARD } from "@/constants/spCost";
 
 export async function POST(req, { params }) {
   try {
-    const user = await verifySession();
+    const {user} = await verifySession();
     const { postId } = await params;
 
     if (!user?.userId) {

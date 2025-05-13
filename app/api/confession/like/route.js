@@ -8,7 +8,7 @@ import News from "@/models/News";
 export async function POST(req) {
   await dbConnect();
 
-  const user = await verifySession();
+  const {user} = await verifySession();
   if (!user || !user.userId) {
     return NextResponse.json(
       { success: false, message: "Unauthorized" },

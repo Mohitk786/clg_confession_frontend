@@ -10,7 +10,7 @@ import { SP_REWARD } from "@/constants/spCost";
 export async function POST(req, { params }) {
   try {
     
-    const user = await verifySession();
+    const {user} = await verifySession();
     const { postId } = params;
 
     if (!user || !user.userId) {
@@ -89,7 +89,7 @@ export async function POST(req, { params }) {
 
 export async function GET(req, { params }) {
   try {
-    const user = await verifySession();
+    const {user} = await verifySession();
     if (!user || !user.userId) {
       return NextResponse.json(
         { success: false, message: "Unauthorized. User not authenticated" },

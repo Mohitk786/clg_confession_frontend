@@ -8,7 +8,7 @@ import UnlockedConfessions from "@/models/UnlockedConfessions";
 
 export const POST = async (req) => {
   try {
-    const user = await verifySession();
+    const {user} = await verifySession();
     if (!user)
       return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
 

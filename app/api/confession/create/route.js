@@ -7,7 +7,7 @@ import { verifySession } from "@/lib/dal";
 
 export async function POST(req) {
   try {
-    const user = await verifySession();
+    const {user} = await verifySession();
  
     if (!user) {
       return NextResponse.json(

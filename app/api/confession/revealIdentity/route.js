@@ -2,7 +2,7 @@ import Confession from "@/models/Confession";
 
 export const POST = async (req) => {
     try {
-        const user = await verifySession();
+        const {user} = await verifySession();
     
         if (!user) {
         return NextResponse.json({
