@@ -39,7 +39,7 @@ export async function POST(req) {
     if (image) {
       try {
         const uploadResult = await uploadCloudinaryBase64(image);
-        picture = uploadResult || ";
+        picture = uploadResult || "";
       } catch (error) {
         console.error("Error uploading image:", error);
         return NextResponse.json(
