@@ -20,6 +20,7 @@ export const useCreateNews = () => {
         mutationFn: createNews,
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.GET_ALL_NEWS] });
+            queryClient.refetchQueries({ queryKey: [QUERY_KEYS.GET_ALL_NEWS] });
         }
     });
 }
