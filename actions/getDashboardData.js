@@ -9,12 +9,15 @@ import { getAuthUser } from "@/lib/auth";
 export const getDashboardData = async () => {
   try {
     const user = await getAuthUser();
-    if(!user) {
-      return NextResponse.json(
-        { success: false, message: "Not authenticated" },
-        { status: 401 }
-      );
+    if (!user) {
+      return {
+        success: false,
+        message: "Not authenticated",
+        confessions: [],
+        news: [],
+      };
     }
+    
     await dbConnect();
     const confessionLimit = 4;
     const newsLimit = 2;
