@@ -1,9 +1,9 @@
 import { NextResponse } from "next/server";
 import User from "@/models/User";
-import jwt from "jsonwebtoken";
 import { dbConnect } from "@/lib/dbConnect";
 import "@/models/College"; 
 import OTPVerification from "@/models/Otp";
+import { createSession } from "@/lib/session";
 
 
 export async function POST(req) {
@@ -30,26 +30,15 @@ export async function POST(req) {
 
     const user = await User.findOne({ phone }).populate("college", "name");
     if (user) {
-      const token = jwt.sign(
-        {
-          name: user.name,
-          userId: user._id,
-          college: user.college.name || "",
-          profileCompleted: user.profileCompleted,
-        },
-        process.env.JWT_SECRET
-      );
+
+      await createSession({
+        name: user.name,
+        userId: user._id,
+        college: user.college.name || "",
+        profileCompleted: user.profileCompleted,
+      })
 
       const response = NextResponse.json({ message: "OTP verified successfully!", redirect: "/" });
-
-      response.cookies.set("clg_app_cookie", token, {
-        secure: process.env.MODE === "PRODUCTION",
-        sameSite: "strict",
-        httpOnly: true,
-        maxAge: 7 * 24 * 60 * 60,
-        path: "/",
-      });
-
       return response;
     }
 

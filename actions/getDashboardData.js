@@ -1,14 +1,14 @@
 "use server"
 
 import { dbConnect } from "@/lib/dbConnect";
-import {getUserAuth} from "@/lib/auth";
 import User from "@/models/User";
 import Confession from "@/models/Confession";
 import News from "@/models/News";
+import { getAuthUser } from "@/lib/auth";
 
 export const getDashboardData = async () => {
   try {
-    const user = await getUserAuth();
+    const user = await getAuthUser();
     if(!user) {
       return NextResponse.json(
         { success: false, message: "Not authenticated" },

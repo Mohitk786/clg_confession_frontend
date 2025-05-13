@@ -1,25 +1,30 @@
-import { NextResponse } from "next/server";
-import type { NextRequest } from "next/server";
+import { NextResponse, NextRequest } from "next/server";
+import { cookies } from 'next/headers'
+import { decrypt } from "@/lib/session";
+
+const protectedRoutes = ["/", "/confessions", "/campus-corner"];
+const publicRoutes = ["/onboarding"];
 
 export async function middleware(req: NextRequest) {
-  const token = await req.cookies.get("clg_app_cookie")?.value;
   const path = req.nextUrl.pathname;
+  const isProtectedRoute = protectedRoutes.includes(path)
+  const isPublicRoute = publicRoutes.includes(path)
+
+  const cookie = (await cookies()).get('clg_app_cookie')?.value
+  const session = await decrypt(cookie)
 
 
-  const isOnboardingPage = path === "/onboarding";
-  const isProtectedRoute = ["/confessions", "/campus-corner"].includes(path);
-
-  if (token  && isOnboardingPage) {
-    return NextResponse.redirect(new URL("/", req.url));
+  if (isProtectedRoute  && !session?.user) {
+    return NextResponse.redirect(new URL("/onboarding", req.nextUrl));
   }
-
-  if (!token && isProtectedRoute) {
-    return NextResponse.redirect(new URL("/onboarding", req.url));
+  
+  if (isPublicRoute && session?.user && req.nextUrl.pathname.startsWith("/onboarding")) {
+    return NextResponse.redirect(new URL("/", req.url));
   }
 
   return NextResponse.next();
 }
 
 export const config = {
-  matcher: ["/", "/confessions", "/campus-corner", "/onboarding"], 
-};
+  matcher: ['/((?!api|_next/static|_next/image|.*\\.png$).*)'],
+}

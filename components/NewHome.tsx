@@ -5,7 +5,7 @@ import Link from "next/link";
 import NewConfessionForm from "@/components/new/NewConfessionForm";
 import { PostCard } from "./PostFeed/PostCard";
 import {getDashboardData} from "@/actions/getDashboardData"
-import { getUserAuth } from "@/lib/auth";
+import { getUser } from "@/lib/dal";
 
 interface Confession {
   _id: string;
@@ -19,7 +19,7 @@ interface Confession {
 
 const Index = async () => {
 
-  const user = await getUserAuth();
+  const user = await getUser();
  
   if (!user) {
     return <div className="text-center py-8 text-campus-navy/50">Loading...</div>;

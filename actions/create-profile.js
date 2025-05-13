@@ -1,11 +1,10 @@
 "use server";
 
 import User from "@/models/User";
-import jwt from "jsonwebtoken";
 import { redirect } from "next/navigation";
-import { cookies } from "next/headers";
 import College from "@/models/College";
 import { dbConnect } from "@/lib/dbConnect";
+import { createSession } from "@/lib/session";
 
 export async function createProfile(formData) {
   const name = formData.get("name");
@@ -47,28 +46,14 @@ export async function createProfile(formData) {
 
     await newUser.save();
 
-    const token = jwt.sign(
-      {
-        gender,
-        name,
-        username,
-        userId: newUser._id,
-        collegeName: college.name,
-        logoUrl: college.logoUrl,
-      },
-      process.env.JWT_SECRET,
-      { expiresIn: "7d" }
-    );
 
-    // Set HTTP-only cookie using Next.js `cookies` API
-    const cookieStore = await cookies();
-    await cookieStore.set("clg_app_cookie", token, {
-      httpOnly: true,
-      secure: process.env.MODE === "PRODUCTION",
-      sameSite: "strict",
-      maxAge: 7 * 24 * 60 * 60,
-      path: "/",
-    });
+    await createSession({
+      name,
+      userId: newUser._id,
+      profileCompleted: newUser.profileCompleted,
+      college: college.name,
+    })
+
     redirect("/");
 
   } catch (error) {

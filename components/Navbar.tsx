@@ -3,7 +3,7 @@
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { useUser } from "@/hooks/auth";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -20,16 +20,17 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { User, Settings, LogOut, Menu } from "lucide-react";
+import { User, LogOut, Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
+import { useActionState, useState } from "react";
 import { Separator } from "./ui/separator";
+import { logout } from "@/actions/auth";
 
 const Navbar = () => {
   const path = usePathname();
   const { data }: any = useUser();
   const [isOpen, setIsOpen] = useState(false);
-
+  const [state, action, pending] = useActionState(logout, undefined);
 
   const user = data?.data;
   const getInitials = () => {
@@ -99,48 +100,45 @@ const Navbar = () => {
 
                 <Separator className="text-campus-forest" />
 
-               <div className="flex flex-col justify-between h-full">
-               <nav className="flex flex-col md:hidden gap-3 mt-5 font-medium text-campus-navy/80">
-                  <Link
-                    href="/"
-                    onClick={() => setIsOpen(false)}
-                    className={`${
-                      path === "/" ? "text-campus-gold" : ""
-                    } hover:text-campus-gold transition-colors`}
-                  >
-                    Home
-                  </Link>
-                  <Link
-                    href="/confessions"
-                    onClick={() => setIsOpen(false)}
-                    className={`${
-                      path === "/confessions" ? "text-campus-gold" : ""
-                    } hover:text-campus-gold transition-colors`}
-                  >
-                    Confessions
-                  </Link>
-                  <Link
-                    href="/campus-corner"
-                    onClick={() => setIsOpen(false)}
-                    className={`${
-                      path === "/campus-corner" ? "text-campus-gold" : ""
-                    } hover:text-campus-gold transition-colors`}
-                  >
-                    Campus Corner
-                  </Link>
-                </nav>
+                <div className="flex flex-col justify-between h-full">
+                  <nav className="flex flex-col md:hidden gap-3 mt-5 font-medium text-campus-navy/80">
+                    <Link
+                      href="/"
+                      onClick={() => setIsOpen(false)}
+                      className={`${
+                        path === "/" ? "text-campus-gold" : ""
+                      } hover:text-campus-gold transition-colors`}
+                    >
+                      Home
+                    </Link>
+                    <Link
+                      href="/confessions"
+                      onClick={() => setIsOpen(false)}
+                      className={`${
+                        path === "/confessions" ? "text-campus-gold" : ""
+                      } hover:text-campus-gold transition-colors`}
+                    >
+                      Confessions
+                    </Link>
+                    <Link
+                      href="/campus-corner"
+                      onClick={() => setIsOpen(false)}
+                      className={`${
+                        path === "/campus-corner" ? "text-campus-gold" : ""
+                      } hover:text-campus-gold transition-colors`}
+                    >
+                      Campus Corner
+                    </Link>
+                  </nav>
 
-                <div className="w-full mb-4">
-                  <Separator />
-                  <button
-                    className="flex items-center justify-center bg-campus-forest p-4 text-white w-full transition-colors"
-                    onClick={() => setIsOpen(false)}
-                  >
-                    <LogOut className="mr-2 h-4 w-4" />
-                    <span>Log out</span>
-                  </button>
+                  <div className="w-full mb-4">
+                    <Separator />
+                    <button  onClick={logout} className="flex items-center justify-center bg-campus-forest p-4 text-white w-full transition-colors">
+                      <LogOut className="mr-2 h-4 w-4" />
+                      <span>Log out</span>
+                    </button>
+                  </div>
                 </div>
-               </div>
               </SheetContent>
             </Sheet>
           </div>
@@ -183,7 +181,10 @@ const Navbar = () => {
                   </DropdownMenuItem> */}
                 </DropdownMenuGroup>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem className="text-red-500">
+                <DropdownMenuItem
+                  onClick={logout}
+                  className="text-red-500 cursor-pointer"
+                >
                   <LogOut className="mr-2 h-4 w-4" />
                   <span>Log out</span>
                 </DropdownMenuItem>

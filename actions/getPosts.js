@@ -1,7 +1,7 @@
 "use server";
 
 import { dbConnect } from "@/lib/dbConnect";
-import { getUserAuth } from "@/lib/auth";
+import { getAuthUser } from "@/lib/auth";
 import User from "@/models/User";
 import Confession from "@/models/Confession";
 import News from "@/models/News";
@@ -9,7 +9,8 @@ import Like from "@/models/Like";
 
 export const getPosts = async (req, isConfession) => {
   try {
-    const user = await getUserAuth();
+    const user = await getAuthUser();
+    
     if (!user) return { success: false, message: "Not authenticated" };
 
     await dbConnect();
