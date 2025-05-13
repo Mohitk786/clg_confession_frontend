@@ -1,7 +1,7 @@
 
 import React from "react";
 import Link from "next/link";
-
+import { getUser } from  "@/lib/dal";
 import NewConfessionForm from "@/components/new/NewConfessionForm";
 import { PostCard } from "./PostFeed/PostCard";
 import {getDashboardData} from "@/actions/getDashboardData"
@@ -18,6 +18,11 @@ interface Confession {
 
 const Index = async () => {
 
+
+  const user = await getUser();
+  if(!user){
+    return;
+  }
   const { confessions=[], news=[] }:{confessions:Confession[], news:any} = await getDashboardData();
 
   return (
