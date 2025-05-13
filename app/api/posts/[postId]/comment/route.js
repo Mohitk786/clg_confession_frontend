@@ -3,14 +3,14 @@ import Confession from "@/models/Confession";
 import Comment from "@/models/Comment";
 import User from "@/models/User";
 import { dbConnect } from "@/lib/dbConnect";
-import { getAuthUser } from "@/lib/auth";
+import { verifySession } from "@/lib/dal"";
 import News from "@/models/News";
 import { SP_REWARD } from "@/constants/spCost";
 
 export async function POST(req, { params }) {
   try {
     
-    const user = await getAuthUser(req);
+    const user = await verifySession();
     const { postId } = params;
 
     if (!user || !user.userId) {
@@ -89,7 +89,7 @@ export async function POST(req, { params }) {
 
 export async function GET(req, { params }) {
   try {
-    const user = await getAuthUser(req);
+    const user = await verifySession();
     if (!user || !user.userId) {
       return NextResponse.json(
         { success: false, message: "Unauthorized. User not authenticated" },

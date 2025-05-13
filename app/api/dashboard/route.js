@@ -3,11 +3,11 @@ import { dbConnect } from "@/lib/dbConnect";
 import User from "@/models/User";
 import Confession from "@/models/Confession";
 import News from "@/models/News";
-import { getAuthUser } from "@/lib/auth";
+import { verifySession } from "@/lib/dal"";
 
 export async function GET(req) {
   try {
-    const user = await getAuthUser(req);
+    const user = await verifySession();
 
     if (!user || !user.userId) {
       return NextResponse.json(

@@ -2,10 +2,10 @@ import { NextResponse } from "next/server";
 import {dbConnect} from "@/lib/dbConnect";
 import Confession from "@/models/Confession";
 import User from "@/models/User";
-import { getAuthUser } from "@/lib/auth";
+import { verifySession } from "@/lib/dal"";
 
 export async function GET(req) {
-  const user = await getAuthUser(req);
+  const user = await verifySession();
   
   if(!user) {
     return NextResponse.json({ success: false, message: "User not found" }, { status: 404 });

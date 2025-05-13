@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { dbConnect } from "@/lib/dbConnect";
-import { getAuthUser } from "@/lib/auth";
+import { verifySession } from "@/lib/dal"";
 import Like from "../../../../models/Like";
 import Confession from "@/models/Confession";
 import News from "@/models/News";
@@ -8,7 +8,7 @@ import News from "@/models/News";
 export async function POST(req) {
   await dbConnect();
 
-  const user = await getAuthUser(req);
+  const user = await verifySession();
   if (!user || !user.userId) {
     return NextResponse.json(
       { success: false, message: "Unauthorized" },

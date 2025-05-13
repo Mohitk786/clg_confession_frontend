@@ -1,14 +1,14 @@
 import { NextResponse } from "next/server";
 import { dbConnect } from "@/lib/dbConnect";
 import Reaction from "@/models/Reaction";
-import { getAuthUser } from "@/lib/auth";
+import { verifySession } from "@/lib/dal"";
 import Confession from "@/models/Confession";
 import News from "@/models/News";
 
 export async function POST(req) {
   await dbConnect();
 
-  const user = await getAuthUser(req);
+  const user = await verifySession();
   if (!user || !user.userId) {
     return NextResponse.json(
       { success: false, message: "Unauthorized" },

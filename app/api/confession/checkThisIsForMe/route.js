@@ -2,13 +2,13 @@ import { NextResponse } from "next/server";
 import Confession from "@/models/Confession";
 import User from "@/models/User";
 import { dbConnect } from "@/lib/dbConnect";
-import { getAuthUser } from "@/lib/auth";
+import { verifySession } from "@/lib/dal"";
 import { SP_DEDUCTION } from "@/constants/spCost";
 
 export async function GET(req) {
   try {
     
-    const user = await getAuthUser(req);
+    const user = await verifySession();
     // Validate user
     if (!user || !user.userId) {
       return NextResponse.json(

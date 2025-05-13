@@ -5,6 +5,7 @@ import { dbConnect } from "@/lib/dbConnect";
 import College from "@/models/College";
 
 export async function POST(req) {
+  
   await dbConnect();
   const { name, phone, collegeId, gender } = await req.json();
 

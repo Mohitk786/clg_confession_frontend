@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { getAuthUser } from "@/lib/auth";
+import { verifySession } from "@/lib/dal"";
 import razorpayInstance from "@/utils/razorpay";
 import { PAYMENTS } from "@/constants/payment";
 import User from "@/models/User";
@@ -8,7 +8,7 @@ import UnlockedConfessions from "@/models/UnlockedConfessions";
 
 export const POST = async (req) => {
   try {
-    const user = await getAuthUser(req);
+    const user = await verifySession();
     if (!user)
       return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
 

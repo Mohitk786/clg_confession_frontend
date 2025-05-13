@@ -3,10 +3,10 @@ import Confession from "@/models/Confession";
 import Comment from "@/models/Comment";
 import User from "@/models/User";
 import { dbConnect } from "@/lib/dbConnect";
-import { getAuthUser } from "@/lib/auth";
+import { verifySession } from "@/lib/dal";
 
 export async function DELETE(req, { params }) {
-  const user =await getAuthUser(req);
+  const user =await verifySession();
 
   if (!user) {
     return NextResponse.json(

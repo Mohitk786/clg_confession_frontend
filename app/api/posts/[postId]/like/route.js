@@ -4,12 +4,12 @@ import Like from "@/models/Like";
 import User from "@/models/User";
 import News from "@/models/News";
 import { dbConnect } from "@/lib/dbConnect";
-import { getAuthUser } from "@/lib/auth";
+import { verifySession } from "@/lib/dal"";
 import { SP_REWARD } from "@/constants/spCost";
 
 export async function POST(req, { params }) {
   try {
-    const user = await getAuthUser(req);
+    const user = await verifySession();
     const { postId } = await params;
 
     if (!user?.userId) {

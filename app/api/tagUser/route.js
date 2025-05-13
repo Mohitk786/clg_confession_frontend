@@ -1,11 +1,11 @@
 import { dbConnect } from "@/lib/dbConnect";
 import User from "@/models/User";
 import { NextResponse } from "next/server";
-import { getAuthUser } from "@/lib/auth";
+import { verifySession } from "@/lib/dal"";
 
 export const GET = async (req) => {
   try {
-    const user = await getAuthUser(req);
+    const user = await verifySession();
     if (!user || !user.userId) {
       return NextResponse.json(
         { success: false, message: "Unauthorized" },

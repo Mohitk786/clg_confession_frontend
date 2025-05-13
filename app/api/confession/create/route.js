@@ -3,11 +3,11 @@ import { dbConnect } from "@/lib/dbConnect";
 import Confession from "@/models/Confession";
 import User from "@/models/User";
 import College from "@/models/College";
-import { getAuthUser } from "@/lib/auth";
+import { verifySession } from "@/lib/dal"";
 
 export async function POST(req) {
   try {
-    const user = await getAuthUser(req);
+    const user = await verifySession();
  
     if (!user) {
       return NextResponse.json(

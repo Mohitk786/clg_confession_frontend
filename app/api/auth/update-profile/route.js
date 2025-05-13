@@ -2,11 +2,11 @@ import User from "@/models/User";
 import Profile from "@/models/Profile";
 import {dbConnect} from "@/lib/dbConnect";
 import { NextResponse } from "next/server";
-import { getAuthUser } from "@/lib/auth";
+import { verifySession } from "@/lib/dal";
 
 export const POST = async (req) => {
   try {
-    const user = await getAuthUser(req);
+    const {user} = await verifySession();
 
     if (!user) {
       return NextResponse.json(
