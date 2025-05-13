@@ -71,9 +71,9 @@ export const CommentModal: React.FC<CommentModalProps> = ({
               </h3>
             </div>
             <div className="p-4">
-              {post?.imageUrl && (
+              {post?.image && (
                 <Image
-                  src={post.imageUrl}
+                  src={post.image}
                   alt="Post Image"
                  width={1000}
                   height={300}

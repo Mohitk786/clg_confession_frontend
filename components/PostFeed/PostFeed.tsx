@@ -16,7 +16,7 @@ export type Post = {
   content: string;
   isMidnight?: boolean;
   unlockText?: string;
-  imageUrl?: string;
+  image?: string;
 };
 
 interface PostFeedPageProps {
@@ -92,7 +92,7 @@ export default function PostFeedPage({ type, title }: PostFeedPageProps) {
                     content={post.content}
                     isMidnight={isConfession && post.isMidnight}
                     unlockText={post.unlockText}
-                    imageUrl={!isConfession ? post.image : undefined}
+                    image={!isConfession ? post.image : undefined}
                   />
                 </motion.div>
               ))

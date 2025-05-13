@@ -22,7 +22,7 @@ export interface PostCardProps {
   type: CardType;
   tags: string[];
   content: string;
-  imageUrl?: string;
+  image?: string;
   path?: string;
   isLiked: boolean;
   title?: string;
@@ -41,7 +41,7 @@ export const PostCard: FC<PostCardProps> = ({
   path,
   title,
   isLiked,
-  imageUrl,
+  image,
   isMidnight = false,
   unlockText,
   likesCount,
@@ -72,9 +72,9 @@ export const PostCard: FC<PostCardProps> = ({
           <h2 className="text-xl font-bold text-[#2a2a2a] p-5">{title}</h2>
         )}
 
-        {type === "news" && imageUrl && (
+        {type === "news" && image && (
           <img
-            src={imageUrl}
+            src={image}
             alt="News Image"
             className="w-full h-64 object-contain mx-auto"
           />
@@ -139,7 +139,7 @@ export const PostCard: FC<PostCardProps> = ({
               content,
               title,
               isLiked,
-              imageUrl,
+              image,
               isMidnight,
               unlockText,
               likesCount,
