@@ -52,6 +52,7 @@ export async function createProfile(formData) {
       userId: newUser._id,
       profileCompleted: newUser.profileCompleted,
       college: college.name,
+      gender
     })
 
     redirect("/");

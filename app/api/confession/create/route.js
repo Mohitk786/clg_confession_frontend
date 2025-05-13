@@ -4,6 +4,8 @@ import Confession from "@/models/Confession";
 import User from "@/models/User";
 import College from "@/models/College";
 import { verifySession } from "@/lib/dal";
+import Notification from "@/models/Notification";
+import { Notifications_Types } from "@/constants/data";
 
 export async function POST(req) {
   try {
@@ -23,8 +25,6 @@ export async function POST(req) {
     const body = await req.json();
     const { content, taggedUserId:targetUser, tags, isAnonymous, spForRevealIdentity } =
       body;
-
-
   
     if (!content?.trim()) {
       return NextResponse.json(
@@ -53,9 +53,6 @@ export async function POST(req) {
       }
     }
 
-
-
-
     const confession = new Confession({
       content: content.trim(),
       createdBy: user.userId,
@@ -66,9 +63,24 @@ export async function POST(req) {
       ...(!isAnonymous && { spForRevealIdentity }),
     });
 
-    await confession.save();
     foundUser.sp = (foundUser.sp || 0) + 5;
-    await foundUser.save();
+    await Promise.all([confession.save(), foundUser.save()]);
+
+
+    if(targetUser && !isAnonymous && targetUser !== user.userId){
+      await Notification.create({
+        from: user.userId,
+        to: targetUser,
+        type: Notifications_Types.CONFESSION_POSTED,
+        message: `Anonymous has posted a confession for you`,
+        refModel: "Confession",
+        refId: confession._id,
+        data: {
+          content: content.trim(),
+          tags
+        },
+      })
+    }
 
     await College.findByIdAndUpdate(foundUser.college, {
       $push: { confessions: confession._id },

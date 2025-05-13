@@ -10,7 +10,7 @@ const userSchema = new mongoose.Schema({
   isPhoneVerified: { type: Boolean, default: false },
   gender: {
     type: String,
-    enum: ["MALE", "FEMALE"],
+    enum: ["MALE", "FEMALE", "OTHER"],
     required: [true, "Gender is required"],
   },
   name: { type: String },

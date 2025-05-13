@@ -31,6 +31,12 @@ export async function GET(req) {
     
     await dbConnect();
     const foundUser = await User.findById(user.userId);
+    if (!foundUser) {
+      return NextResponse.json(
+        { success: false, message: "User not found" },
+        { status: 404 }
+      );
+    }
 
     if(foundUser.sp < SP_DEDUCTION.CHECK_FOR_ME){
       return NextResponse.json(
@@ -48,12 +54,12 @@ export async function GET(req) {
       );
     }
 
-    // No target user
+    // No target user => don't tell user that isme kisi ko mention hi nahi kiya
     if (!confession.targetUser) {
       return NextResponse.json({
         success: true,
         isForYou: false,
-        message: "This confession has not targeted  any user",
+        message: "This confession is not for you", 
       });
     }
 
@@ -71,7 +77,6 @@ export async function GET(req) {
         : "No, this confession is not for you",
     });
   } catch (error) {
-    console.error("Error in checkItsForMe:", error);
     return NextResponse.json(
       {
         success: false,

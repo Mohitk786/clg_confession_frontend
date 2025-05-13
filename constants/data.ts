@@ -11,7 +11,6 @@ export const availableTags = [
   { id: "toxic", label: "#Toxic", emoji: "☠️" },
 ];
 
-
 export const courses = [
   "BTECH",
   "MTECH",
@@ -24,8 +23,8 @@ export const courses = [
   "MA",
   "BA",
   "PHD",
-  "OTHER"
-]
+  "OTHER",
+];
 
 export const branches = [
   { name: "Computer Science", value: "cse" },
@@ -47,5 +46,14 @@ export const branches = [
   { name: "Production Engineering", value: "prod" },
   { name: "Environmental Engineering", value: "env" },
   { name: "Textile Engineering", value: "textile" },
-  { name: "Industrial Engineering", value: "indus" }
+  { name: "Industrial Engineering", value: "indus" },
 ];
+
+export const Notifications_Types = {
+  CONFESSION_POSTED: "CONFESSION_POSTED",
+  CONFESSION_LIKED: "CONFESSION_LIKED",
+  CONFESSION_COMMENTED: "CONFESSION_COMMENTED",
+  COMMENT_LIKED: "COMMENT_LIKED",
+  NEWS_LIKED: "NEWS_LIKED",
+  NEWS_COMMENTED: "NEWS_COMMENTED",
+};

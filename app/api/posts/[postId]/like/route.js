@@ -6,10 +6,13 @@ import News from "@/models/News";
 import { dbConnect } from "@/lib/dbConnect";
 import { verifySession } from "@/lib/dal";
 import { SP_REWARD } from "@/constants/spCost";
+import { Notifications_Types } from "@/constants/data";
+import Notification from "@/models/Notification";
+import { revalidatePath } from "next/cache";
 
 export async function POST(req, { params }) {
   try {
-    const {user} = await verifySession();
+    const { user } = await verifySession();
     const { postId } = await params;
 
     if (!user?.userId) {
@@ -25,8 +28,8 @@ export async function POST(req, { params }) {
         { status: 400 }
       );
     }
-   
-    const {postType} = await req.json();
+
+    const { postType } = await req.json();
     if (!postType || (postType !== "confession" && postType !== "news")) {
       return NextResponse.json(
         { success: false, message: "Invalid post type" },
@@ -36,8 +39,8 @@ export async function POST(req, { params }) {
 
     await dbConnect();
 
-    const post =
-      (await Confession.findById(postId)) || (await News.findById(postId));
+    const PostModel = postType === "confession" ? Confession : News;
+    const post = await PostModel.findById(postId);
 
     if (!post) {
       return NextResponse.json(
@@ -91,8 +94,41 @@ export async function POST(req, { params }) {
 
     post.likesCount += 1;
     post.likes.push(newLike._id);
-    await post.save();
 
+    const tasks = [post.save()];
+    if (post.createdBy?.toString() !== user.userId) {
+
+      const notification = await Notification.findOne({
+        from: user.userId,
+        to: post.createdBy,
+        type:
+          postType === "confession"
+            ? Notifications_Types.CONFESSION_LIKED
+            : Notifications_Types.NEWS_LIKED,
+        refModel: postType === "confession" ? "Confession" : "News",
+        refId: post._id,
+      });
+
+     if(!notification) {
+        tasks.push(
+          Notification.create({
+            from: user.userId,
+            to: post.createdBy,
+            message: `${user?.gender === "FEMALE" ? "A girl" : "Someone"} from your college liked your ${postType}`,
+            type:
+              postType === "confession"
+                ? Notifications_Types.CONFESSION_LIKED
+                : Notifications_Types.NEWS_LIKED,
+            refModel: postType === "confession" ? "Confession" : "News",
+            refId: post._id,
+          })
+        );
+
+        revalidatePath('/notifications');
+      }
+    }
+
+    await Promise.all(tasks);
     return NextResponse.json(
       {
         success: true,

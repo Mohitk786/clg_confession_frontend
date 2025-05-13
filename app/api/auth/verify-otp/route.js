@@ -36,6 +36,7 @@ export async function POST(req) {
         userId: user._id,
         college: user.college.name || "",
         profileCompleted: user.profileCompleted,
+        gender: user?.gender
       })
 
       const response = NextResponse.json({ message: "OTP verified successfully!", redirect: "/" });

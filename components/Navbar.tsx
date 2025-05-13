@@ -20,7 +20,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { User, LogOut, Menu } from "lucide-react";
+import { User, LogOut, Menu, Bell } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useActionState, useState } from "react";
 import { Separator } from "./ui/separator";
@@ -144,7 +144,11 @@ const Navbar = () => {
           </div>
 
           {/* Profile dropdown - visible only on medium screens and above */}
-          <div className="">
+          <div className="text-sm flex items-center space-x-4">
+            <Link href={"/notifications"}>
+              <Bell className="cursor-pointer h-6 w-6 text-campus-navy" />
+            </Link >
+
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Avatar className="h-9 w-9 cursor-pointer border-2 border-campus-gold hover:border-campus-forest transition-colors">
