@@ -26,3 +26,26 @@ export const courses = [
   "PHD",
   "OTHER"
 ]
+
+export const branches = [
+  { name: "Computer Science", value: "cse" },
+  { name: "Information Technology", value: "it" },
+  { name: "Electronics & Communication", value: "ece" },
+  { name: "Electrical Engineering", value: "ee" },
+  { name: "Mechanical Engineering", value: "me" },
+  { name: "Civil Engineering", value: "ce" },
+  { name: "Chemical Engineering", value: "ch" },
+  { name: "Biotechnology", value: "bt" },
+  { name: "Instrumentation Engineering", value: "ie" },
+  { name: "Aerospace Engineering", value: "ae" },
+  { name: "Automobile Engineering", value: "auto" },
+  { name: "Agricultural Engineering", value: "agri" },
+  { name: "Metallurgical Engineering", value: "metal" },
+  { name: "Mining Engineering", value: "mining" },
+  { name: "Petroleum Engineering", value: "petro" },
+  { name: "Marine Engineering", value: "marine" },
+  { name: "Production Engineering", value: "prod" },
+  { name: "Environmental Engineering", value: "env" },
+  { name: "Textile Engineering", value: "textile" },
+  { name: "Industrial Engineering", value: "indus" }
+];
