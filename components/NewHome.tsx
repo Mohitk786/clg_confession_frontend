@@ -18,11 +18,6 @@ interface Confession {
 
 const Index = async () => {
 
-
-  const user = await getUser();
-  if(!user){
-    return;
-  }
   const { confessions=[], news=[] }:{confessions:Confession[], news:any} = await getDashboardData();
 
   return (
