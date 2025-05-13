@@ -21,7 +21,7 @@ export async function POST(req) {
 
     await dbConnect();
     const body = await req.json();
-    const { content, targetUser, tags, isAnonymous, spForRevealIdentity } =
+    const { content, taggedUserId:targetUser, tags, isAnonymous, spForRevealIdentity } =
       body;
 
 
@@ -55,8 +55,6 @@ export async function POST(req) {
 
 
 
-    let confessTo = null;
-    if (targetUser) confessTo = await User.findOne({ username: targetUser });
 
     const confession = new Confession({
       content: content.trim(),
@@ -64,7 +62,7 @@ export async function POST(req) {
       college: foundUser.college,
       tags: tags || [],
       isAnonymous: isAnonymous || false,
-      ...(targetUser && { targetUser: confessTo._id }),
+      ...(targetUser && { targetUser}),
       ...(!isAnonymous && { spForRevealIdentity }),
     });
 

@@ -1,6 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import type React from "react";
+
+import { useState, useEffect, useRef, useCallback } from "react";
 import {
   Dialog,
   DialogContent,
@@ -17,10 +19,15 @@ import { Input } from "@/components/ui/input";
 import { availableTags } from "@/constants/data";
 import { useCreateConfession } from "@/hooks/confessions";
 
-
 export interface ConfessionModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+}
+
+interface TaggedUser {
+  _id: string;
+  username: string;
+  avatar?: string;
 }
 
 const hintTexts = [
@@ -37,7 +44,14 @@ export function ConfessionModal({ open, onOpenChange }: ConfessionModalProps) {
   const [identityReveal, setIdentityReveal] = useState("anonymous");
   const [revealCost, setRevealCost] = useState("50");
   const [hintIndex, setHintIndex] = useState(0);
-  const {mutate:addConfession, isPending, isError} = useCreateConfession();
+  const [inputValue, setInputValue] = useState("");
+  const [isTagging, setIsTagging] = useState(false);
+  const [taggedUser, setTaggedUser] = useState<TaggedUser | null>(null);
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+
+
+  const { mutate: addConfession, isPending, isError } = useCreateConfession();
 
   // Rotate hint text every 5 seconds
   useState(() => {
@@ -46,6 +60,25 @@ export function ConfessionModal({ open, onOpenChange }: ConfessionModalProps) {
     }, 5000);
     return () => clearInterval(interval);
   });
+
+  useEffect(() => {
+    // Clean up timeout on component unmount
+    return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+    };
+  }, []);
+
+
+
+ 
+
+  const clearTaggedUser = () => {
+    setTaggedUser(null);
+    setInputValue("");
+    setIsTagging(false);
+  };
 
   const handleTagToggle = (tag: string) => {
     if (selectedTags.includes(tag)) {
@@ -59,13 +92,13 @@ export function ConfessionModal({ open, onOpenChange }: ConfessionModalProps) {
   };
 
   const handleSubmit = () => {
-
     const payload = {
-      content:confession,
+      content: confession,
       tags: selectedTags,
       isAnonymous: identityReveal === "anonymous",
-      ...(identityReveal==="reveal" && {spForRevealIdentity:revealCost}),
-    }
+      ...(identityReveal === "reveal" && { spForRevealIdentity: revealCost }),
+      ...(taggedUser && { taggedUserId: taggedUser._id }),
+    };
 
     addConfession(payload, {
       onSuccess: () => {
@@ -73,14 +106,16 @@ export function ConfessionModal({ open, onOpenChange }: ConfessionModalProps) {
         setSelectedTags([]);
         setIdentityReveal("anonymous");
         setRevealCost("50");
+        setInputValue("");
+        setTaggedUser(null);
+        setIsTagging(false);
         onOpenChange(false);
       },
       onError: (error) => {
         console.error("Error creating confession", error);
       },
     });
-    
-  }
+  };
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -134,7 +169,6 @@ export function ConfessionModal({ open, onOpenChange }: ConfessionModalProps) {
             </div>
           </div>
 
-
           {/* Reveal Identity */}
           <div className="space-y-3">
             <Label className="text-[#2a2a2a] font-medium">
@@ -179,29 +213,48 @@ export function ConfessionModal({ open, onOpenChange }: ConfessionModalProps) {
               </div>
             </RadioGroup>
 
-
-            
-
-            {identityReveal === "reveal"  && <p className="text-xs text-[#8a7e55] italic">
-              If someone spends SP, they can see your identity.
-            </p>}
-
-            
-
+            {identityReveal === "reveal" && (
+              <p className="text-xs text-[#8a7e55] italic">
+                If someone spends SP, they can see your identity.
+              </p>
+            )}
           </div>
 
           {/* Confess to Specific User */}
-          <div className="space-y-2">
+          <div className="space-y-2 relative">
+            <MentionSuggestion
+              inputValue={inputValue}
+              isTagging={isTagging}
+              onUserSelect={(user) => {
+                setTaggedUser(user);
+                setInputValue(`@${user.username}`);
+              }}
+              setIsTagging={setIsTagging}
+            />
             <Label className="text-[#2a2a2a] font-medium">
               Confess to (optional):
             </Label>
             <Input
               placeholder="@username"
-              className="bg-[#f9f7f1] border-[#d4c8a8]"
+              value={inputValue}
+              onChange={(e) => {
+                const value = e.target.value;
+                setInputValue(value);
+                if (value.includes("@") && !taggedUser) {
+                  setIsTagging(true);
+                } else if (!value.includes("@")) {
+                  setIsTagging(false);
+                }
+              }}
             />
-            <p className="text-xs text-[#8a7e55] italic">
-              They won't be notified unless they spend SP to find out.
-            </p>
+            {taggedUser && (
+              <div className="text-xs text-green-700 mt-1">
+                Tagged: @{taggedUser.username}{" "}
+                <button onClick={clearTaggedUser} className="ml-2 text-red-500">
+                  ×
+                </button>
+              </div>
+            )}
           </div>
         </div>
 
@@ -213,8 +266,12 @@ export function ConfessionModal({ open, onOpenChange }: ConfessionModalProps) {
           >
             Cancel
           </Button>
-          <Button onClick={handleSubmit} className="bg-[#c9b27c] hover:bg-[#b39c64] text-[#2a2a2a] font-medium">
-            Post Confession
+          <Button
+            onClick={handleSubmit}
+            className="bg-[#c9b27c] hover:bg-[#b39c64] text-[#2a2a2a] font-medium"
+            disabled={isPending}
+          >
+            {isPending ? "Posting..." : "Post Confession"}
           </Button>
         </DialogFooter>
       </DialogContent>
@@ -222,4 +279,113 @@ export function ConfessionModal({ open, onOpenChange }: ConfessionModalProps) {
   );
 }
 
+interface TaggedUser {
+  _id: string;
+  username: string;
+  avatar?: string;
+}
 
+interface MentionSuggestionProps {
+  inputValue: string;
+  isTagging: boolean;
+  onUserSelect: (user: TaggedUser) => void;
+  setIsTagging: (val: boolean) => void;
+}
+
+export const MentionSuggestion: React.FC<MentionSuggestionProps> = ({
+  inputValue,
+  isTagging,
+  onUserSelect,
+  setIsTagging,
+}) => {
+  const [suggestedUsers, setSuggestedUsers] = useState<TaggedUser[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    const fetchUsers = async () => {
+      if (!inputValue.startsWith("@") || inputValue.length <= 1) {
+        setSuggestedUsers([]);
+        return;
+      }
+
+      setIsLoading(true);
+      try {
+        const username = inputValue.slice(1);
+        const response = await fetch(`/api/tagUser?username=${username}`);
+        if (response.ok) {
+          const data = await response.json();
+          setSuggestedUsers(data?.data || []);
+        }
+      } catch (err) {
+        console.error("Error fetching users", err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    const delayDebounce = setTimeout(fetchUsers, 500);
+
+    return () => clearTimeout(delayDebounce);
+  }, [inputValue]);
+
+  if (!isTagging) return null;
+
+  return (
+    <div className="absolute z-10 w-full -mt-5 bg-[#f9f7f1] border border-[#d4c8a8] rounded-md shadow-md max-h-60 overflow-y-auto">
+      {inputValue === "@" && (
+        <div className="p-3 text-sm text-[#8a7e55]">
+          Start typing a username...
+        </div>
+      )}
+
+      {isLoading && inputValue.length > 1 && (
+        <div className="p-3 flex items-center text-sm text-[#8a7e55]">
+          <svg className="animate-spin h-4 w-4 mr-2" viewBox="0 0 24 24">
+            <circle
+              className="opacity-25"
+              cx="12"
+              cy="12"
+              r="10"
+              stroke="currentColor"
+              strokeWidth="4"
+            ></circle>
+            <path
+              className="opacity-75"
+              fill="currentColor"
+              d="M4 12a8 8 0 018-8V0C5.37 0 0 5.37 0 12h4zm2 5.29A7.96 7.96 0 014 12H0c0 3.04 1.13 5.82 3 7.94l3-2.65z"
+            ></path>
+          </svg>
+          Searching...
+        </div>
+      )}
+
+      {!isLoading &&
+        suggestedUsers.length > 0 &&
+        suggestedUsers.map((user) => (
+          <div
+            key={user._id}
+            onClick={() => {
+              onUserSelect(user);
+              setIsTagging(false);
+            }}
+            className="px-3 py-2 hover:bg-[#f0ece0] cursor-pointer flex items-center gap-2 border-t border-[#e6dfc8]"
+          >
+            <div className="w-6 h-6 rounded-full overflow-hidden bg-[#e6dfc8] flex items-center justify-center">
+              {user.avatar ? (
+                <img
+                  src={user.avatar}
+                  alt={user.username}
+                  className="object-cover w-full h-full"
+                />
+              ) : (
+                <span className="text-xs font-bold">
+                  {user.username[0].toUpperCase()}
+                </span>
+              )}
+            </div>
+            <span className="text-sm">{user.username}</span>
+          </div>
+        ))}
+    </div>
+  );
+};
