@@ -94,7 +94,7 @@ export default function PostFeedPage({ type, title }: PostFeedPageProps) {
                     isMidnight={isConfession && post?.isMidnight}
                     unlockText={post?.unlockText}
                     image={!isConfession ? post?.image : undefined}
-                    hasTargetUser={post.hasTargetUSer ? post?.hasTargetUSer : undefined}
+                    hasTargetUser={post.hasTargetUser ? post?.hasTargetUser : undefined}
                   />
                 </motion.div>
               ))

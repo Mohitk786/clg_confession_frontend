@@ -74,6 +74,7 @@ export const PostCard: FC<PostCardProps> = ({
     });
   };
 
+
   return (
     <div className="w-full">
       <Card className="border border-[#d4c8a8] bg-[#f9f7f1] shadow-md overflow-hidden relative">
@@ -150,7 +151,7 @@ export const PostCard: FC<PostCardProps> = ({
           />
           <div className="mt-4 pt-3 border-t border-[#d4c8a8] flex flex-col items-end md:flex-row md:items-center md:justify-between">
             <EmojiBar />
-            {type === "confession" &&  hasTargetUser &&(
+            {(type === "confession" &&  hasTargetUser) &&(
               <Button
                 onClick={handleCheckForMe}
                 className="bg-[#c9b27c] hover:bg-[#b39c64] text-[#2a2a2a] mt-2 max-w-[200px]"
