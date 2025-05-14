@@ -5,6 +5,7 @@ import razorpay from "@/utils/razorpay";
 import { verifySession } from "@/lib/dal";
 import {dbConnect} from "@/lib/dbConnect";
 import User from "@/models/User";
+import { revalidatePath } from "next/cache";
 
 export const POST = async (req) => {
   try {
@@ -40,6 +41,8 @@ export const POST = async (req) => {
       { $addToSet: { paidFor: confessionId } }, 
       { new: true }
     );
+
+    revalidatePath('/unlocked-confessions')
 
     return NextResponse.json({ success: true, confessionId });
   } catch (err) {

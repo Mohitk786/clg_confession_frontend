@@ -24,6 +24,7 @@ interface Props {
   isForYou: boolean;
   message: string;
   confessionId: string;
+  hasTargetUser: undefined | boolean;
 }
 
 const ConfessionResultModal: FC<Props> = ({
@@ -31,16 +32,21 @@ const ConfessionResultModal: FC<Props> = ({
   onClose,
   isForYou,
   confessionId,
-
+  hasTargetUser,
   message,
 }) => {
 
     const verifyPremiumUser = async (response:any) => {
 
-
-      const res = await axiosInstance.post("/payment/verify", {
+      const res:any = await axiosInstance.post("/payment/verify", {
         ...response
       });
+
+      if(!res?.data?.success){
+        alert(res?.data?.message);
+        return
+      }
+
       
     };
 
@@ -64,7 +70,6 @@ const ConfessionResultModal: FC<Props> = ({
         },
         handler: verifyPremiumUser
       }
-      console.log("options",options)
 
       const rzp = new window.Razorpay(options);
       rzp.open();
@@ -98,7 +103,7 @@ const ConfessionResultModal: FC<Props> = ({
           <p className="text-md text-gray-700">{message}</p>
         </div>
 
-        {isForYou && (
+        {(isForYou && hasTargetUser) ? (
           <DialogFooter className="mt-4">
             <Button
               onClick={revealIdenetityHandler}
@@ -107,7 +112,7 @@ const ConfessionResultModal: FC<Props> = ({
               Reveal Identity for ₹29
             </Button>
           </DialogFooter>
-        )}
+        ): <p>This Confession is posted as anonymously</p> }
       </DialogContent>
     </Dialog>
   );

@@ -52,6 +52,7 @@ export default function PostFeedPage({ type, title }: PostFeedPageProps) {
 
   const loadMoreRef = useRef(null);
 
+
   useEffect(() => {
     if (!loadMoreRef.current) return;
     const observer = new IntersectionObserver(
@@ -93,6 +94,7 @@ export default function PostFeedPage({ type, title }: PostFeedPageProps) {
                     isMidnight={isConfession && post?.isMidnight}
                     unlockText={post?.unlockText}
                     image={!isConfession ? post?.image : undefined}
+                    hasTargetUser={post.hasTargetUSer ? post?.hasTargetUSer : undefined}
                   />
                 </motion.div>
               ))

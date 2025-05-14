@@ -5,6 +5,10 @@ const confessionSchema = new mongoose.Schema({
   createdBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
   college: { type: mongoose.Schema.Types.ObjectId, ref: 'College' },
   targetUser: { type: mongoose.Schema.Types.ObjectId, ref: 'User'},
+  hasTargetUser: {
+    type:Boolean,
+    default:false
+  },
   
   tags: [{
     type: String,

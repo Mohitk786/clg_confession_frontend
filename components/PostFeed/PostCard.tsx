@@ -22,6 +22,7 @@ export interface PostCardProps {
   title?: string;
   isMidnight?: boolean;
   likesCount: number;
+  hasTargetUser?: undefined |boolean;
   commentsCount: number;
   unlockText?: string;
   actions?: ReactNode;
@@ -34,6 +35,7 @@ export const PostCard: FC<PostCardProps> = ({
   content,
   path,
   title,
+  hasTargetUser,
   isLiked,
   image,
   isMidnight = false,
@@ -148,7 +150,7 @@ export const PostCard: FC<PostCardProps> = ({
           />
           <div className="mt-4 pt-3 border-t border-[#d4c8a8] flex flex-col items-end md:flex-row md:items-center md:justify-between">
             <EmojiBar />
-            {type === "confession" && (
+            {type === "confession" &&  hasTargetUser &&(
               <Button
                 onClick={handleCheckForMe}
                 className="bg-[#c9b27c] hover:bg-[#b39c64] text-[#2a2a2a] mt-2 max-w-[200px]"
@@ -162,6 +164,7 @@ export const PostCard: FC<PostCardProps> = ({
 
       {confessionResult && (
         <ConfessionResultModal
+          hasTargetUser={hasTargetUser}
           confessionId={_id}  
           isOpen={modalOpen}
           onClose={() => setModalOpen(false)}

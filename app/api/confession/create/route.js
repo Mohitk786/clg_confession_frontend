@@ -6,6 +6,7 @@ import College from "@/models/College";
 import { verifySession } from "@/lib/dal";
 import Notification from "@/models/Notification";
 import { Notifications_Types } from "@/constants/data";
+import { revalidatePath } from "next/cache";
 
 export async function POST(req) {
   try {
@@ -85,6 +86,8 @@ export async function POST(req) {
     await College.findByIdAndUpdate(foundUser.college, {
       $push: { confessions: confession._id },
     });
+
+    revalidatePath('/')
 
     return NextResponse.json(
       { success: true, message: "Confession created", data: confession },

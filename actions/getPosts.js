@@ -40,7 +40,7 @@ export const getPosts = async (req, isConfession) => {
     // Define models and fields based on post type
     const Model = isConfession ? Confession : News;
     const selectFields = isConfession
-      ? "content tags likesCount commentsCount createdAt"
+      ? "content tags likesCount commentsCount createdAt hasTargetUser"
       : "title content tags image likesCount commentsCount createdAt";
 
     // Run post query and likes in parallel
@@ -60,7 +60,7 @@ export const getPosts = async (req, isConfession) => {
 
     const likedPostIds = new Set(likes.map((like) => like.postId.toString()));
 
-    const postsWithIsLiked = posts.map((post) => ({
+    let postsWithIsLiked = posts.map((post) => ({
       ...post,
       isLiked: likedPostIds.has(post._id.toString()),
     }));
@@ -72,6 +72,9 @@ export const getPosts = async (req, isConfession) => {
           ? true
           : false
         : false;
+
+
+   
 
     return {
       success: true,
