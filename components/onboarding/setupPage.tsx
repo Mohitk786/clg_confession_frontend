@@ -1,6 +1,12 @@
 import { createProfile } from "@/actions/create-profile";
 
-export default function UserInfoForm({ colleges, phone }: { colleges: any, phone: string }) {
+export default function UserInfoForm({
+  colleges,
+  phone,
+}: {
+  colleges: any;
+  phone: string;
+}) {
   return (
     <div className="space-y-6 sm:space-y-8 backdrop-blur-sm bg-[#0B0B0B]/70 p-4 sm:p-6 rounded-xl border border-[#333333]">
       {/* Header */}
@@ -14,10 +20,7 @@ export default function UserInfoForm({ colleges, phone }: { colleges: any, phone
       </div>
 
       {/* Form */}
-      <form
-        action={createProfile}
-        className="space-y-4 sm:space-y-6"
-      >
+      <form action={createProfile} className="space-y-4 sm:space-y-6">
         {/* Name */}
         <div className="space-y-1 sm:space-y-2">
           <label
@@ -97,6 +100,23 @@ export default function UserInfoForm({ colleges, phone }: { colleges: any, phone
           </p>
         </div>
         <input type="hidden" name="phone" value={phone} />
+
+       
+        <div className="space-y-1 sm:space-y-2">
+          <label
+            htmlFor="referCode"
+            className="flex items-center justify-between text-xs sm:text-sm text-[#EAEAEA]/70"
+          >
+            Refer Code{" "}
+            <span className="italic text-[#EAEAEA]/50">(optional)</span>
+          </label>
+          <input
+            name="referCode"
+            id="referCode"
+            className="w-full bg-[#1A1A1A] border border-[#333333] focus:border-[#D4AF37] focus:ring-[#D4AF37]/20 text-[#EAEAEA] rounded-md px-3 py-2 text-sm"
+            placeholder="Got a friend's code?"
+          />
+        </div>
 
         {/* Submit */}
         <div className="pt-2 sm:pt-4">

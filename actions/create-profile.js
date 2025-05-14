@@ -11,6 +11,7 @@ export async function createProfile(formData) {
   const phone = formData.get("phone");
   const collegeId = formData.get("college");
   const gender = formData.get("gender");
+  const referCode = formData.get("referCode");
   const hookupInterest = formData.get("hookupInterest") === "on";
 
   if (!name || !phone || !gender || !collegeId) {
