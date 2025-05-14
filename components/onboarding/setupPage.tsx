@@ -7,6 +7,7 @@ export default function UserInfoForm({
   colleges: any;
   phone: string;
 }) {
+
   return (
     <div className="space-y-6 sm:space-y-8 backdrop-blur-sm bg-[#0B0B0B]/70 p-4 sm:p-6 rounded-xl border border-[#333333]">
       {/* Header */}

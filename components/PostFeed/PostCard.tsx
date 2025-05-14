@@ -14,7 +14,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { Settings } from "lucide-react";
+import { CheckCheck, Settings } from "lucide-react";
 
 type CardType = "confession" | "news";
 
@@ -31,6 +31,7 @@ export interface PostCardProps {
   likesCount: number;
   hasTargetUser?: undefined | boolean;
   commentsCount: number;
+  isPaid?: boolean;
   unlockText?: string;
   actions?: ReactNode;
 }
@@ -156,19 +157,19 @@ export const PostCard: FC<PostCardProps> = ({
             }}
           />
           <div className="mt-6 pt-4 border-t border-[#d4c8a8] flex flex-col md:flex-row md:items-center md:justify-between gap-4 text-sm text-gray-700">
-            {/* <EmojiBar /> */}
-            <div></div>
+            <EmojiBar />
+            {/* <div></div> */}
 
             {type === "confession" && hasTargetUser && (
               <div className="flex justify-end md:justify-end">
-                <TooltipProvider>
+               <TooltipProvider>
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <button
                         onClick={handleCheckForMe}
-                        className="p-2 rounded-full text-[#c9b27c] hover:text-[#b39c64] shadow-md transition"
+                        className="p-2  bg-[#c9b27c] hover:bg-[#b39c64] shadow-md transition"
                       >
-                        <Settings size={20} />
+                        Check For Me
                       </button>
                     </TooltipTrigger>
                     <TooltipContent
@@ -179,6 +180,9 @@ export const PostCard: FC<PostCardProps> = ({
                     </TooltipContent>
                   </Tooltip>
                 </TooltipProvider>
+{/*                 
+                <CheckCheck className="w-4 h-4 text-green-700" />   */}
+              {/* } */}
               </div>
             )}
           </div>

@@ -16,7 +16,7 @@ export async function GET(req, { params }) {
       );
     }
 
-    const { confessionId } = params;
+    const { confessionId } = await params;
 
     if (!confessionId) {
       return NextResponse.json(
@@ -35,6 +35,14 @@ export async function GET(req, { params }) {
       );
     }
 
+    if(foundUser.paidFor.includes(confessionId)) {
+      return NextResponse.json({
+        success: true,
+        isForYou: false,
+        message: "You have already paid for this confession",
+      });
+    }
+
     if (foundUser.sp < SP_DEDUCTION.REVEAL_IDENTITY) {
       return NextResponse.json(
         { success: false, message: "Not enough SP" },
@@ -42,7 +50,7 @@ export async function GET(req, { params }) {
       );
     }
 
-    const confession = await Confession.findById(confessionId).populate("createdBy", "username");
+    const confession = await Confession.findById(confessionId)
 
     if (!confession) {
       return NextResponse.json(
@@ -51,7 +59,7 @@ export async function GET(req, { params }) {
       );
     }
 
-    if (!confession.targetUser) {
+    if (!confession?.targetUser) {
       return NextResponse.json({
         success: true,
         isForYou: false,
@@ -63,19 +71,15 @@ export async function GET(req, { params }) {
 
 
     if (isForYou) {
-      foundUser.sp -= SP_DEDUCTION.REVEAL_IDENTITY;
-
-      if (!foundUser.paidFor.includes(confession._id)) {
+        foundUser.sp -= SP_DEDUCTION.REVEAL_IDENTITY;
         foundUser.paidFor.push(confession._id);
-      }
-
-      await foundUser.save();
+       await foundUser.save();
     }
 
     return NextResponse.json({
-      success: true,
-      createdByUsername: isForYou ? confession.createdBy?.username : null,
+      success: true, 
     });
+    
   } catch (error) {
     return NextResponse.json(
       {

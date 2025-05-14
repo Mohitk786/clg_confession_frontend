@@ -65,6 +65,8 @@ export const getPosts = async (req, isConfession) => {
       isLiked: likedPostIds.has(post._id.toString()),
     }));
 
+   
+
     // Check if more posts exist without an extra count call
     const hasMore =
       posts.length === limit
@@ -73,8 +75,6 @@ export const getPosts = async (req, isConfession) => {
           : false
         : false;
 
-
-   
 
     return {
       success: true,

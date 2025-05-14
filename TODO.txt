@@ -1,0 +1,13 @@
+
+
+1. show warning 
+        -> If profile is not completed no one in your college can't mention you in their confession and you will not get notfied
+
+2. resolve proile branch issue
+3. No. of new notications on Navbar bell icon
+4. Reactions is pending
+5. manage the check for me (if already checked)
+6. try to fix Navbar spacing in left
+7. Take user consenst on signup
+8. About page > 
+9. improve user experince 

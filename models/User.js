@@ -15,7 +15,7 @@ const userSchema = new mongoose.Schema({
   },
   name: { type: String },
   referCode: { type: String},
-  username: { type: String, unique: true ,sparse:true},
+  username: { type: String, unique: true, sparse:true},
   profileImage: { type: String },
   college: {
     type: mongoose.Schema.Types.ObjectId,

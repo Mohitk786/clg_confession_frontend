@@ -91,7 +91,7 @@ export function ConfessionModal({ open, onOpenChange }: ConfessionModalProps) {
       setSelectedTags(selectedTags.filter((t) => t !== tag));
     } else {
       // Limit to 2 tags
-      if (selectedTags.length < 2) {
+      if (selectedTags.length < 10) {
         setSelectedTags([...selectedTags, tag]);
       }
     }

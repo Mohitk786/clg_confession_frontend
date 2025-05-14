@@ -6,6 +6,29 @@ import College from "@/models/College";
 import { dbConnect } from "@/lib/dbConnect";
 import { createSession } from "@/lib/session";
 
+function getRandomString(length = 2) {
+  const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+  let result = "";
+  for (let i = 0; i < length; i++) {
+    result += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+  return result;
+}
+
+async function generateReferCode(name, phone, collegeId) {
+  const usernamePart = name?.slice(0, 2).toUpperCase() || "XX";
+  const phonePart = phone?.slice(-2) || "00";
+  const collegePart = collegeId?.slice(-2).toUpperCase() || "YY";
+
+  let code;
+  do {
+    const randomPart = getRandomString(2);
+    code = `${usernamePart}${phonePart}${collegePart}${randomPart}`;
+  } while (await User.findOne({ referCode: code }));
+
+  return code;
+}
+
 export async function createProfile(formData) {
   const name = formData.get("name");
   const phone = formData.get("phone");
@@ -18,6 +41,8 @@ export async function createProfile(formData) {
     throw new Error("Missing required fields!");
   }
   await dbConnect();
+
+ 
   const college = await College.findById(collegeId);
   if (!college) {
     throw new Error("Invalid college ID!");
@@ -29,38 +54,41 @@ export async function createProfile(formData) {
       throw new Error("User already exists!");
     }
 
-    const username =
-      name.slice(0, 3).toLowerCase() +
-      Math.floor(Math.random() * 1000) +
-      phone.slice(-4);
-
+  
+      
+    const code = await generateReferCode(name, phone, collegeId);
+      
     let updatedPhone = "+91" + phone;
     const newUser = new User({
       name,
       phone: updatedPhone,
       gender,
       college: collegeId,
-      username,
+      referCode:code,
       hookupInterest,
     });
 
-
     await newUser.save();
 
+    if (referCode) {
+      const referringUser = await User.findOne({ referCode });
+      if (referringUser) {
+        referringUser.sp += SP_REWARD.REFER;
+        await referringUser.save();
+      }
+    }
 
     await createSession({
       name,
       userId: newUser._id,
       profileCompleted: newUser.profileCompleted,
       college: college.name,
-      gender
-    })
+      gender,
+    });
 
     redirect("/");
-
   } catch (error) {
     if (error?.message === "NEXT_REDIRECT") redirect("/");
     throw new Error(error?.message || "Something went wrong");
-
   }
 }
