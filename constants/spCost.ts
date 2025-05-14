@@ -6,6 +6,8 @@ export const SP_REWARD = {
     COMMENT:2,
     POST_NEWS:5,
     LIKE:2,
-    FOLLOW:2,
+    REFER:20,
     POST_CONFESSION:5,
+    POST_NEWS_WITHOUT_IMAGE:5,
+    POST_NEWS_WITH_IMAGE:10,
 }

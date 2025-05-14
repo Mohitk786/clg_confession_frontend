@@ -3,11 +3,11 @@ import User from "@/models/User";
 import jwt from "jsonwebtoken";
 import { dbConnect } from "@/lib/dbConnect";
 import College from "@/models/College";
-
+import { SP_REWARD  } from "@/constants/spCost";
 export async function POST(req) {
   
   await dbConnect();
-  const { name, phone, collegeId, gender } = await req.json();
+  const { name, phone, collegeId, gender , referCode} = await req.json();
 
   if (!name || !phone || !gender || !collegeId) {
     return NextResponse.json(
@@ -28,6 +28,12 @@ export async function POST(req) {
         { error: "User already exists!" },
         { status: 409 }
       );
+    }
+    let code;
+
+    if(referCode){
+       const user = await User.findOne({ referCode });
+       user.sp+=SP_REWARD;
     }
 
     const newUser = new User({ name, phone, gender, college: collegeId });
