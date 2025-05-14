@@ -61,9 +61,16 @@ export const usePostComment = (postId: string) => {
 
 
 export const useCheckForMe=()=>{
+  const queryClient = useQueryClient();
   return useMutation({
     mutationKey: [QUERY_KEYS.CHECK_FOR_ME],
     mutationFn: checkForMe,
+    onSuccess: ()=>{
+      console.log("success");
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.GET_USER],
+      });
+    },
     retry: 1,
   });
 }

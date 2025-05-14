@@ -1,4 +1,3 @@
-import { POST } from "@/app/api/confession/create/route";
 
 export const QUERY_KEYS = {
   SEND_OTP: "SEND_OTP",

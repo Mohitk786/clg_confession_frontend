@@ -14,7 +14,7 @@ const userSchema = new mongoose.Schema({
     required: [true, "Gender is required"],
   },
   name: { type: String },
-  referCode: { type: String, unique:true, required: true },
+  referCode: { type: String},
   username: { type: String, unique: true ,sparse:true},
   profileImage: { type: String },
   college: {

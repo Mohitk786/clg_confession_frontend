@@ -53,6 +53,13 @@ export async function GET(req, {params}) {
       );
     }
 
+    
+    const isForYou = confession.targetUser.toString() === user.userId.toString()  ;
+    if (foundUser) {
+      foundUser.sp -= SP_DEDUCTION.CHECK_FOR_ME;
+      await foundUser.save();
+    }
+    
     // No target user => don't tell user that isme kisi ko mention hi nahi kiya
     if (!confession.targetUser) {
       return NextResponse.json({
@@ -60,12 +67,6 @@ export async function GET(req, {params}) {
         isForYou: false,
         message: "This confession is not for you", 
       });
-    }
-
-    const isForYou = confession.targetUser.toString() === user.userId.toString()  ;
-    if (foundUser) {
-      foundUser.sp -= SP_DEDUCTION.CHECK_FOR_ME;
-      await foundUser.save();
     }
 
     return NextResponse.json({
@@ -76,6 +77,7 @@ export async function GET(req, {params}) {
         : "No, this confession is not for you",
     });
   } catch (error) {
+    console.error("Error checking confession target:", error);
     return NextResponse.json(
       {
         success: false,

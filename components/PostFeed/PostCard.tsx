@@ -8,6 +8,13 @@ import { usePathname, useRouter } from "next/navigation";
 import { useCheckForMe } from "@/hooks/post";
 import ConfessionResultModal from "@/components/modals/ConfessionResultModal";
 import { EmojiBar, ReactionIcons } from "./ReactionIcons";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { Settings } from "lucide-react";
 
 type CardType = "confession" | "news";
 
@@ -22,7 +29,7 @@ export interface PostCardProps {
   title?: string;
   isMidnight?: boolean;
   likesCount: number;
-  hasTargetUser?: undefined |boolean;
+  hasTargetUser?: undefined | boolean;
   commentsCount: number;
   unlockText?: string;
   actions?: ReactNode;
@@ -73,7 +80,6 @@ export const PostCard: FC<PostCardProps> = ({
       },
     });
   };
-
 
   return (
     <div className="w-full">
@@ -149,15 +155,31 @@ export const PostCard: FC<PostCardProps> = ({
               commentsCount,
             }}
           />
-          <div className="mt-4 pt-3 border-t border-[#d4c8a8] flex flex-col items-end md:flex-row md:items-center md:justify-between">
-            <EmojiBar />
-            {(type === "confession" &&  hasTargetUser) &&(
-              <Button
-                onClick={handleCheckForMe}
-                className="bg-[#c9b27c] hover:bg-[#b39c64] text-[#2a2a2a] mt-2 max-w-[200px]"
-              >
-                {isPending ? "Checking" : "Check For Me"}
-              </Button>
+          <div className="mt-6 pt-4 border-t border-[#d4c8a8] flex flex-col md:flex-row md:items-center md:justify-between gap-4 text-sm text-gray-700">
+            {/* <EmojiBar /> */}
+            <div></div>
+
+            {type === "confession" && hasTargetUser && (
+              <div className="flex justify-end md:justify-end">
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <button
+                        onClick={handleCheckForMe}
+                        className="p-2 rounded-full text-[#c9b27c] hover:text-[#b39c64] shadow-md transition"
+                      >
+                        <Settings size={20} />
+                      </button>
+                    </TooltipTrigger>
+                    <TooltipContent
+                      side="top"
+                      className="bg-black text-white text-xs"
+                    >
+                      Check if this is for you
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              </div>
             )}
           </div>
         </div>
@@ -166,7 +188,7 @@ export const PostCard: FC<PostCardProps> = ({
       {confessionResult && (
         <ConfessionResultModal
           hasTargetUser={hasTargetUser}
-          confessionId={_id}  
+          confessionId={_id}
           isOpen={modalOpen}
           onClose={() => setModalOpen(false)}
           isForYou={confessionResult.isForYou}

@@ -2,7 +2,6 @@ import { QUERY_KEYS } from "@/constants/queryKeys";
 import { sendOtp, verifyOtp, createProfile, getUser, updateProfile, getProfile } from "@/services/auth";
 import { useMutation, useQuery } from "@tanstack/react-query";
 
-
 export const useSendOtp = () => {
     return useMutation({
         mutationFn:  sendOtp,
@@ -51,6 +50,7 @@ export const useProfile = () => {
     return useQuery({
         queryKey: [QUERY_KEYS.GET_PROFILE],
         queryFn: getProfile,
+        staleTime:0,
         retry: 1,
     });
 }

@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { verifySession } from "@/lib/dal";
-
+import User from "@/models/User";
 
 export async function GET(req) {
   try {
@@ -13,10 +13,12 @@ export async function GET(req) {
       }, { status: 404 });
     }
 
+    const dbUser =  await User.findById(user.userId).select("sp referCode");
+
     return NextResponse.json({
       success: true,
       message: "User fetched",
-      data: user
+      data: {...user, sp:dbUser.sp, referCode:dbUser?.referCode}
     });
 
   } catch (err) {
