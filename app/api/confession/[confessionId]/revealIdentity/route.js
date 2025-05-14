@@ -1,0 +1,89 @@
+import { NextResponse } from "next/server";
+import Confession from "@/models/Confession";
+import User from "@/models/User";
+import { dbConnect } from "@/lib/dbConnect";
+import { verifySession } from "@/lib/dal";
+import { SP_DEDUCTION } from "@/constants/spCost";
+
+export async function GET(req, { params }) {
+  try {
+    const { user } = await verifySession();
+
+    if (!user || !user.userId) {
+      return NextResponse.json(
+        { success: false, message: "User not authenticated" },
+        { status: 401 }
+      );
+    }
+
+    const { confessionId } = params;
+
+    if (!confessionId) {
+      return NextResponse.json(
+        { success: false, message: "Confession ID is required" },
+        { status: 400 }
+      );
+    }
+
+    await dbConnect();
+
+    const foundUser = await User.findById(user.userId);
+    if (!foundUser) {
+      return NextResponse.json(
+        { success: false, message: "User not found" },
+        { status: 404 }
+      );
+    }
+
+    if (foundUser.sp < SP_DEDUCTION.REVEAL_IDENTITY) {
+      return NextResponse.json(
+        { success: false, message: "Not enough SP" },
+        { status: 400 }
+      );
+    }
+
+    const confession = await Confession.findById(confessionId).populate("createdBy", "username");
+
+    if (!confession) {
+      return NextResponse.json(
+        { success: false, message: "Confession not found" },
+        { status: 404 }
+      );
+    }
+
+    if (!confession.targetUser) {
+      return NextResponse.json({
+        success: true,
+        isForYou: false,
+        message: "This confession is not for you",
+      });
+    }
+
+    const isForYou = confession.targetUser.toString() === user.userId.toString();
+
+
+    if (isForYou) {
+      foundUser.sp -= SP_DEDUCTION.REVEAL_IDENTITY;
+
+      if (!foundUser.paidFor.includes(confession._id)) {
+        foundUser.paidFor.push(confession._id);
+      }
+
+      await foundUser.save();
+    }
+
+    return NextResponse.json({
+      success: true,
+      createdByUsername: isForYou ? confession.createdBy?.username : null,
+    });
+  } catch (error) {
+    return NextResponse.json(
+      {
+        success: false,
+        message: "Server error while checking confession target",
+        error: error.message,
+      },
+      { status: 500 }
+    );
+  }
+}

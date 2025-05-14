@@ -1,5 +1,6 @@
 export const SP_DEDUCTION = {
-    CHECK_FOR_ME:5
+    CHECK_FOR_ME:5,
+    REVEAL_IDENTITY:299
 }
 
 export const SP_REWARD = {
