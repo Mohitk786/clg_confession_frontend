@@ -5,7 +5,7 @@ import { dbConnect } from "@/lib/dbConnect";
 import { verifySession } from "@/lib/dal";
 import { SP_DEDUCTION } from "@/constants/spCost";
 
-export async function GET(req) {
+export async function GET(req, {params}) {
   try {
     
     const {user} = await verifySession();
@@ -16,8 +16,7 @@ export async function GET(req) {
         { status: 401 }
       );
     }
-    const body = await req.json();
-    const { confessionId } = body;
+    const { confessionId } = await params;
     
     
     // Validate confession ID
@@ -63,7 +62,7 @@ export async function GET(req) {
       });
     }
 
-    const isForYou = confession.targetUser === user.userId;
+    const isForYou = confession.targetUser.toString() === user.userId.toString()  ;
     if (foundUser) {
       foundUser.sp -= SP_DEDUCTION.CHECK_FOR_ME;
       await foundUser.save();

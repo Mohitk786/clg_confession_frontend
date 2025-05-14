@@ -36,3 +36,20 @@ export const postComment = async ({postId, content}:any) => {
     throw error;
   }
 }
+
+export const checkForMe = async (confessionId: string) => {
+  try{
+    if(!confessionId) throw new Error("Confession ID is required");
+
+    const res:any = await axiosInstance.get(`/confession/${confessionId}/checkForMe`);
+    
+    if(!res.data?.success) throw new Error("Failed to check for me");
+
+    return res.data;
+
+  }catch(error){
+    console.error("Error checking for me:", error);
+    throw error;
+  }
+
+}

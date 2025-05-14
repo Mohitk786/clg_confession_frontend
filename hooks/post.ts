@@ -1,6 +1,6 @@
 import { QUERY_KEYS } from "@/constants/queryKeys";
 import {  useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { likePost, getAllComments, postComment } from "@/services/post";
+import { likePost, getAllComments, postComment, checkForMe } from "@/services/post";
 
 // export const useComments = () => {
 //     return useQuery({
@@ -58,3 +58,12 @@ export const usePostComment = (postId: string) => {
     
   });
 };
+
+
+export const useCheckForMe=()=>{
+  return useMutation({
+    mutationKey: [QUERY_KEYS.CHECK_FOR_ME],
+    mutationFn: checkForMe,
+    retry: 1,
+  });
+}
