@@ -62,6 +62,7 @@ export async function POST(req) {
       isAnonymous: isAnonymous || false,
       ...(targetUser && { targetUser}),
       ...(!isAnonymous && { spForRevealIdentity }),
+      ...(targetUser && { hasTargetUser: targetUser }),
     });
 
     foundUser.sp = (foundUser.sp || 0) + 5;
