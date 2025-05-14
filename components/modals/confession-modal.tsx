@@ -349,7 +349,7 @@ export const MentionSuggestion: React.FC<MentionSuggestionProps> = ({
   setIsTagging,
 }) => {
   const [suggestedUsers, setSuggestedUsers] = useState<TaggedUser[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isPending, setIsLoading] = useState(false);
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -388,7 +388,7 @@ export const MentionSuggestion: React.FC<MentionSuggestionProps> = ({
         </div>
       )}
 
-      {isLoading && inputValue.length > 1 && (
+      {isPending && inputValue.length > 1 && (
         <div className="p-3 flex items-center text-sm text-[#8a7e55]">
           <svg className="animate-spin h-4 w-4 mr-2" viewBox="0 0 24 24">
             <circle
@@ -409,7 +409,7 @@ export const MentionSuggestion: React.FC<MentionSuggestionProps> = ({
         </div>
       )}
 
-      {!isLoading &&
+      {!isPending &&
         suggestedUsers.length > 0 &&
         suggestedUsers.map((user) => (
           <div

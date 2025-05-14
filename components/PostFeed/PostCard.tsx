@@ -14,7 +14,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { CheckCheck, Settings } from "lucide-react";
+import { useUser } from "@/hooks/auth";
 
 type CardType = "confession" | "news";
 
@@ -54,11 +54,14 @@ export const PostCard: FC<PostCardProps> = ({
   const currentPath = usePathname();
   const isConfession = type === "confession";
   const router = useRouter();
+  const {data}:any = useUser();
+  const user = data?.data;  
 
   const [modalOpen, setModalOpen] = useState(false);
   const [confessionResult, setConfessionResult] = useState<{
     isForYou: boolean;
     message: string;
+    isAnonymous: boolean;
   } | null>(null);
 
   const handlePostClick = () => {
@@ -71,9 +74,15 @@ export const PostCard: FC<PostCardProps> = ({
   const { mutate: checkForMe, isPending } = useCheckForMe();
 
   const handleCheckForMe = () => {
+
+    if(user?.sp < 5){
+      alert("You need at least 5 SP to check for you");
+      return;
+    }
+
     checkForMe(_id, {
       onSuccess: (data) => {
-        setConfessionResult({ isForYou: data.isForYou, message: data.message });
+        setConfessionResult({ isForYou: data.isForYou, message: data.message, isAnonymous: data.isAnonymous });
         setModalOpen(true);
       },
       onError: (error) => {
@@ -167,9 +176,10 @@ export const PostCard: FC<PostCardProps> = ({
                     <TooltipTrigger asChild>
                       <button
                         onClick={handleCheckForMe}
+                        disabled={isPending}
                         className="p-2  bg-[#c9b27c] hover:bg-[#b39c64] shadow-md transition"
                       >
-                        Check For Me
+                       {!isPending ? "Check For Me for 5 SP" : "Checking..."}
                       </button>
                     </TooltipTrigger>
                     <TooltipContent
@@ -197,6 +207,7 @@ export const PostCard: FC<PostCardProps> = ({
           onClose={() => setModalOpen(false)}
           isForYou={confessionResult.isForYou}
           message={confessionResult.message}
+          isAnonymous={confessionResult.isAnonymous}
         />
       )}
     </div>

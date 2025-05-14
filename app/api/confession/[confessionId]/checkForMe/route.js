@@ -27,7 +27,7 @@ export async function GET(req, {params}) {
       );
     }
     
-    
+     
     await dbConnect();
     const foundUser = await User.findById(user.userId);
     if (!foundUser) {
@@ -72,12 +72,12 @@ export async function GET(req, {params}) {
     return NextResponse.json({
       success: true,
       isForYou,
+      isAnonymous: confession.isAnonymous,
       message: isForYou
         ? "Yes, this confession is for you"
         : "No, this confession is not for you",
     });
   } catch (error) {
-    console.error("Error checking confession target:", error);
     return NextResponse.json(
       {
         success: false,

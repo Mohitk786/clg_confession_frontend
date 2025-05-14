@@ -15,7 +15,7 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Sparkles, HeartCrack, PartyPopper, Currency, Coins } from "lucide-react";
+import {  HeartCrack, PartyPopper,  Coins } from "lucide-react";
 import { axiosInstance } from "@/lib/axiosInstance";
 import { useUser } from "@/hooks/auth";
 
@@ -26,6 +26,7 @@ interface Props {
   message: string;
   confessionId: string;
   hasTargetUser: undefined | boolean;
+  isAnonymous: boolean;
 }
 
 const ConfessionResultModal: FC<Props> = ({
@@ -35,6 +36,7 @@ const ConfessionResultModal: FC<Props> = ({
   confessionId,
   hasTargetUser,
   message,
+  isAnonymous
 }) => {
   const {
     data,
@@ -108,7 +110,7 @@ const ConfessionResultModal: FC<Props> = ({
           <p className="text-md text-gray-700">{message}</p>
         </div>
 
-        {isForYou && hasTargetUser && (
+        {!isAnonymous ? (isForYou && hasTargetUser && (
           <DialogFooter className="mt-4">
             <div className="flex flex-col items-center gap-4 w-full max-w-sm mx-auto px-4">
               <Button
@@ -135,7 +137,7 @@ const ConfessionResultModal: FC<Props> = ({
               )}
             </div>
           </DialogFooter>
-        )}
+        )): <p>Poster does not allow to reveal the identity</p>}
       </DialogContent>
     </Dialog>
   );

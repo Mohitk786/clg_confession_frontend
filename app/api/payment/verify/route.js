@@ -20,8 +20,6 @@ export const POST = async (req) => {
 
     const secret = process.env.RAZORPAY_KEY_SECRET;
 
-    
-
     const generatedSignature = crypto
       .createHmac("sha256", secret)
       .update(`${razorpay_order_id}|${razorpay_payment_id}`)
@@ -35,6 +33,8 @@ export const POST = async (req) => {
 
     const razorpayOrder = await razorpay.orders.fetch(razorpay_order_id);
     const confessionId = razorpayOrder.notes.confessionId;
+
+    
 
     await User.findByIdAndUpdate(
       user.userId,

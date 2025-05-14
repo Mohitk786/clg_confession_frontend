@@ -4,6 +4,8 @@ import razorpayInstance from "@/utils/razorpay";
 import { PAYMENTS } from "@/constants/payment";
 import User from "@/models/User";
 import Payment from "@/models/Payment";
+import Confession from "@/models/Confession";
+import { dbConnect } from "@/lib/dbConnect";
 
 export const POST = async (req) => {
   try {
@@ -19,6 +21,15 @@ export const POST = async (req) => {
     if (!confessionId)
       return NextResponse.json({ message: "Confession ID is required" }, { status: 400 });
 
+    await dbConnect();
+    const confession = await Confession.findById(confessionId);
+    if (!confession)
+      return NextResponse.json({ message: "Confession not found" }, { status: 404 });
+
+    if(confession.isAnonymous){
+      return NextResponse.json({ message: "Poster doesn't allow the identity reveal" }, { status: 400 });
+    }
+     
     const order = await razorpayInstance.orders.create({
       amount: PAYMENTS.REVEAL_IDENTITY * 100,
       currency: "INR",
