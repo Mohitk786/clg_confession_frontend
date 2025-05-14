@@ -23,6 +23,10 @@ const userSchema = new mongoose.Schema({
   interestedInHookup: { type: Boolean, default: false },
 
   sp: { type: Number, default: 75 },
+  paidFor: [{
+    type:mongoose.Schema.Types.ObjectId,
+    ref:"Confession",
+  }],
   joinedAt: { type: Date, default: Date.now },
 });
 

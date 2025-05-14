@@ -14,6 +14,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <script
+          src="https://checkout.razorpay.com/v1/checkout.js"
+          async
+        ></script>
       <body>
         <QueryProvider>
           {children}

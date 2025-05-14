@@ -1,3 +1,3 @@
 export const PAYMENTS = {
-   ADD_TO_WALLET: 30,
+   REVEAL_IDENTITY: 29,
 }

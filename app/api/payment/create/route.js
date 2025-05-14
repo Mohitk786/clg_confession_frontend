@@ -4,7 +4,6 @@ import razorpayInstance from "@/utils/razorpay";
 import { PAYMENTS } from "@/constants/payment";
 import User from "@/models/User";
 import Payment from "@/models/Payment";
-import UnlockedConfessions from "@/models/UnlockedConfessions";
 
 export const POST = async (req) => {
   try {
@@ -21,18 +20,20 @@ export const POST = async (req) => {
       return NextResponse.json({ message: "Confession ID is required" }, { status: 400 });
 
     const order = await razorpayInstance.orders.create({
-      amount: PAYMENTS.ADD_TO_WALLET * 100,
+      amount: PAYMENTS.REVEAL_IDENTITY * 100,
       currency: "INR",
       receipt: "receipt#1",
       notes: {
         firstName: dbUser.name,
+        confessionId,
       },
-      confessionId,
     });
 
+
     const paymentData = {
+      orderId: order.id,
       userId: dbUser._id,
-      amount: order.amount,
+      amount: Number(order.amount),
       currency: order.currency,
       status: order.status,
       receipt: order.receipt || "",
@@ -40,15 +41,20 @@ export const POST = async (req) => {
       confessionId
     };
 
-    const payment = Payment.create(paymentData);
-    await UnlockedConfessions.create({
-      userId: dbUser._id,
-      confessionId,
-    });
 
-    return NextResponse.json({ ...payment, keyId: process.env.RAZORPAY_KEY_ID });
+    const payment = await Payment.create(paymentData);
+
+    const data = {
+      key : process.env.RAZORPAY_KEY_ID,
+      order_id: payment.orderId,
+      amount:payment.amount,
+      currency:payment.currency,
+    }
+
+    return NextResponse.json({ data });
 
   } catch (err) {
+    console.log("Error in creating payment", err);  
     return NextResponse.json({ msg: err.message }, { status: 500 });
   }
 };

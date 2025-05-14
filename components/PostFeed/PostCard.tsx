@@ -162,6 +162,7 @@ export const PostCard: FC<PostCardProps> = ({
 
       {confessionResult && (
         <ConfessionResultModal
+          confessionId={_id}  
           isOpen={modalOpen}
           onClose={() => setModalOpen(false)}
           isForYou={confessionResult.isForYou}

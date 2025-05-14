@@ -60,6 +60,7 @@ export function ConfessionModal({ open, onOpenChange }: ConfessionModalProps) {
   const { data }: any = useUser();
   const user = data?.data!;
 
+
   const { mutate: addConfession, isPending, isError } = useCreateConfession();
 
   // Rotate hint text every 5 seconds
@@ -125,7 +126,7 @@ export function ConfessionModal({ open, onOpenChange }: ConfessionModalProps) {
       return;
     }
 
-    if (identityReveal === "reveal" && user?.profileCompleted) {
+    if (identityReveal === "reveal" && !user?.profileCompleted) {
       setError((prev) => {
         return {
           ...prev,
