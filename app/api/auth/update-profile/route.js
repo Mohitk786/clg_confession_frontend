@@ -26,7 +26,6 @@ export const POST = async (req) => {
 
     if(existProfile) {
         const restrictedFields = ["course", "year", "branch", "section"];
-    
         for (const field of restrictedFields) {
           const alreadyExists = !!existProfile[field];
           const tryingToUpdate = body[field] !== undefined;
@@ -41,7 +40,29 @@ export const POST = async (req) => {
             );
           }
         }
+
+      await Profile.findByIdAndUpdate(
+          existProfile._id,
+          {
+            $set: {
+              year:  existProfile.year || year,
+              course:  existProfile.course || course, 
+              section:  existProfile.section || section,
+              branch:  existProfile.branch || branch,
+             
+            },
+          },
+          { new: true }
+        );
      
+        return NextResponse.json(
+          {
+            success: true,
+            message: "Profile updated successfully",
+          },
+          { status: 200 }
+        );
+
     }
 
 

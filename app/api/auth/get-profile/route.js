@@ -18,7 +18,7 @@ try{
 
 
     if(!profile){
-        return new Response(JSON.stringify({message: "Profile not found"}), {status: 404})
+        return new Response(JSON.stringify({message: "You have not comppleted your profile"}), {status: 404})
     }
 
     return NextResponse.json({

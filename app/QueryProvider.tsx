@@ -13,7 +13,7 @@ export default function QueryProvider({
   const queryClient = new QueryClient();
   const pathname = usePathname();
 
-  const isOnboardingPage = pathname === "/onboarding";
+  const isOnboardingPage = pathname === "/onboarding" || pathname === "/policy";
 
   return (
     <QueryClientProvider client={queryClient}>

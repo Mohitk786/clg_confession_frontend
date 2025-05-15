@@ -1,6 +1,7 @@
 "use client";
 import { createProfile } from "@/actions/create-profile";
 import { useState } from "react";
+import Link from "next/link";
 
 export default function UserInfoForm({
   colleges,
@@ -11,6 +12,7 @@ export default function UserInfoForm({
 }) {
   const [gender, setGender] = useState("");
   const [relationshipStatus, setRelationshipStatus] = useState("");
+  const [policyAccepted, setPolicyAccepted] = useState(false);
 
   return (
     <div className="space-y-6 sm:space-y-8 backdrop-blur-md bg-[#0B0B0B]/80 p-4 sm:p-6 md:p-8 lg:p-10 rounded-2xl border border-[#333333] shadow-lg min-w-4xl  w-full mx-auto animate-fade-in">
@@ -24,7 +26,10 @@ export default function UserInfoForm({
         </p>
       </div>
 
-      <form action={createProfile} className="space-y-6 sm:space-y-8">
+      <form
+        action={createProfile}
+        className="space-y-6 sm:space-y-8"
+      >
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Name */}
           <div className="space-y-2">
@@ -144,11 +149,50 @@ export default function UserInfoForm({
 
         <input type="hidden" name="phone" value={phone} />
 
+        <div>
+          <label className="flex items-center gap-2 text-sm text-[#EAEAEA]/70">
+            <input
+              name="policyAccepted"
+              type="checkbox"
+              className="mt-1 accent-[#D4AF37] w-4 h-4"
+              checked={policyAccepted}
+              onChange={() => setPolicyAccepted(!policyAccepted)}
+            />
+            I have read and agree to the <Link href={'/policy'} className='text-blue-600'>Community Guidelines & Posting Policy</Link>.
+          </label>
+          {policyAccepted && (
+            <div className="flex items-center text-green-500 text-sm gap-1">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-4 w-4"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+                aria-hidden="true"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.293-11.293a1 1 0 00-1.414 0L9 10.586l-1.879-1.879a1 1 0 00-1.414 1.414l2.293 2.293a1 1 0 001.414 0l4-4z"
+                  clipRule="evenodd"
+                />
+              </svg>
+              You’re good to go!
+            </div>
+          )}
+        </div>
+
         {/* Submit Button */}
         <div className="pt-4">
           <button
+            onClick={() => {
+              if (!policyAccepted) {
+                alert("Please accept the Community Guidelines & Posting Policy.");
+                return;
+              }
+            }}
+            // disabled={!policyAccepted}
             type="submit"
-            className="w-full bg-[#D4AF37] hover:bg-[#C09C2C] text-[#0B0B0B] font-semibold h-12 text-base rounded-md transition-all duration-200"
+            title={`${!policyAccepted ? "Please accept the Community Guidelines & Posting Policy." : "Enter pool"}`}
+            className={`${!policyAccepted ? "cursor-not-allowed":"" } w-full bg-[#D4AF37] hover:bg-[#C09C2C] text-[#0B0B0B] font-semibold h-12 text-base rounded-md transition-all duration-200`}
           >
             Complete Setup 🚀
           </button>

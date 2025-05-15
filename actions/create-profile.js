@@ -37,27 +37,33 @@ export async function createProfile(formData) {
   const referCode = formData.get("referCode");
   const hookupInterest = formData.get("hookupInterest") === "on";
   const relationshipStatus = formData.get("relationshipStatus");
+  const policyAccepted = formData.get("policyAccepted") === "on";
+
+
+
+  if (!policyAccepted) {
+      throw new Error("Please accept the policy!")
+  }
 
 
   if (!name || !phone || !gender || !collegeId) {
-    throw new Error("Missing required fields!");
+      throw new Error("Please fill all the fields!")
   }
   await dbConnect();
 
  
   const college = await College.findById(collegeId);
   if (!college) {
-    throw new Error("Invalid college ID!");
+    throw new Error("College not found!")
   }
 
   try {
     const existingUser = await User.findOne({ phone });
     if (existingUser) {
-      throw new Error("User already exists!");
+      if (existingUser.college.toString() !== collegeId) {
+        throw new Error("You are already registered with a different college!")
+      }
     }
-
-  
-      
     const code = await generateReferCode(name, phone, collegeId);
       
     let updatedPhone = "+91" + phone;

@@ -20,7 +20,7 @@ import {
 import { GraduationCap, Calendar, Book } from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
 import { courses, branches } from "@/constants/data"
-import { useUpdateProfile } from "@/hooks/auth"
+import { useUpdateProfile, useUser } from "@/hooks/auth"
 import { getProfile } from "@/services/auth"
 
 // Define the schema with required and optional fields
@@ -39,6 +39,8 @@ const ProfileForm = () => {
   const [showConfirmation, setShowConfirmation] = useState(false)
   const [profile, setProfile] = useState<any>(null)
   const [isLoading, setIsLoading] = useState(true)
+  const {data}:any = useUser();
+  const user = data?.data
 
   const form = useForm<ProfileFormValues>({
     resolver: zodResolver(profileFormSchema),
@@ -52,11 +54,13 @@ const ProfileForm = () => {
 
   useEffect(() => {
     const fetchProfile = async () => {
+    
       setIsLoading(true)
       try {
         const res: any = await getProfile()
         if (res?.success) {
           setProfile(res.data)
+
 
           form.reset({
             course: res.data?.course || "",
@@ -88,9 +92,28 @@ const ProfileForm = () => {
   }
 
   function handleConfirm() {
-    const data = form.getValues()
+    const values = form.getValues()
+    const newValuesOnly: Partial<ProfileFormValues> = {}
+  
+    for (const key in values) {
+      const typedKey = key as keyof ProfileFormValues
+      const wasEmptyBefore = !profile?.[typedKey]
+  
+      if (wasEmptyBefore && values[typedKey]) {
+        newValuesOnly[typedKey] = values[typedKey]
+      }
+    }
+  
+    if (Object.keys(newValuesOnly).length === 0) {
+      toast({
+        title: "No new values",
+        description: "You can only update fields that were previously empty.",
+      })
+      setShowConfirmation(false)
+      return
+    }
 
-    updateProfile(data, {
+    updateProfile(newValuesOnly, {
       onSuccess: () => {
         toast({
           title: "Profile updated",

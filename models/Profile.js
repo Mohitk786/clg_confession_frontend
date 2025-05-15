@@ -23,7 +23,7 @@ const profileSchema = new mongoose.Schema({
     ],
   },
 
-  Branch: { type: String},
+  branch: { type: String},
   section: { type: String},
   profileImage: { type: String },
   userId: {

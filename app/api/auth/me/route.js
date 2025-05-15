@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { verifySession } from "@/lib/dal";
 import User from "@/models/User";
+import { dbConnect } from "@/lib/dbConnect";
 
 export async function GET(req) {
   try {
@@ -13,7 +14,15 @@ export async function GET(req) {
       }, { status: 404 });
     }
 
+    await dbConnect();
     const dbUser =  await User.findById(user.userId).select("sp referCode");
+
+    if (!dbUser) {
+      return NextResponse.json({
+        success: false,
+        message: "User not found"
+      }, { status: 404 });
+    }
 
     return NextResponse.json({
       success: true,
@@ -24,7 +33,7 @@ export async function GET(req) {
   } catch (err) {
     return NextResponse.json({
       success: false,
-      message: "Error while getting user"
+      message: "Error while getting user"+err.message
     }, { status: 500 });
   }
 }
