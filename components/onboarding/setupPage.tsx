@@ -1,4 +1,6 @@
+"use client";
 import { createProfile } from "@/actions/create-profile";
+import { useState } from "react";
 
 export default function UserInfoForm({
   colleges,
@@ -7,136 +9,159 @@ export default function UserInfoForm({
   colleges: any;
   phone: string;
 }) {
+  const [gender, setGender] = useState("");
+  const [relationshipStatus, setRelationshipStatus] = useState("");
 
   return (
-    <div className="space-y-6 sm:space-y-8 backdrop-blur-sm bg-[#0B0B0B]/70 p-4 sm:p-6 rounded-xl border border-[#333333]">
+    <div className="space-y-6 sm:space-y-8 backdrop-blur-md bg-[#0B0B0B]/80 p-4 sm:p-6 md:p-8 lg:p-10 rounded-2xl border border-[#333333] shadow-lg min-w-4xl  w-full mx-auto animate-fade-in">
       {/* Header */}
       <div className="text-center space-y-1 sm:space-y-2">
-        <h1 className="font-serif text-2xl sm:text-3xl text-[#D4AF37]">
-          Complete Your Profile
+        <h1 className="font-playfair text-2xl sm:text-3xl md:text-4xl text-[#D4AF37]">
+          ✨ Build Your College Aura
         </h1>
-        <p className="text-[#EAEAEA]/80 italic text-xs sm:text-sm">
-          Your identity will unlock attention.
+        <p className="text-[#EAEAEA]/80 italic text-xs sm:text-sm md:text-base">
+          Find your vibe, your tribe, and maybe your ride-or-die.
         </p>
       </div>
 
-      {/* Form */}
-      <form action={createProfile} className="space-y-4 sm:space-y-6">
-        {/* Name */}
-        <div className="space-y-1 sm:space-y-2">
-          <label
-            htmlFor="name"
-            className="text-xs sm:text-sm text-[#EAEAEA]/70"
-          >
-            Your Name
-          </label>
-          <input
-            name="name"
-            required
-            id="name"
-            className="w-full bg-[#1A1A1A] border border-[#333333] focus:border-[#D4AF37] focus:ring-[#D4AF37]/20 text-[#EAEAEA] rounded-md px-3 py-2 text-sm"
-            placeholder="How should we call you?"
-          />
-        </div>
+      <form action={createProfile} className="space-y-6 sm:space-y-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {/* Name */}
+          <div className="space-y-2">
+            <label htmlFor="name" className="text-sm text-[#EAEAEA]/70">
+              Your Name
+            </label>
+            <input
+              name="name"
+              required
+              id="name"
+              className="w-full bg-[#1A1A1A] border border-[#333333] focus:border-[#D4AF37] text-[#EAEAEA] rounded-md px-3 py-2 text-sm"
+              placeholder="How should we call you?"
+            />
+          </div>
 
-        {/* College */}
-        <div className="space-y-1 sm:space-y-2">
-          <label
-            htmlFor="college"
-            className="text-xs sm:text-sm text-[#EAEAEA]/70"
-          >
-            Select Your College
-          </label>
-          <select
-            name="college"
-            required
-            id="college"
-            className="w-full bg-[#1A1A1A] border-[#333333] focus:border-[#D4AF37] focus:ring-[#D4AF37]/20 text-[#EAEAEA] rounded-md px-3 py-2 text-sm"
-          >
-            <option value="">Select your college</option>
-            {colleges.map((college: any) => (
-              <option key={college._id} value={college._id}>
-                {college.name}
-              </option>
-            ))}
-          </select>
-          <p className="text-[10px] sm:text-xs text-[#EAEAEA]/50 italic">
-            Your college is locked forever. Your stories stay in your college.
-          </p>
-        </div>
+          {/* College */}
+          <div className="space-y-2">
+            <label htmlFor="college" className="text-sm text-[#EAEAEA]/70">
+              Select Your College
+            </label>
+            <select
+              name="college"
+              required
+              id="college"
+              className="w-full bg-[#1A1A1A] border border-[#333333] focus:border-[#D4AF37] text-[#EAEAEA] rounded-md px-3 py-2 text-sm"
+            >
+              <option value="">Select your college</option>
+              {colleges.map((college: any) => (
+                <option key={college._id} value={college._id}>
+                  {college.name}
+                </option>
+              ))}
+            </select>
+            <p className="text-[10px] text-[#EAEAEA]/50 italic">
+              Locked to your college. Where love stories begin. 💫
+            </p>
+          </div>
 
-        {/* Gender */}
-        <div className="space-y-1 sm:space-y-2">
-          <label className="text-xs sm:text-sm text-[#EAEAEA]/70">
-            Select Gender
-          </label>
-          <div className="grid grid-cols-3 gap-1 sm:gap-2">
-            {["Male", "Female", "Other"].map((g) => (
-              <label
-                key={g}
-                className="px-2 sm:px-4 py-1.5 sm:py-2 rounded-md border border-[#333333] bg-[#1A1A1A] text-[#EAEAEA]/70 hover:border-[#D4AF37]/50 text-center text-xs sm:text-sm cursor-pointer"
-              >
-                <input
-                  type="radio"
-                  name="gender"
-                  value={g.toUpperCase()}
-                  className="hidden"
-                />
-                {g}
-              </label>
-            ))}
+          {/* Gender */}
+          <div className="space-y-2 md:col-span-2">
+            <label className="text-sm text-[#EAEAEA]/70">Select Gender</label>
+            <div className="grid grid-cols-3 gap-3">
+              {["Male", "Female", "Other"].map((g) => (
+                <label
+                  key={g}
+                  className={`px-4 py-2 rounded-md border cursor-pointer text-center text-sm transition-all duration-200
+                    ${
+                      gender === g.toUpperCase()
+                        ? "bg-[#D4AF37] text-[#0B0B0B] border-[#D4AF37]"
+                        : "bg-[#1A1A1A] text-[#EAEAEA]/70 border-[#333333] hover:border-[#D4AF37]/50"
+                    }`}
+                >
+                  <input
+                    type="radio"
+                    name="gender"
+                    value={g.toUpperCase()}
+                    className="hidden"
+                    onChange={() => setGender(g.toUpperCase())}
+                  />
+                  {g}
+                </label>
+              ))}
+            </div>
+          </div>
+
+          {/* Relationship Status */}
+          <div className="space-y-2 md:col-span-2">
+            <label className="text-sm text-[#EAEAEA]/70">Relationship Status</label>
+            <div className="grid grid-cols-3 gap-3 items-center">
+              {["Single", "Committed", "It’s Complicated"].map((status) => (
+                <label
+                  key={status}
+                  className={`px-4 py-2 rounded-md border cursor-pointer text-center text-sm transition-all duration-200
+                    ${
+                      relationshipStatus === status
+                        ? "bg-[#D4AF37] text-[#0B0B0B] border-[#D4AF37]"
+                        : "bg-[#1A1A1A] text-[#EAEAEA]/70 border-[#333333] hover:border-[#D4AF37]/50"
+                    }`}
+                >
+                  <input
+                    type="radio"
+                    name="relationshipStatus"
+                    value={status}
+                    className="hidden"
+                    onChange={() => setRelationshipStatus(status)}
+                  />
+                  {status}
+                </label>
+              ))}
+            </div>
+          </div>
+
+          {/* Hookup Interest */}
+          <div className="space-y-2 col-span-1 md:col-span-2">
+            <label htmlFor="hookup" className="flex items-center gap-2 text-sm text-[#EAEAEA]/70">
+              <input type="checkbox" name="hookupInterest" id="hookup" />
+              Interested in Casual Sparks? <span className="text-[#EAEAEA]/50 italic">(optional)</span>
+            </label>
+            <p className="text-[10px] text-[#EAEAEA]/50 italic">
+              For thrill-seekers only. 🌪️ Discreet and destiny-bound.
+            </p>
+          </div>
+
+          {/* Refer Code */}
+          <div className="space-y-2 col-span-1 md:col-span-2">
+            <label htmlFor="referCode" className="text-sm text-[#EAEAEA]/70">
+              Refer Code <span className="italic text-[#EAEAEA]/50">(optional)</span>
+            </label>
+            <input
+              name="referCode"
+              id="referCode"
+              className="w-full bg-[#1A1A1A] border border-[#333333] focus:border-[#D4AF37] text-[#EAEAEA] rounded-md px-3 py-2 text-sm"
+              placeholder="Got a friend's code?"
+            />
           </div>
         </div>
 
-        <div className="space-y-1 sm:space-y-2">
-          <label
-            htmlFor="hookup"
-            className="flex items-center gap-2 text-xs sm:text-sm text-[#EAEAEA]/70"
-          >
-            <input type="checkbox" name="hookupInterest" id="hookup" />
-            Interested in Hookups
-          </label>
-          <p className="text-[10px] sm:text-xs text-[#EAEAEA]/50 italic">
-            Only for thrill-seekers. Not visible to anyone. Except fate.
-          </p>
-        </div>
         <input type="hidden" name="phone" value={phone} />
 
-       
-        <div className="space-y-1 sm:space-y-2">
-          <label
-            htmlFor="referCode"
-            className="flex items-center justify-between text-xs sm:text-sm text-[#EAEAEA]/70"
-          >
-            Refer Code{" "}
-            <span className="italic text-[#EAEAEA]/50">(optional)</span>
-          </label>
-          <input
-            name="referCode"
-            id="referCode"
-            className="w-full bg-[#1A1A1A] border border-[#333333] focus:border-[#D4AF37] focus:ring-[#D4AF37]/20 text-[#EAEAEA] rounded-md px-3 py-2 text-sm"
-            placeholder="Got a friend's code?"
-          />
-        </div>
-
-        {/* Submit */}
-        <div className="pt-2 sm:pt-4">
+        {/* Submit Button */}
+        <div className="pt-4">
           <button
             type="submit"
-            className="w-full bg-[#D4AF37] hover:bg-[#C09C2C] text-[#0B0B0B] font-medium h-9 sm:h-10 text-sm sm:text-base rounded-md"
+            className="w-full bg-[#D4AF37] hover:bg-[#C09C2C] text-[#0B0B0B] font-semibold h-12 text-base rounded-md transition-all duration-200"
           >
-            Complete Setup
+            Complete Setup 🚀
           </button>
         </div>
       </form>
 
       {/* Footer */}
-      <div className="space-y-2 sm:space-y-3 pt-1 sm:pt-2">
+      <div className="space-y-2 pt-4">
         <p className="text-xs sm:text-sm text-[#EAEAEA]/70 text-center italic">
-          "Verified members get to see more than others."
+          "Verified lovers get verified attention."
         </p>
         <p className="text-xs sm:text-sm text-[#EAEAEA]/70 text-center italic">
-          "Some uploads are only visible after joining."
+          "Some secrets unlock only after you belong."
         </p>
       </div>
     </div>

@@ -36,6 +36,8 @@ export async function createProfile(formData) {
   const gender = formData.get("gender");
   const referCode = formData.get("referCode");
   const hookupInterest = formData.get("hookupInterest") === "on";
+  const relationshipStatus = formData.get("relationshipStatus");
+
 
   if (!name || !phone || !gender || !collegeId) {
     throw new Error("Missing required fields!");

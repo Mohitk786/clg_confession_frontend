@@ -60,11 +60,11 @@ function OnboardingPage({colleges}: { colleges: any }) {
       </div>
 
       {/* Content */}
-      <div className="relative z-10 w-full max-w-md px-4 sm:px-6 py-8 sm:py-12">
-        {!verified ? (
+      <div className={`relative z-10 ${ !verified ? 'md:min-w-[60%] lg:min-w-[40%]':''} max-w-md px-4 sm:px-6 py-8 sm:py-12`}>
+        {verified ? (
           <NotVerfiedForm mobileNumber={mobileNumber} setMobileNumber={setMobileNumber} setVerified={setVerified} />
         ) : (
-          <div>
+          <div className="w-full">
             <UserInfoForm phone = {mobileNumber} colleges={colleges} />
           </div>
         )}
