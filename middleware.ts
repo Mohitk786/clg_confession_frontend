@@ -21,13 +21,14 @@ export async function middleware(req: NextRequest) {
   const session = await decrypt(cookie);
 
   if (isProtectedRoute && !session?.user) {
-    return NextResponse.redirect(new URL("/onboarding", req.nextUrl));
+    return NextResponse.redirect(new URL("/landing", req.nextUrl));
   }
 
   if (
     isPublicRoute &&
     session?.user &&
-    req.nextUrl.pathname.startsWith("/onboarding")
+    (req.nextUrl.pathname.startsWith("/onboarding") ||
+      req.nextUrl.pathname.startsWith("/landing"))
   ) {
     return NextResponse.redirect(new URL("/", req.url));
   }
