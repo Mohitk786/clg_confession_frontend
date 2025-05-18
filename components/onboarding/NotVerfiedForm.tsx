@@ -111,7 +111,7 @@ const NotVerfiedForm = ({ setVerified, mobileNumber, setMobileNumber }: NotVerfi
   }
 
   return (
-    <div className="space-y-6 sm:space-y-8 max-w-md px-4 sm:px-6 py-8 sm:py-12 backdrop-blur-md bg-[#0B0B0B]/80 rounded-2xl border border-[#333333] shadow-lg">
+    <div className="space-y-6 sm:space-y-8 max-w-md px-4 sm:px-6 py-8 sm:py-12 backdrop-blur-md bg-[#0B0B0B]/80 rounded-2xl border border-[#333333] shadow-lg mx-auto">
       {/* Header */}
       <div className="text-center space-y-1 sm:space-y-2">
         <h1 className="font-serif text-2xl sm:text-3xl md:text-4xl text-[#D4AF37]">
