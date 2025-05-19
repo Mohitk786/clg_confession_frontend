@@ -22,18 +22,17 @@ interface NewsModalProps {
 }
 
 export const NewsModal: React.FC<NewsModalProps> = ({ open, onOpenChange }) => {
-  
   const initialData = {
     title: "",
     image: "",
     content: "",
-  }
+  };
   const [formData, setFormData] = useState(initialData);
 
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
-  const {mutate:createNews} = useCreateNews();
+  const { mutate: createNews } = useCreateNews();
 
   const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -66,20 +65,20 @@ export const NewsModal: React.FC<NewsModalProps> = ({ open, onOpenChange }) => {
   const handleSubmit = async () => {
     try {
       let imageBase64 = "";
-  
+
       if (selectedImage) {
         const reader = new FileReader();
         reader.readAsDataURL(selectedImage);
-  
+
         reader.onloadend = () => {
           imageBase64 = reader.result as string;
-  
+
           const payload = {
             ...formData,
             image: imageBase64,
             tags: selectedTags,
           };
-  
+
           createNews(payload, {
             onSuccess: () => {
               setFormData(initialData);
@@ -97,7 +96,7 @@ export const NewsModal: React.FC<NewsModalProps> = ({ open, onOpenChange }) => {
           ...formData,
           tags: selectedTags,
         };
-  
+
         createNews(payload, {
           onSuccess: () => {
             setFormData(initialData);
@@ -114,11 +113,19 @@ export const NewsModal: React.FC<NewsModalProps> = ({ open, onOpenChange }) => {
       console.error("Error:", err);
     }
   };
-  
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="p-5 max-w-xl bg-[#f5f2e8] bg-[url('/paper-texture.png')] border border-[#d4c8a8] shadow-xl">
+      <DialogContent
+        className="
+          p-4 sm:p-5
+          max-w-full w-full md:max-w-xl
+          max-h-[90vh] sm:max-h-[90vh] md:max-h-none
+          overflow-auto sm:overflow-auto md:overflow-visible
+          bg-[#f5f2e8] bg-[url('/paper-texture.png')]
+          border border-[#d4c8a8] shadow-xl
+        "
+      >
         <DialogHeader>
           <DialogTitle className="font-serif text-2xl text-center text-[#2a2a2a] italic">
             Submit Campus News
@@ -164,7 +171,7 @@ export const NewsModal: React.FC<NewsModalProps> = ({ open, onOpenChange }) => {
                 <img
                   src={previewUrl}
                   alt="Preview"
-                  className="max-h-48 rounded border border-[#d4c8a8]"
+                  className="max-w-full max-h-48 rounded border border-[#d4c8a8] object-contain"
                 />
               </div>
             )}
