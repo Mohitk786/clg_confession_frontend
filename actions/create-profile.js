@@ -30,6 +30,7 @@ async function generateReferCode(name, phone, collegeId) {
 }
 
 export async function createProfile(formData) {
+  console.log("Creating profile with data:")
   const name = formData.get("name");
   const phone = formData.get("phone");
   const collegeId = formData.get("college");
@@ -38,7 +39,6 @@ export async function createProfile(formData) {
   const hookupInterest = formData.get("hookupInterest") === "on";
   const relationshipStatus = formData.get("relationshipStatus");
   const policyAccepted = formData.get("policyAccepted") === "on";
-
 
 
   if (!policyAccepted) {
@@ -73,7 +73,9 @@ export async function createProfile(formData) {
       gender,
       college: collegeId,
       referCode:code,
-      hookupInterest,
+      policyAccepted,
+      relationshipStatus,
+      ...(hookupInterest ? { interestedInHookup: hookupInterest } : {}),
     });
 
     await newUser.save();

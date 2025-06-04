@@ -39,7 +39,7 @@ export const getUnlockedConfessions = async () => {
           path: "createdBy",
           select: "name gender college",
           populate: {
-            path: "college",
+            path: "name",
             select: "name",
           },
         });

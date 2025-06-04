@@ -1,6 +1,18 @@
 import mongoose from 'mongoose';
 
 const collegeSchema = new mongoose.Schema({
+  university: {
+    type:String
+  },
+  college_type:{
+    type:String,
+  },
+  district:{
+    type: String
+  },
+  state:{
+    type: String
+  },
   name: {
     type: String,
     required: true,

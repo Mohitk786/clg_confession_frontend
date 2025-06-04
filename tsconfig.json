@@ -22,6 +22,6 @@
       "@/*": ["./*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "app/api/confession/create/route.js", "app/api/posts/[postId]/comment/route.js", "app/api/confession/[confessionId]/delete/route.js", "models/Reaction.js", "app/api/tagUser/route.js", "app/api/payment/create/route.js", "app/api/auth/get-profile/route.js", "app/api/posts/[postId]/like/route.js"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "app/api/confession/create/route.js", "app/api/posts/[postId]/comment/route.js", "app/api/confession/[confessionId]/delete/route.js", "models/Reaction.js", "app/api/tagUser/route.js", "app/api/payment/create/route.js", "app/api/auth/get-profile/route.js", "app/api/posts/[postId]/like/route.js", "lib/start.js"],
   "exclude": ["node_modules"]
 }

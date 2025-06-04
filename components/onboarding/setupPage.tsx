@@ -99,7 +99,7 @@ export default function UserInfoForm({
           <div className="space-y-2 md:col-span-2">
             <label className="text-sm text-[#EAEAEA]/70">Relationship Status</label>
             <div className="grid grid-cols-3 gap-3 items-center">
-              {["Single", "Committed", "It’s Complicated"].map((status) => (
+              {["SINGLE", "IN_A_RELATIONSHIP", "COMPLICATED"].map((status) => (
                 <label
                   key={status}
                   className={`px-4 py-2 rounded-md border cursor-pointer text-center text-sm transition-all duration-200
@@ -116,7 +116,7 @@ export default function UserInfoForm({
                     className="hidden"
                     onChange={() => setRelationshipStatus(status)}
                   />
-                  {status}
+                  {status.toLowerCase()}
                 </label>
               ))}
             </div>

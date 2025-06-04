@@ -7,7 +7,7 @@ import College from "@/models/College";
 export const getColleges = async () => {
     try {
         await dbConnect();
-        const colleges = await College.find({})
+        const colleges = await College.find({}).limit(100);
 
         return {
             success: true,

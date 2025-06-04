@@ -22,12 +22,21 @@ const userSchema = new mongoose.Schema({
     ref: "College",
   },
   interestedInHookup: { type: Boolean, default: false },
+  relationshipStatus: {
+    type: String,
+    enum: ["SINGLE", "IN_A_RELATIONSHIP", "COMPLICATED"],
+    default: "SINGLE",
+  },
 
   sp: { type: Number, default: 75 },
   paidFor: [{
     type:mongoose.Schema.Types.ObjectId,
     ref:"Confession",
   }],
+  policyAccepted: {
+    type: Boolean,
+    default: false,
+  },
   joinedAt: { type: Date, default: Date.now },
 });
 

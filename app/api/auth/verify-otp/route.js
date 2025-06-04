@@ -28,7 +28,7 @@ export async function POST(req) {
     otpRecord.verified = true;
     await otpRecord.save();
 
-    const user = await User.findOne({ phone }).populate("college", "name");
+    const user = await User.findOne({ phone }).populate("name", "name");
     if (user) {
 
       await createSession({
