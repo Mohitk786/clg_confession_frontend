@@ -40,7 +40,7 @@ export default function HeroSection() {
         </div>
 
         <Link
-          href="/onboarding"
+          href="/login"
           className="bg-[#DD6E92] hover:bg-[#BE4A73] text-white font-['VT323'] text-xl px-8 py-6 rounded-xl shadow-[4px_4px_0px_#5E548E] hover:shadow-[2px_2px_0px_#5E548E] hover:translate-x-[2px] hover:translate-y-[2px] transition-all duration-200"
         >
           Sign Up Now
