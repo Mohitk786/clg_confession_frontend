@@ -10,6 +10,8 @@ const userSchema = new mongoose.Schema({
     type: String,
     enum: ["MALE", "FEMALE", "OTHER"],
   },
+  email: { type: String, required: [true, "Email is required"], unique: true },
+  password: { type: String, required: [true, "Password is required"] },
   name: { type: String },
   referCode: { type: String},
   username: { type: String, unique: true, sparse:true},
@@ -18,7 +20,6 @@ const userSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "College",
   },
-  interestedInHookup: { type: Boolean, default: false },
   relationshipStatus: {
     type: String,
     enum: ["SINGLE", "IN_A_RELATIONSHIP", "COMPLICATED"],
@@ -35,6 +36,7 @@ const userSchema = new mongoose.Schema({
     default: false,
   },
   verificationToken: { type: String },
+  verificationTokenExpires: { type: Date },
   isVerified: { type: Boolean, default: false },
   joinedAt: { type: Date, default: Date.now },
 });

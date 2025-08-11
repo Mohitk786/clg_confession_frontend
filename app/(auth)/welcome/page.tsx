@@ -53,9 +53,7 @@ export default function WelcomePage() {
               <Link href="/">Explore Your Campus</Link>
             </Button>
 
-            {/* <Button asChild variant="outline" className="w-full h-12 border-gray-200 hover:bg-gray-50 bg-transparent">
-              <Link href="/profile">Complete Your Profile</Link>
-            </Button> */}
+           
           </div>
 
           <div className="pt-4 border-t border-gray-100">

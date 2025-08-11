@@ -15,8 +15,11 @@ export default function QueryProvider({
   const pathname = usePathname();
 
   const isOnboardingPage =
-    pathname === "/onboarding" ||
     pathname === "/policy" ||
+    pathname === "/verify" ||
+    pathname === "/login" ||
+    pathname === "/welcome" ||
+    pathname === "/register" ||
     pathname === "/landing";
 
   return (

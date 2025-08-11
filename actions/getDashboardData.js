@@ -4,7 +4,6 @@ import { dbConnect } from "@/lib/dbConnect";
 import User from "@/models/User";
 import Confession from "@/models/Confession";
 import News from "@/models/News";
-import Like from "@/models/Like";
 import { verifySession } from "@/lib/dal";
 
 export const getDashboardData = async () => {

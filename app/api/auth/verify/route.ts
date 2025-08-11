@@ -9,17 +9,30 @@ export async function GET(request: Request) {
   const token = searchParams.get("token");
 
   if (!token) {
-    return NextResponse.json({ error: "Token is required" }, { status: 400 });
+    return NextResponse.json(
+      { success: false, message: "Verification token is required." },
+    );
   }
 
-  const user = await User.findOne({ verificationToken: token });
+  const user = await User.findOne({
+    verificationToken: token,
+    verificationTokenExpires: { $gt: Date.now() }, 
+  });
 
   if (!user) {
-    return NextResponse.json({ error: "Invalid token" }, { status: 400 });
+    return NextResponse.json(
+      { success: false, message: "Token is invalid or has expired. Please request a new verification link." },
+    );
   }
 
   user.isVerified = true;
+  user.verificationToken = undefined;
+  user.verificationTokenExpires = undefined;
   await user.save();
 
-  return NextResponse.redirect(new URL(`/register?email=${user.email}`, request.url));
+  return NextResponse.json({
+    success: true,
+    message: "Your email has been successfully verified. You can now complete your registration.",
+    email: user.email
+  });
 }
