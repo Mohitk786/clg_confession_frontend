@@ -35,7 +35,6 @@ export const useUser = () => {
     return useQuery({
         queryKey: [QUERY_KEYS.GET_USER],
         queryFn:  getUser,
-        retry: 1
     });
 }
 
@@ -46,7 +45,8 @@ export const useUpdateProfile = () => {
         mutationKey: [QUERY_KEYS.UPDATE_PROFILE],
         onSuccess: () => {
             queryClient.invalidateQueries({
-                queryKey: [QUERY_KEYS.GET_PROFILE],
+                queryKey: [QUERY_KEYS.GET_PROFILE, QUERY_KEYS.GET_USER],
+
             });
            
         },

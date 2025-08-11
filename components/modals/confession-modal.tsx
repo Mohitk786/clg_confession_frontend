@@ -126,6 +126,8 @@ export function ConfessionModal({ open, onOpenChange }: ConfessionModalProps) {
       return;
     }
 
+    console.log("Submitting confession:", user);
+
     if (identityReveal === "reveal" && !user?.profileCompleted) {
       setError((prev) => {
         return {
@@ -329,6 +331,21 @@ export function ConfessionModal({ open, onOpenChange }: ConfessionModalProps) {
   );
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 interface TaggedUser {
   _id: string;
   username: string;
@@ -341,6 +358,17 @@ interface MentionSuggestionProps {
   onUserSelect: (user: TaggedUser) => void;
   setIsTagging: (val: boolean) => void;
 }
+
+
+
+
+
+
+
+
+
+
+
 
 export const MentionSuggestion: React.FC<MentionSuggestionProps> = ({
   inputValue,

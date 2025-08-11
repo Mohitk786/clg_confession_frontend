@@ -5,12 +5,13 @@ import Navbar from "@/components/Navbar";
 import { Footer } from "@/components/home/Footer";
 import { usePathname } from "next/navigation";
 
+const queryClient = new QueryClient();
+
 export default function QueryProvider({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const queryClient = new QueryClient();
   const pathname = usePathname();
 
   const isOnboardingPage =

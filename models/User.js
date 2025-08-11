@@ -3,15 +3,12 @@ import mongoose from "mongoose";
 const userSchema = new mongoose.Schema({
   phone: {
     type: String,
-    required: true,
     unique: true,
   },
   profileCompleted: { type: Boolean, default: false },
-  isPhoneVerified: { type: Boolean, default: false },
   gender: {
     type: String,
     enum: ["MALE", "FEMALE", "OTHER"],
-    required: [true, "Gender is required"],
   },
   name: { type: String },
   referCode: { type: String},
@@ -37,6 +34,8 @@ const userSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
+  verificationToken: { type: String },
+  isVerified: { type: Boolean, default: false },
   joinedAt: { type: Date, default: Date.now },
 });
 

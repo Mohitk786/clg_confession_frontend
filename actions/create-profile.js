@@ -1,10 +1,11 @@
 "use server";
 
 import User from "@/models/User";
-import { redirect } from "next/navigation";
-import College from "@/models/College";
 import { dbConnect } from "@/lib/dbConnect";
-import { createSession } from "@/lib/session";
+import { generateToken } from "@/lib/auth";
+import { sendEmail } from "@/lib/send-email";
+import { redirect } from "next/navigation";
+import { SP_REWARD } from "@/constants/spCost";
 
 function getRandomString(length = 2) {
   const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
@@ -29,76 +30,97 @@ async function generateReferCode(name, phone, collegeId) {
   return code;
 }
 
-export async function createProfile(formData) {
-  console.log("Creating profile with data:")
-  const name = formData.get("name");
-  const phone = formData.get("phone");
-  const collegeId = formData.get("college");
-  const gender = formData.get("gender");
-  const referCode = formData.get("referCode");
-  const hookupInterest = formData.get("hookupInterest") === "on";
-  const relationshipStatus = formData.get("relationshipStatus");
-  const policyAccepted = formData.get("policyAccepted") === "on";
+export async function createProfile({ email }) {
+  if (!email) throw new Error("Email is required!");
 
-
-  if (!policyAccepted) {
-      throw new Error("Please accept the policy!")
-  }
-
-
-  if (!name || !phone || !gender || !collegeId) {
-      throw new Error("Please fill all the fields!")
-  }
   await dbConnect();
 
- 
-  const college = await College.findById(collegeId);
-  if (!college) {
-    throw new Error("College not found!")
+  let user = await User.findOne({ email });
+  if (!user) {
+    const verificationToken = await generateToken();
+
+    user = new User({
+      email,
+      verificationToken,
+      isVerified: false,
+    });
+
+    await user.save();
+
+    const verificationLink = `${process.env.NEXT_PUBLIC_BASE_URL}/verify?token=${verificationToken}`;
+
+    await sendEmail({
+      to: email,
+      subject: "Welcome! Please Verify Your Email 🎉",
+      html: `
+        <h2>Welcome to Our Community 🎉</h2>
+        <p>We're excited to have you! Please click the link below to verify your email and continue:</p>
+        <a href="${verificationLink}" style="color: white; background: #f43f5e; padding: 10px 20px; border-radius: 5px; text-decoration: none;">Verify Email</a>
+        <p>If the button doesn't work, copy this link into your browser:</p>
+        <p>${verificationLink}</p>
+      `,
+    });
+  }
+
+  return true;
+}
+
+export async function register(formData) {
+  const email = formData.get("email");
+  const name = formData.get("name");
+  const college = formData.get("college");
+  const gender = formData.get("gender");
+  const relationshipStatus = formData.get("relationshipStatus");
+  const referrer = formData.get("referCode");
+  const phone = formData.get("phone");
+  const policyAccepted = formData.get("policyAccepted") === "on";
+
+  if (
+    !name ||
+    !college ||
+    !gender ||
+    !relationshipStatus ||
+    !policyAccepted ||
+    !email
+  ) {
+    throw new Error("Please fill in all required fields and accept the policy");
   }
 
   try {
-    const existingUser = await User.findOne({ phone });
-    if (existingUser) {
-      if (existingUser.college.toString() !== collegeId) {
-        throw new Error("You are already registered with a different college!")
-      }
+    let user = await User.findOne({ email });
+    if (!user) {
+      throw new Error("User not found");
     }
-    const code = await generateReferCode(name, phone, collegeId);
-      
-    let updatedPhone = "+91" + phone;
-    const newUser = new User({
+
+    const referCode = await generateReferCode(name, phone, college);
+
+    user = {
       name,
-      phone: updatedPhone,
+      college,
       gender,
-      college: collegeId,
-      referCode:code,
-      policyAccepted,
       relationshipStatus,
-      ...(hookupInterest ? { interestedInHookup: hookupInterest } : {}),
-    });
+      referCode,
+      ...(phone && { phone }),
+      policyAccepted,
+      createdAt: new Date().toISOString(),
+    };
 
-    await newUser.save();
+    await user.save();
 
-    if (referCode) {
-      const referringUser = await User.findOne({ referCode });
-      if (referringUser) {
-        referringUser.sp += SP_REWARD.REFER;
-        await referringUser.save();
+    if (referrer) {
+      const referrerUser = await User.findOne({ referCode: referrer });
+      if (referrerUser) {
+        referrerUser = {
+          ...referrerUser,
+          sp: sp + SP_REWARD.REFER
+        }
+        await referrerUser.save();
       }
     }
 
-    await createSession({
-      name,
-      userId: newUser._id,
-      profileCompleted: newUser.profileCompleted,
-      college: college.name,
-      gender,
-    });
-
-    redirect("/");
+    redirect("/welcome");
   } catch (error) {
-    if (error?.message === "NEXT_REDIRECT") redirect("/");
-    throw new Error(error?.message || "Something went wrong");
+    console.error("Error creating profile:", error);
+    throw new Error("Failed to create profile. Please try again.");
   }
 }

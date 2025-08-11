@@ -67,6 +67,7 @@ export default function PostFeedPage({ type, title }: PostFeedPageProps) {
 
 
   
+  console.log("Posts Data:", postsData);
 
   return (
     <>

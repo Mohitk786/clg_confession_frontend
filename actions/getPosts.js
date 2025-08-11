@@ -28,7 +28,7 @@ export const getPosts = async (req, isConfession) => {
     }
 
     const [foundUser] = await Promise.all([
-      User.findById(user.userId).lean().select("name"),
+      User.findById(user.userId).lean().select("name college"),
     ]);
 
     if (!foundUser) {
