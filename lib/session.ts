@@ -28,28 +28,16 @@ export async function decrypt(session: string | undefined = "") {
   }
 }
 
-export async function createSession(user: {
-  name: string;
-  userId: string;
-  profileComplete: boolean;
-  college: string;
-  gender?: string; 
-}) {
-  const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
-  const session = await encrypt({
-    user: {
-      ...user,
-      userId: user.userId.toString(),
-    },
-    expiresAt,
-  });
-  const cookieStore = await cookies();
-
-  cookieStore.set("clg_app_cookie", session, {
+export async function createSession(userId: string) {
+  const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
+  const session = await encrypt({ userId, expiresAt })
+  const cookieStore = await cookies()
+ 
+  cookieStore.set('session', session, {
     httpOnly: true,
-    secure: true,
+    secure: process.env.NODE_ENV === 'production',
     expires: expiresAt,
-    sameSite: "lax",
-    path: "/",
-  });
+    sameSite: 'strict',
+    path: '/',
+  })
 }

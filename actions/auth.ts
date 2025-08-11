@@ -135,49 +135,31 @@ interface LoginUserProps {
   rememberMe: boolean;
 }
 
+import { dbConnect } from "@/lib/dbConnect";
+
+interface LoginUserProps {
+  email: string;
+  password: string;
+}
+
 export async function loginUser(formData: LoginUserProps) {
-  const email = formData.email
-  const password = formData.password
-  const rememberMe = formData.rememberMe
+  const { email, password } = formData;
 
- 
-    if (!email || !password) {
-      return {
-        success: false,
-        message: "Email and password are required",
-      }
+  if (!email || !password) {
+    return { success: false, message: "Email and password are required" };
   }
 
-  const user = await User.findOne({ email });
-  if (!user) {
-    return {
-      success: false,
-      message: "User not found",
-    }
-  }
+  await dbConnect();
+  const user = await User.findOne({ email }).select("+password");
 
-  console.log("login user", user)
+  if (!user) return { success: false, message: "User not found" };
 
   const isPasswordValid = await bcrypt.compare(password, user.password);
-  if (!isPasswordValid) {
-    return {
-      success: false,
-      message: "Invalid password",
-    }
-  }
+  if (!isPasswordValid) return { success: false, message: "Invalid password" };
 
-  const session = await createSession(user);
-  const cookie = await encrypt(session);
+  await createSession(user._id);
 
-  if (rememberMe) {
-    const cookieStore = await cookies();
-    cookieStore.set("college_connect_session", cookie, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      maxAge: 30 * 24 * 60 * 60, // 30 days
-    });
-  }
-
-  redirect("/");
-
+  return { success: true, message: "Login successful" }; 
 }
+
+
