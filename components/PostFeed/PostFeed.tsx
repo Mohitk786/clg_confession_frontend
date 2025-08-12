@@ -58,7 +58,6 @@ export default function PostFeedPage({ type, title }: PostFeedPageProps) {
     return () => observer.disconnect()
   }, [loadMoreRef.current, fetchNextPage])
 
-  console.log("Posts Data:", postsData)
 
   return (
     <>

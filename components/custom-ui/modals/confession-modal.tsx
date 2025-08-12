@@ -54,7 +54,6 @@ export function ConfessionModal({ open, onOpenChange }: ConfessionModalProps) {
   const { mutate: addConfession, isPending, isError } = useCreateConfession()
 
 
-  console.log("User data:", user)
 
 
 
