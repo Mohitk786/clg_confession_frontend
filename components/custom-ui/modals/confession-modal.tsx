@@ -53,6 +53,11 @@ export function ConfessionModal({ open, onOpenChange }: ConfessionModalProps) {
   const user = data?.data!
   const { mutate: addConfession, isPending, isError } = useCreateConfession()
 
+
+  console.log("User data:", user)
+
+
+
   // Rotate hint text every 5 seconds
   useState(() => {
     const interval = setInterval(() => {

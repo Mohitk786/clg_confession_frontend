@@ -15,7 +15,7 @@ export async function GET(req) {
     }
 
     await dbConnect();
-    const dbUser =  await User.findById(user.userId).select("sp referCode");
+    const dbUser =  await User.findById(user.userId).select("sp referCode profileCompleted");
 
     if (!dbUser) {
       return NextResponse.json({
@@ -28,7 +28,7 @@ export async function GET(req) {
     return NextResponse.json({
       success: true,
       message: "User fetched",
-      data: {...user, sp:dbUser.sp, referCode:dbUser?.referCode}
+      data: {...user, profileCompleted: dbUser.profileCompleted, sp:dbUser.sp, referCode:dbUser?.referCode}
     });
 
   } catch (err) {
