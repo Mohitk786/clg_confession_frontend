@@ -24,6 +24,7 @@ export async function GET(req) {
       }, { status: 404 });
     }
 
+
     return NextResponse.json({
       success: true,
       message: "User fetched",

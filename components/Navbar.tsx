@@ -30,7 +30,6 @@ const Navbar = () => {
   const path = usePathname();
   const { data }: any = useUser();
   const [isOpen, setIsOpen] = useState(false);
-  const [state, action, pending] = useActionState(logout, undefined);
 
   const user = data?.data;
 
@@ -38,6 +37,9 @@ const Navbar = () => {
     if (!user?.name) return "U";
     return user.name.charAt(0).toUpperCase();
   };
+
+  console.log("user", user);
+  console.log("getInitials", getInitials());
 
   return (
     <header className="border-b border-campus-gold/30">

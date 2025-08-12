@@ -10,7 +10,7 @@ import { SP_REWARD } from "@/constants/spCost";
 import { registerSchema } from "@/lib/validations/auth";
 import { z } from 'zod';
 import { getRandomString } from '@/utils/helper';
-import { cookies } from 'next/headers';
+import "@/models/College"; 
  
 export async function logout() {
   await deleteSession()
@@ -150,14 +150,21 @@ export async function loginUser(formData: LoginUserProps) {
   }
 
   await dbConnect();
-  const user = await User.findOne({ email }).select("+password");
+  const user = await User.findOne({ email }).select("+password").populate("college");
 
   if (!user) return { success: false, message: "User not found" };
 
   const isPasswordValid = await bcrypt.compare(password, user.password);
   if (!isPasswordValid) return { success: false, message: "Invalid password" };
 
-  await createSession(user._id);
+
+  await createSession({
+    name: user.name,
+    userId: user._id,
+    college: user.college?.name || "",
+    profileCompleted: user.profileCompleted,
+    gender: user?.gender
+  })
 
   return { success: true, message: "Login successful" }; 
 }

@@ -4,7 +4,7 @@ import { decrypt } from './session';
 export const getAuthUser = async () => {
   try {
     const cookieStore = await cookies(); 
-    const cookie =  cookieStore.get('clg_app_cookie')?.value;
+    const cookie =  cookieStore.get('session')?.value;
 
     const session = await decrypt(cookie);
     if (!session) return null;
