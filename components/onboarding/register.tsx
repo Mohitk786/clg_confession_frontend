@@ -6,7 +6,7 @@ import Link from "next/link";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import { GraduationCap, CheckCircle } from "lucide-react";
+import { GraduationCap, CheckCircle, Loader2 } from "lucide-react";
 import FormField from "@/components/custom-ui/form-field";
 
 export default function RegisterForm({ colleges = [] }: { colleges?: any }) {
@@ -26,6 +26,7 @@ export default function RegisterForm({ colleges = [] }: { colleges?: any }) {
   const [policyAccepted, setPolicyAccepted] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [generalError, setGeneralError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const validateForm = () => {
     const newErrors: any = {};
@@ -50,7 +51,6 @@ export default function RegisterForm({ colleges = [] }: { colleges?: any }) {
 
   const handleSubmit = async (e: React.FormEvent) => {
 
-    console.log(formData);
     e.preventDefault();
     setGeneralError("");
 
@@ -62,6 +62,7 @@ export default function RegisterForm({ colleges = [] }: { colleges?: any }) {
     setErrors({});
 
     try {
+      setIsLoading(true);
       const result = await register({
         ...formData,
         gender: formData.gender.toUpperCase() as "MALE" | "FEMALE" | "OTHER",
@@ -76,6 +77,8 @@ export default function RegisterForm({ colleges = [] }: { colleges?: any }) {
       }
     } catch {
       setGeneralError("Server error. Please try again later.");
+    }finally{
+      setIsLoading(false);
     }
   };
 
@@ -328,7 +331,7 @@ export default function RegisterForm({ colleges = [] }: { colleges?: any }) {
                   : "bg-gray-200 text-gray-400 cursor-not-allowed"
               }`}
             >
-              Join Your Campus Network
+             {isLoading ? <Loader2 className="animate-spin" /> : " Join Your Campus Network"}
             </Button>
           </form>
         </CardContent>

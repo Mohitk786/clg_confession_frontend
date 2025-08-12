@@ -8,7 +8,7 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { GraduationCap, Eye, EyeOff, Mail, Lock } from "lucide-react"
+import { GraduationCap, Eye, EyeOff, Mail, Lock, Loader2 } from "lucide-react"
 import { loginUser } from "@/actions/auth"
 import { useRouter } from "next/navigation"
 
@@ -19,18 +19,27 @@ export default function LoginPage() {
   const [password, setPassword] = useState("")
   const [rememberMe, setRememberMe] = useState(false)
   const [error, setError] = useState("")
+  const [isLoading, setIsLoading] = useState(false)
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
-    const result = await loginUser({
+    setIsLoading(true)
+   try{
+     const result = await loginUser({
       email,
       password,
       rememberMe: rememberMe,
     })
     if (result.success) {
       router.push("/")
-    } else {
-      setError(result.message)
+    } 
+    
+  } catch (err) {
+      setError("An error occurred while logging in. Please try again.")
+      setError((err as Error).message || "Unknown error")
+    }
+   finally {
+      setIsLoading(false)
     }
   }
 
@@ -121,7 +130,7 @@ export default function LoginPage() {
               type="submit"
               className="w-full h-12 text-base font-semibold rounded-lg bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700 text-white shadow-lg hover:shadow-xl transition-all duration-200"
             >
-              Sign In to Campus
+              {isLoading ? <Loader2 className="animate-spin"/> : "Sign In to Campus"}
             </Button>
           </form>
 
