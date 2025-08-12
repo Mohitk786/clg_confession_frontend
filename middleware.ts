@@ -10,7 +10,7 @@ const protectedRoutes = [
   "/notifications",
   "/unlocked-confessions",
 ];
-const publicRoutes = ["/onboarding"];
+const publicRoutes = ["/login", "/landing", "/register", "/verify", "/welcome"];
 
 export async function middleware(req: NextRequest) {
   const path = req.nextUrl.pathname;
@@ -21,14 +21,12 @@ export async function middleware(req: NextRequest) {
   const session = await decrypt(cookie);
 
   if (isProtectedRoute && !session?.user) {
-    return NextResponse.redirect(new URL("/landing", req.nextUrl));
+    return NextResponse.redirect(new URL("/login", req.nextUrl));
   }
 
   if (
     isPublicRoute &&
-    session?.user &&
-    (req.nextUrl.pathname.startsWith("/onboarding") ||
-      req.nextUrl.pathname.startsWith("/landing"))
+    session?.user 
   ) {
     return NextResponse.redirect(new URL("/", req.url));
   }

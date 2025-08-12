@@ -16,7 +16,7 @@ export default function FinalCTA() {
         </div>
 
         <Link
-            href="/onboarding"
+            href="/login"
           className="bg-[#7D5BA6] hover:bg-[#5E548E] text-white font-['VT323'] text-xl px-8 py-6 rounded-xl shadow-[4px_4px_0px_#DD6E92] hover:shadow-[2px_2px_0px_#DD6E92] hover:translate-x-[2px] hover:translate-y-[2px] transition-all duration-200"
         >
           Get Started

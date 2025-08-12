@@ -47,7 +47,7 @@ const NewConfessionForm: React.FC = () => {
       <form onSubmit={handleSubmit}>
         <div className="mb-4">
           <textarea
-            className="w-full p-3 border border-campus-cream bg-[#f9f7f1]  rounded-md focus:outline-none focus:ring-1 focus:ring-campus-gold focus:border-transparent min-h-[120px]"
+            className="w-full p-3 border border-campus-cream  rounded-md focus:outline-none focus:ring-1 focus:ring-purple-600 focus:border-transparent min-h-[120px]"
             placeholder="Share your anonymous confession..."
             value={content}
             onChange={(e) => setContent(e.target.value)}

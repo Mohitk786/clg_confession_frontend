@@ -1,18 +1,19 @@
-"use client";
+"use client"
 
-import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
-import Navbar from "@/components/Navbar";
-import { Footer } from "@/components/home/Footer";
-import { usePathname } from "next/navigation";
+import type React from "react"
 
-const queryClient = new QueryClient();
+import { QueryClientProvider, QueryClient } from "@tanstack/react-query"
+import Navbar from "@/components/Navbar"
+import { usePathname } from "next/navigation"
+
+const queryClient = new QueryClient()
 
 export default function QueryProvider({
   children,
 }: {
-  children: React.ReactNode;
+  children: React.ReactNode
 }) {
-  const pathname = usePathname();
+  const pathname = usePathname()
 
   const isOnboardingPage =
     pathname === "/policy" ||
@@ -20,21 +21,19 @@ export default function QueryProvider({
     pathname === "/login" ||
     pathname === "/welcome" ||
     pathname === "/register" ||
-    pathname === "/landing";
+    pathname === "/landing"
 
   return (
     <QueryClientProvider client={queryClient}>
       {isOnboardingPage ? (
         children
       ) : (
-        <div className="min-h-screen flex flex-col bg-[#f5f2e8] bg-paper-texture">
+        <div className="min-h-screen flex flex-col bg-gradient-to-br from-purple-50 via-pink-50 to-purple-100">
           <Navbar />
-          <main className="flex-grow container mx-auto md:py-6 px-6">
-            {children}
-          </main>
-          <Footer />
+          <main className="flex-grow">{children}</main>
+         
         </div>
       )}
     </QueryClientProvider>
-  );
+  )
 }

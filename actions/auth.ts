@@ -14,7 +14,7 @@ import "@/models/College";
  
 export async function logout() {
   await deleteSession()
-  redirect('/onboarding')
+  redirect('/login')
 }
 
 

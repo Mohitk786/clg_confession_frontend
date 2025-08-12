@@ -3,6 +3,7 @@ import { verifySession } from "@/lib/dal";
 import { dbConnect } from "@/lib/dbConnect";
 import Notification from "@/models/Notification";
 
+
 export const getNotifications = async () => {
     try{
         const {user} = await verifySession();

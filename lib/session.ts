@@ -3,7 +3,7 @@ import { SignJWT, jwtVerify } from "jose";
 
 export async function deleteSession() {
   const cookieStore = await cookies();
-  cookieStore.delete("clg_app_cookie");
+  cookieStore.delete("session");
 }
 
 const secretKey = process.env.SESSION_SECRET;

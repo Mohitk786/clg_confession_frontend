@@ -1,4 +1,4 @@
-export const dynamic = "force-dynamic";
+export const revalidate = 60 
 
 import React from "react";
 import { formatDistanceToNow } from "date-fns";
@@ -11,9 +11,11 @@ type Notification = {
   to: string;
   type: string;
   message: string;
-  refModel: string;
+  isRead: boolean;
+  refModel?: string;
   refId: string;
   data: any;
+  createdAt: string;
 };
 
 type Props = {
@@ -27,11 +29,12 @@ const iconMap: Record<string, React.ReactNode> = {
 
 const NotificationList = async () => {
   const notifications = await getNotifications();
+  console.log("notifications", notifications);
 
   return (
     <div className="max-w-2xl mx-auto p-4 space-y-4">
       {notifications?.length ? (
-        notifications.map((n) => (
+        notifications.map((n: Notification) => (
           <div
             key={n._id}
             className={`flex items-start gap-4 rounded-2xl p-4 shadow-md transition-all duration-300 animate-fade-in

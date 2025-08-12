@@ -38,8 +38,6 @@ const Navbar = () => {
     return user.name.charAt(0).toUpperCase();
   };
 
-  console.log("user", user);
-  console.log("getInitials", getInitials());
 
   return (
     <header className="border-b border-campus-gold/30">
