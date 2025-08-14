@@ -10,7 +10,7 @@ const protectedRoutes = [
   "/notifications",
   "/unlocked-confessions",
 ];
-const publicRoutes = ["/login", "/landing", "/register", "/verify", "/welcome"];
+  const publicRoutes = ["/login", "/landing", "/register", "/verify", "/welcome"];
 
 export async function middleware(req: NextRequest) {
   const path = req.nextUrl.pathname;
