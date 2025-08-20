@@ -28,6 +28,10 @@ const NewConfessionForm: React.FC = () => {
       onSuccess: () => {
         setContent('');
         setSelectedTags([]);
+        toast({
+          title: "Success",
+          description: "Confession posted successfully",
+        });
       },
     
       onError: (error) => {

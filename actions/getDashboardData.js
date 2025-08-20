@@ -20,6 +20,7 @@ export const getDashboardData = async () => {
 
   try {
     const user = session.user;
+
     
     await dbConnect();
     const confessionLimit = 4;
@@ -34,6 +35,8 @@ export const getDashboardData = async () => {
     }
 
     const collegeId = foundUser.college;
+
+
 
     const confessions = await Confession.find({ college: collegeId })
       .select("content commentsCount likesCount tags reactions")
@@ -52,6 +55,8 @@ export const getDashboardData = async () => {
         path: "likes",
         select: "userId",
       })
+
+   
 
       const confessionsWithIsLiked = confessions.map((confession) => {
         const isLiked = confession.likes.some(
@@ -72,7 +77,6 @@ export const getDashboardData = async () => {
           isLiked,
         };
       });
-   
 
       return {
         confessions: JSON.parse(JSON.stringify(confessionsWithIsLiked)),

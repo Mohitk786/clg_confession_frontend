@@ -39,8 +39,6 @@ const ProfileForm = () => {
   const [showConfirmation, setShowConfirmation] = useState(false)
   const [profile, setProfile] = useState<any>(null)
   const [isLoading, setIsLoading] = useState(true)
-  const { data }: any = useUser()
-  const user = data?.data
 
   const form = useForm<ProfileFormValues>({
     resolver: zodResolver(profileFormSchema),

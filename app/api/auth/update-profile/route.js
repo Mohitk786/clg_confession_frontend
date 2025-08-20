@@ -2,7 +2,7 @@ import User from "@/models/User";
 import Profile from "@/models/Profile";
 import {dbConnect} from "@/lib/dbConnect";
 import { NextResponse } from "next/server";
-import { verifySession } from "@/lib/dal";
+import { auth } from "@/auth";
 
 export const POST = async (req) => {
   try {
