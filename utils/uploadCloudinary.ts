@@ -7,7 +7,7 @@ cloudinary.config({
   api_secret: process.env.API_SECRET
 });
 
-const uploadCloudinary = async (base64Image) => {
+const uploadCloudinary = async (base64Image:string) => {
   try {
     if (!base64Image) return null;
 

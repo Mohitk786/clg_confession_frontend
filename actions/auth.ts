@@ -132,15 +132,11 @@ export async function register(formData:z.infer<typeof registerSchema>) {
 interface LoginUserProps {
   email: string;
   password: string;
-  rememberMe: boolean;
+  rememberMe?: boolean;
 }
 
 import { dbConnect } from "@/lib/dbConnect";
 
-interface LoginUserProps {
-  email: string;
-  password: string;
-}
 
 export async function loginUser(formData: LoginUserProps) {
   const { email, password } = formData;

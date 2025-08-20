@@ -15,7 +15,20 @@ export async function encrypt(payload: any) {
     .setIssuedAt()
     .setExpirationTime("7d")
     .sign(encodedKey);
-}
+  }
+
+  export interface SessionUser {
+    name: string;
+    userId: string;
+    profileCompleted: boolean;
+    college: string;
+    gender?: string;
+  }
+  
+  interface Session {
+    user: SessionUser;
+    expiresAt: string;
+  }
 
 export async function decrypt(session: string | undefined = "") {
   try {
@@ -28,13 +41,9 @@ export async function decrypt(session: string | undefined = "") {
   }
 }
 
-export async function createSession(user: {
-  name: string;
-  userId: string;
-  profileCompleted: boolean;
-  college: string;
-  gender?: string; 
-}) {
+
+
+export async function createSession(user: SessionUser) {
   const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
   const session = await encrypt({
     user: {

@@ -6,7 +6,7 @@ export const getAllNews = async ({pageParam=1}:{pageParam?:number}) =>{
         return res.data;
     }catch(e){
        
-    }
+    }   
 }
 
 export const createNews = async (data: any) => {
