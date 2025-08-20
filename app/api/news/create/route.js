@@ -1,21 +1,24 @@
 import { NextResponse } from "next/server";
 import { dbConnect } from "@/lib/dbConnect";
-import { verifySession } from "@/lib/dal";
 import User from "@/models/User";
 import News from "@/models/News";
 import College from "@/models/College";
 import uploadCloudinaryBase64 from "@/utils/uploadCloudinary";
 import { SP_REWARD } from "@/constants/spCost";
+import { auth } from "@/auth";
 
 export async function POST(req) {
   try {
-    const {user} = await verifySession();
-    if (!user || !user.userId) {
+    const session = await auth();
+
+    if (!session) {
       return NextResponse.json(
-        { success: false, message: "Unauthorized" },
+        { success: false, message: "NOT AUTHENTICATED" },
         { status: 401 }
       );
     }
+
+    const {user} = session;
 
     const { title, tags, content, image } = await req.json();
 

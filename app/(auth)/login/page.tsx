@@ -9,8 +9,8 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { GraduationCap, Eye, EyeOff, Mail, Lock, Loader2 } from "lucide-react"
-import { loginUser } from "@/actions/auth"
 import { useRouter } from "next/navigation"
+import { signIn } from "next-auth/react"
 
 export default function LoginPage() {
   const router = useRouter()
@@ -25,14 +25,30 @@ export default function LoginPage() {
     e.preventDefault()
     setIsLoading(true)
    try{
-     const result = await loginUser({
+
+    console.log("login 1")
+
+    const credentials = {
       email,
       password,
-      rememberMe: rememberMe,
-    })
-    if (result.success) {
-      router.push("/")
-    } 
+    }
+
+    console.log("credentials", credentials)
+
+    const result = await signIn('credentials', credentials);
+
+    
+
+
+    console.log("result", result)
+
+    // if (result?.ok) {
+    //   router.push("/")
+    // } 
+
+    // if(result?.error) {
+    //   setError(result.error)
+    // }
     
   } catch (err) {
       setError("An error occurred while logging in. Please try again.")

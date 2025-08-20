@@ -2,12 +2,18 @@ import { NextResponse } from "next/server";
 import Confession from "@/models/Confession";
 import User from "@/models/User";
 import { dbConnect } from "@/lib/dbConnect";
-import { verifySession } from "@/lib/dal";
 import { SP_DEDUCTION } from "@/constants/spCost";
+import { auth } from "@/auth";
 
 export async function GET(req, { params }) {
   try {
-    const { user } = await verifySession();
+    const session = await auth(); 
+
+    if (!session) {
+      return NextResponse.json({ success: false, message: "Not authenticated" }, { status: 404 });
+    }
+
+    const {user} = session;
 
     if (!user || !user.userId) {
       return NextResponse.json(

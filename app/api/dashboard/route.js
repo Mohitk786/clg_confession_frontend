@@ -7,14 +7,16 @@ import { verifySession } from "@/lib/dal";
 
 export async function GET(req) {
   try {
-    const {user} = await verifySession();
+    const session = await auth();
 
-    if (!user || !user.userId) {
+    if (!session) {
       return NextResponse.json(
-        { success: false, message: "Unauthorized access" },
+        { success: false, message: "NOT AUTHENTICATED" },
         { status: 401 }
       );
     }
+
+    const {user} = session;
 
     await dbConnect();
 

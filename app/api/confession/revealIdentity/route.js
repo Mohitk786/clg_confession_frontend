@@ -1,15 +1,18 @@
 import Confession from "@/models/Confession";
+import { auth } from "@/auth";
 
 export const POST = async (req) => {
     try {
-        const {user} = await verifySession();
+        const session = await auth();
     
-        if (!user) {
+        if (!session) {
         return NextResponse.json({
             success: false,
             message: "UNAUTHORIZED"
         }, { status: 404 });
         }
+
+        const {user} = session;
     
         await dbConnect();
         const body = await req.json();

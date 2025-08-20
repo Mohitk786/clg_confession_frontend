@@ -1,21 +1,17 @@
 "use server"
 
-import { createSession, deleteSession, encrypt } from '@/lib/session'
-import { redirect } from 'next/navigation'
 import bcrypt from 'bcryptjs'
 import User from "@/models/User";
-import { generateToken } from "@/lib/auth";
 import { sendEmail } from "@/lib/send-email";
 import { SP_REWARD } from "@/constants/spCost";
 import { registerSchema } from "@/lib/validations/auth";
 import { z } from 'zod';
 import { getRandomString } from '@/utils/helper';
+import { dbConnect } from "@/lib/dbConnect";
+
 import "@/models/College"; 
  
-export async function logout() {
-  await deleteSession()
-  redirect('/login')
-}
+
 
 
 interface GenerateReferCodeProps {
@@ -37,6 +33,13 @@ async function generateReferCode({ name, phone, collegeId }: GenerateReferCodePr
 
   return code;
 }
+
+async function generateToken(length = 32) {
+  const array = new Uint8Array(length);
+  crypto.getRandomValues(array);
+  return Array.from(array, b => b.toString(16).padStart(2, "0")).join("");
+}
+
 
 export async function register(formData:z.infer<typeof registerSchema>) {
   const {
@@ -77,6 +80,8 @@ export async function register(formData:z.infer<typeof registerSchema>) {
   try {
     const referCode = await generateReferCode({ name, phone, collegeId: college });
     const hashedPassword = await bcrypt.hash(password, 10);
+
+    await dbConnect()
 
     const user = new User({
       email,
@@ -129,40 +134,7 @@ export async function register(formData:z.infer<typeof registerSchema>) {
 }
 
 
-interface LoginUserProps {
-  email: string;
-  password: string;
-  rememberMe?: boolean;
-}
-
-import { dbConnect } from "@/lib/dbConnect";
 
 
-export async function loginUser(formData: LoginUserProps) {
-  const { email, password } = formData;
-
-  if (!email || !password) {
-    return { success: false, message: "Email and password are required" };
-  }
-
-  await dbConnect();
-  const user = await User.findOne({ email }).select("+password").populate("college");
-
-  if (!user) return { success: false, message: "User not found" };
-
-  const isPasswordValid = await bcrypt.compare(password, user.password);
-  if (!isPasswordValid) return { success: false, message: "Invalid password" };
-
-
-  await createSession({
-    name: user.name,
-    userId: user._id,
-    college: user.college?.name || "",
-    profileCompleted: user.profileCompleted,
-    gender: user?.gender
-  })
-
-  return { success: true, message: "Login successful" }; 
-}
 
 

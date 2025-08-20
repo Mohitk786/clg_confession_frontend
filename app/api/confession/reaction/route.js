@@ -1,20 +1,23 @@
 import { NextResponse } from "next/server";
 import { dbConnect } from "@/lib/dbConnect";
 import Reaction from "@/models/Reaction";
-import { verifySession } from "@/lib/dal";
-import Confession from "@/models/Confession";
+  import Confession from "@/models/Confession";
 import News from "@/models/News";
+import { auth } from "@/auth";
 
 export async function POST(req) {
   await dbConnect();
 
-  const {user} = await verifySession();
-  if (!user || !user.userId) {
+  const session = await auth();
+
+  if (!session) {
     return NextResponse.json(
-      { success: false, message: "Unauthorized" },
+      { success: false, message: "NOT AUTHENTICATED" },
       { status: 401 }
     );
   }
+
+  const {user} = session;
 
   try {
     const body = await req.json();

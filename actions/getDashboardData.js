@@ -4,19 +4,22 @@ import { dbConnect } from "@/lib/dbConnect";
 import User from "@/models/User";
 import Confession from "@/models/Confession";
 import News from "@/models/News";
-import { verifySession } from "@/lib/dal";
+import { auth } from "@/auth";
 
 export const getDashboardData = async () => {
+  const session = await auth();
+  
+  if (!session) {
+    return {
+      success: false,
+      message: "Not authenticated",
+      confessions: [],
+      news: [],
+    };
+  }
+
   try {
-    const {user} = await verifySession();
-  if (!user) {
-      return {
-        success: false,
-        message: "Not authenticated",
-        confessions: [],
-        news: [],
-      };
-    }
+    const user = session.user;
     
     await dbConnect();
     const confessionLimit = 4;

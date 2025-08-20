@@ -1,14 +1,21 @@
 import { NextResponse } from "next/server"
 import Profile from "@/models/Profile"
 import { dbConnect } from "@/lib/dbConnect"
-import { verifySession } from "@/lib/dal"
+import { auth } from "@/auth"
 
 
 export const GET = async (req) => {
 try{
-    const {user} = await verifySession()
+    const session = await auth();
+
+    if (!session) {
+        return { success: false, message: "Not authenticated" };
+    }
+
+    const {user} = session;
+
     if(!user){
-        return new Response(JSON.stringify({message: "Unauthorized"}), {status: 401})
+        return { success: false, message: "Unauthorized" };
     }
 
     await dbConnect()

@@ -9,7 +9,13 @@ import "@/models/College"
 
 export const getUnlockedConfessions = async () => {
   try {
-    const { user } = await verifySession();
+    const session = await auth();
+
+    if (!session) {
+      return { success: false, message: "Not authenticated" };
+    }
+
+    const {user} = session;
 
     if (!user || !user.userId) {
       return {

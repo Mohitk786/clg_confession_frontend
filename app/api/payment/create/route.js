@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { verifySession } from "@/lib/dal";
+import { auth } from "@/auth";
 import razorpayInstance from "@/utils/razorpay";
 import { PAYMENTS } from "@/constants/payment";
 import User from "@/models/User";
@@ -9,9 +9,13 @@ import { dbConnect } from "@/lib/dbConnect";
 
 export const POST = async (req) => {
   try {
-    const {user} = await verifySession();
-    if (!user)
-      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+    const session = await auth();
+
+    if (!session) {
+      return NextResponse.json({ message: "NOT AUTHENTICATED" }, { status: 401 });
+    }
+
+    const {user} = session;
 
     const dbUser = await User.findById(user.userId);
     if (!dbUser)

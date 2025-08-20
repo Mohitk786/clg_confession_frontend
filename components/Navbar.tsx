@@ -22,9 +22,9 @@ import {
 } from "@/components/ui/sheet";
 import { User, LogOut, Menu, Bell, Settings } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useActionState, useState } from "react";
+import {  useState } from "react";
 import { Separator } from "./ui/separator";
-import { logout } from "@/actions/auth";
+import { signOut } from "next-auth/react";
 
 const Navbar = () => {
   const path = usePathname();
@@ -37,6 +37,10 @@ const Navbar = () => {
     if (!user?.name) return "U";
     return user.name.charAt(0).toUpperCase();
   };
+
+  const handleLogout = async () => {
+    await signOut({ callbackUrl: "/login" })
+  }
 
 
   return (
@@ -135,7 +139,7 @@ const Navbar = () => {
                   <div className="w-full mb-4">
                     <Separator />
                     <button
-                      onClick={logout}
+                      onClick={handleLogout}
                       className="flex items-center justify-center bg-campus-forest p-4 text-white w-full transition-colors"
                     >
                       <LogOut className="mr-2 h-4 w-4" />
@@ -207,7 +211,7 @@ const Navbar = () => {
                 </DropdownMenuGroup>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem
-                  onClick={logout}
+                  onClick={handleLogout}
                   className="text-red-500 cursor-pointer"
                 >
                   <LogOut className="mr-2 h-4 w-4" />

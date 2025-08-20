@@ -1,19 +1,21 @@
 // app/api/news/route.js or route.ts
 import { NextResponse } from 'next/server';
 import { dbConnect } from '@/lib/dbConnect';
-import { getAuthUser } from '@/lib/auth';
 import User from '@/models/User';
 import News from '@/models/News';
+import { auth } from '@/auth';
 
 
 export async function GET(req) {
   try {
     await dbConnect();
-    const {user} = await verifySession();
+    const session = await auth();
 
-    if (!user || !user.userId) {
-      return NextResponse.json({ success: false, message: 'Unauthorized' }, { status: 401 });
+    if (!session) {
+        return NextResponse.json({ success: false, message: 'NOT AUTHENTICATED' }, { status: 401 });
     }
+
+    const {user} = session;
 
     const foundUser = await User.findById(user.userId);
     if (!foundUser) {

@@ -1,15 +1,21 @@
 "use server";
 
 import { dbConnect } from "@/lib/dbConnect";
-import { verifySession } from "@/lib/dal";
 import User from "@/models/User";
 import Confession from "@/models/Confession";
 import News from "@/models/News";
 import Like from "@/models/Like";
+import { auth } from "@/auth";
 
 export const getPosts = async (req, isConfession) => {
   try {
-    const {user} = await verifySession();
+    const session = await auth();
+
+    if (!session) {
+      return { success: false, message: "Not authenticated" };
+    }
+
+    const {user} = session;
     
     if (!user) return { success: false, message: "Not authenticated" };
 

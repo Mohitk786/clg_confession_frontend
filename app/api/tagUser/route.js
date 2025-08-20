@@ -1,17 +1,20 @@
 import { dbConnect } from "@/lib/dbConnect";
 import User from "@/models/User";
 import { NextResponse } from "next/server";
-import { verifySession } from "@/lib/dal";
+import { auth } from "@/auth";
 
 export const GET = async (req) => {
   try {
-    const {user} = await verifySession();
-    if (!user || !user.userId) {
+    const session = await auth();
+
+    if (!session) {
       return NextResponse.json(
-        { success: false, message: "Unauthorized" },
+        { success: false, message: "NOT AUTHENTICATED" },
         { status: 401 }
       );
     }
+
+    const {user} = session;
 
     await dbConnect();
 

@@ -1,12 +1,11 @@
 import { NextResponse, NextRequest } from "next/server";
-import { cookies } from "next/headers";
-import { decrypt } from "@/lib/session";
+import { getToken } from "next-auth/jwt";
 
 const protectedRoutes = [
   "/",
   "/confessions",
   "/campus-corner",
-  "/profile",
+  "/profile", 
   "/notifications",
   "/unlocked-confessions",
 ];
@@ -17,16 +16,15 @@ export async function middleware(req: NextRequest) {
   const isProtectedRoute = protectedRoutes.includes(path);
   const isPublicRoute = publicRoutes.includes(path);
 
-  const cookie = (await cookies()).get("session")?.value;
-  const session = await decrypt(cookie);
+  const token = await getToken({ req, secret: process.env.AUTH_SECRET });
 
-  if (isProtectedRoute && !session?.user) {
+  if (isProtectedRoute && !token) {
     return NextResponse.redirect(new URL("/login", req.nextUrl));
   }
 
   if (
     isPublicRoute &&
-    session?.user 
+    token 
   ) {
     return NextResponse.redirect(new URL("/", req.url));
   }

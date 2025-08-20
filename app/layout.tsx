@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import './globals.css'
 import QueryProvider from './QueryProvider'
+import AuthProvider from '@/context/AuthProvider'
 
 export const metadata: Metadata = {
   title: 'ClgConfessions',
@@ -19,9 +20,11 @@ export default function RootLayout({
           async
         ></script>
       <body>
-        <QueryProvider>
-          {children}
-        </QueryProvider>
+        <AuthProvider>
+          <QueryProvider>
+            {children}
+          </QueryProvider>
+        </AuthProvider>
       </body>
     </html>
   )

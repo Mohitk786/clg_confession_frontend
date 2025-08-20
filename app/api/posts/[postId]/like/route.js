@@ -4,7 +4,7 @@ import Like from "@/models/Like";
 import User from "@/models/User";
 import News from "@/models/News";
 import { dbConnect } from "@/lib/dbConnect";
-import { verifySession } from "@/lib/dal";
+import { auth } from "@/auth";
 import { SP_REWARD } from "@/constants/spCost";
 import { Notifications_Types } from "@/constants/data";
 import Notification from "@/models/Notification";
@@ -12,10 +12,17 @@ import { revalidatePath } from "next/cache";
 
 export async function POST(req, { params }) {
   try {
-    const { user } = await verifySession();
+    const session = await auth();
+
+    if (!session) {
+      return NextResponse.json({ success: false, message: "NOT AUTHENTICATED" }, { status: 401 });
+    }
+
+    const {user} = session;
+
     const { postId } = await params;
 
-    if (!user?.userId) {
+    if (!user || !user.userId) {
       return NextResponse.json(
         { success: false, message: "Unauthorized. User not authenticated" },
         { status: 401 }

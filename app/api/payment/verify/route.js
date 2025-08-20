@@ -2,16 +2,23 @@
 import { NextResponse } from "next/server";
 import crypto from "crypto";
 import razorpay from "@/utils/razorpay"; 
-import { verifySession } from "@/lib/dal";
+import { auth } from "@/auth";
 import {dbConnect} from "@/lib/dbConnect";
 import User from "@/models/User";
 import { revalidatePath } from "next/cache";
 
 export const POST = async (req) => {
-  try {
-    const { user } = await verifySession();
+  try {   
+    const session = await auth();
+
+    if (!session) {
+      return NextResponse.json({ message: "NOT AUTHENTICATED" }, { status: 401 });
+    }
+
+    const {user} = session;
+
     if (!user) {
-      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+      return NextResponse.json({ message: "NOT AUTHENTICATED" }, { status: 401 });
     }
 
     const { razorpay_order_id, razorpay_payment_id, razorpay_signature } =

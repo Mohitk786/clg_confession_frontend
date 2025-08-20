@@ -1,21 +1,25 @@
 import { NextResponse } from "next/server";
-import { verifySession } from "@/lib/dal";
 import User from "@/models/User";
 import { dbConnect } from "@/lib/dbConnect";
+import { auth } from "@/auth";
 
-export async function GET(req) {
+export async function GET() {
   try {
-    let {user} = await verifySession();
+    const session = await auth();
 
-    if (!user) {
+    if (!session) {
       return NextResponse.json({
         success: false,
-        message: "UNAUTHORIZED"
+        message: "NOT AUTHENTICATED"
       }, { status: 404 });
     }
 
+    const {user} = session;
+
+    console.log("user sessioend", user);
+
     await dbConnect();
-    const dbUser =  await User.findById(user.userId).select("sp referCode profileCompleted");
+    const dbUser =  await User.findById(user?.userId).select("sp referCode profileCompleted");
 
     if (!dbUser) {
       return NextResponse.json({
@@ -23,6 +27,9 @@ export async function GET(req) {
         message: "User not found"
       }, { status: 404 });
     }
+
+
+    console.log("dbUser", dbUser);
 
 
     return NextResponse.json({

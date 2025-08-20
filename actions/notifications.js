@@ -6,10 +6,14 @@ import Notification from "@/models/Notification";
 
 export const getNotifications = async () => {
     try{
-        const {user} = await verifySession();
-        if(!user?.userId){
-            return NextResponse.json({success: false, message: "Unauthorized. User not authenticated"}, {status: 401});
+        const session = await auth();
+
+        if (!session) {
+            return { success: false, message: "Not authenticated" };
         }
+
+        const {user} = session;
+
         await dbConnect();
 
         const notifications = await Notification.find({to: user.userId}).sort({createdAt: -1});

@@ -3,14 +3,20 @@ import Confession from "@/models/Confession";
 import Comment from "@/models/Comment";
 import User from "@/models/User";
 import { dbConnect } from "@/lib/dbConnect";
-import { verifySession } from "@/lib/dal";
+import { auth } from "@/auth";
 import News from "@/models/News";
 import { SP_REWARD } from "@/constants/spCost";
 
 export async function POST(req, { params }) {
   try {
-    
-    const {user} = await verifySession();
+    const session = await auth();
+
+    if (!session) {
+      return NextResponse.json({ success: false, message: "NOT AUTHENTICATED" }, { status: 401 });
+    }
+
+    const {user} = session;
+
     const { postId } = params;
 
     if (!user || !user.userId) {

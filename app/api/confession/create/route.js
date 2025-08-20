@@ -3,24 +3,26 @@ import { dbConnect } from "@/lib/dbConnect";
 import Confession from "@/models/Confession";
 import User from "@/models/User";
 import College from "@/models/College";
-import { verifySession } from "@/lib/dal";
 import Notification from "@/models/Notification";
 import { Notifications_Types } from "@/constants/data";
 import { revalidatePath } from "next/cache";
+import { auth } from "@/auth";
 
 export async function POST(req) {
   try {
-    const {user} = await verifySession();
- 
-    if (!user) {
+    const session = await auth();
+
+    if (!session) {
       return NextResponse.json(
         {
           success: false,
-          message: "Unauthorized",
+          message: "NOT AUTHENTICATED",
         },
         { status: 404 }
       );
     }
+
+    const {user} = session;
 
     await dbConnect();
     const body = await req.json();

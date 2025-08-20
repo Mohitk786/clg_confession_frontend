@@ -3,12 +3,12 @@ import Confession from "@/models/Confession";
 import Comment from "@/models/Comment";
 import User from "@/models/User";
 import { dbConnect } from "@/lib/dbConnect";
-import { verifySession } from "@/lib/dal";
+import { auth } from "@/auth";
 
 export async function DELETE(req, { params }) {
-  const {user} =await verifySession();
+  const session = await auth();
 
-  if (!user) {
+  if (!session) {
     return NextResponse.json(
       {
         success: false,
