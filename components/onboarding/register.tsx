@@ -10,6 +10,8 @@ import { GraduationCap, CheckCircle, Loader2 } from "lucide-react";
 import FormField from "@/components/custom-ui/form-field";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/hooks/use-toast";
+import { registerSchema } from "@/lib/validations/auth";
+
 
 export default function RegisterForm({ colleges = [] }: { colleges?: any }) {
   const router = useRouter();
@@ -32,50 +34,38 @@ export default function RegisterForm({ colleges = [] }: { colleges?: any }) {
   const [generalError, setGeneralError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
-  const validateForm = () => {
-    const newErrors: any = {};
-    if (!formData.name.trim()) newErrors.name = "Name is required";
-    if (!formData.college) newErrors.college = "Please select your college";
-    if (!formData.gender) newErrors.gender = "Please select a gender";
-    if (!formData.relationshipStatus)
-      newErrors.relationshipStatus = "Please select relationship status";
-    if (!formData.email.trim()) newErrors.email = "Email is required";
-    if (!formData.password) {
-      newErrors.password = "Password is required";
-    } else if (formData.password.length < 8) {
-      newErrors.password = "Password must be at least 8 characters";
-    }
-    if (!formData.confirmPassword) {
-      newErrors.confirmPassword = "Please confirm your password";
-    } else if (formData.confirmPassword !== formData.password) {
-      newErrors.confirmPassword = "Passwords do not match";
-    }
-    return newErrors;
-  };
+
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setGeneralError("");
 
-    const validationErrors = validateForm();
-    if (Object.keys(validationErrors).length > 0) {
-      setErrors(validationErrors);
+    const parsed = registerSchema.safeParse(formData);
+
+    if (!parsed.success) {
+      const fieldErrors: Record<string, string> = {};
+      parsed.error.errors.forEach((err) => {
+        if (err.path[0]) {
+          fieldErrors[err.path[0] as string] = err.message;
+        }
+      });
+      setErrors(fieldErrors);
       return;
     }
+
     setErrors({});
 
     try {
       setIsLoading(true);
+
       const result = await register({
-        ...formData,
-        gender: formData.gender.toUpperCase() as "MALE" | "FEMALE" | "OTHER",
-        relationshipStatus: formData.relationshipStatus.toUpperCase() as
+        ...parsed.data,
+        gender: parsed.data.gender.toUpperCase() as "MALE" | "FEMALE" | "OTHER",
+        relationshipStatus: parsed.data.relationshipStatus.toUpperCase() as
           | "SINGLE"
           | "IN A RELATIONSHIP"
           | "COMPLICATED",
-        policyAccepted,
       });
-
 
       if (result?.success) {
         setIsSubmitted(true);
@@ -83,6 +73,7 @@ export default function RegisterForm({ colleges = [] }: { colleges?: any }) {
           title: "Success",
           description:
             "Profile created successfully. Please verify your email.",
+          variant: "success",
         });
       } else {
         setGeneralError(result?.message || "Something went wrong");
