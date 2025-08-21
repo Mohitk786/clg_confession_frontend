@@ -46,8 +46,8 @@ export const getPosts = async (req, isConfession) => {
     // Define models and fields based on post type
     const Model = isConfession ? Confession : News;
     const selectFields = isConfession
-      ? "content tags likesCount commentsCount createdAt hasTargetUser"
-      : "title content tags image likesCount commentsCount createdAt";
+      ? "content tags likesCount commentsCount createdAt hasTargetUser createdBy"
+      : "title content tags image likesCount commentsCount createdAt createdBy";
 
     // Run post query and likes in parallel
     const [posts, likes] = await Promise.all([

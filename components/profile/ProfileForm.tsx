@@ -20,7 +20,7 @@ import {
 import { GraduationCap, Calendar, Book, Sparkles } from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
 import { courses, branches } from "@/constants/data"
-import { useUpdateProfile, useUser } from "@/hooks/auth"
+import { useUpdateProfile } from "@/hooks/auth"
 import { getProfile } from "@/services/auth"
 
 // Define the schema with required and optional fields
@@ -68,12 +68,14 @@ const ProfileForm = () => {
           toast({
             title: "Error fetching profile",
             description: res?.message || "Could not load profile data",
+            variant: "destructive",
           })
         }
       } catch (error) {
         toast({
           title: "Error",
           description: "Failed to fetch profile data",
+          variant: "destructive",
         })
       } finally {
         setIsLoading(false)
@@ -104,6 +106,7 @@ const ProfileForm = () => {
       toast({
         title: "No new values",
         description: "You can only update fields that were previously empty.",
+        variant: "destructive",
       })
       setShowConfirmation(false)
       return
@@ -114,6 +117,7 @@ const ProfileForm = () => {
         toast({
           title: "Profile updated",
           description: "Your academic information has been saved.",
+          variant: "success",
         })
         setShowConfirmation(false)
       },
@@ -121,6 +125,7 @@ const ProfileForm = () => {
         toast({
           title: "Error updating profile",
           description: error.message || "Failed to update profile",
+          variant: "destructive",
         })
       },
     })

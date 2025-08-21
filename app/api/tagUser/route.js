@@ -15,6 +15,12 @@ export const GET = async (req) => {
     }
 
     const {user} = session;
+    if(!user) {
+      return NextResponse.json(
+        { success: false, message: "User not found" },
+        { status: 404 }
+      );
+    }
 
     await dbConnect();
 

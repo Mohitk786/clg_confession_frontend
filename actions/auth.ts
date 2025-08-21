@@ -1,18 +1,15 @@
-"use server"
+"use server";
 
-import bcrypt from 'bcryptjs'
+import bcrypt from "bcryptjs";
 import User from "@/models/User";
 import { sendEmail } from "@/lib/send-email";
 import { SP_REWARD } from "@/constants/spCost";
 import { registerSchema } from "@/lib/validations/auth";
-import { z } from 'zod';
-import { getRandomString } from '@/utils/helper';
+import { z } from "zod";
+import { getRandomString } from "@/utils/helper";
 import { dbConnect } from "@/lib/dbConnect";
 
-import "@/models/College"; 
- 
-
-
+import "@/models/College";
 
 interface GenerateReferCodeProps {
   name: string;
@@ -20,7 +17,11 @@ interface GenerateReferCodeProps {
   collegeId: string;
 }
 
-async function generateReferCode({ name, phone, collegeId }: GenerateReferCodeProps) {
+async function generateReferCode({
+  name,
+  phone,
+  collegeId,
+}: GenerateReferCodeProps) {
   const usernamePart = name?.slice(0, 2).toUpperCase() || "XX";
   const phonePart = phone?.slice(-2) || "00";
   const collegePart = collegeId?.slice(-2).toUpperCase() || "YY";
@@ -37,11 +38,10 @@ async function generateReferCode({ name, phone, collegeId }: GenerateReferCodePr
 async function generateToken(length = 32) {
   const array = new Uint8Array(length);
   crypto.getRandomValues(array);
-  return Array.from(array, b => b.toString(16).padStart(2, "0")).join("");
+  return Array.from(array, (b) => b.toString(16).padStart(2, "0")).join("");
 }
 
-
-export async function register(formData:z.infer<typeof registerSchema>) {
+export async function register(formData: z.infer<typeof registerSchema>) {
   const {
     email,
     name,
@@ -77,26 +77,47 @@ export async function register(formData:z.infer<typeof registerSchema>) {
     };
   }
 
-  try {
-    const referCode = await generateReferCode({ name, phone, collegeId: college });
-    const hashedPassword = await bcrypt.hash(password, 10);
+  const query: any = [{ email }];
 
-    await dbConnect()
+  if (phone) {
+    query.push({ phone });
+  }
+
+  const isUserExists = await User.findOne({
+    $or: query,
+  });
+
+  if (isUserExists) {
+    return {
+      success: false,
+      message: "User already exists",
+    };
+  }
+
+  try {
+    const referCode = await generateReferCode({
+      name,
+      phone,
+      collegeId: college,
+    });
+    const hashedPassword = await bcrypt.hash(password, 10);
 
     const user = new User({
       email,
       name,
       college,
       gender,
-      password:hashedPassword,
+      password: hashedPassword,
       relationshipStatus,
       referCode,
       isVerified: false,
       verificationToken: await generateToken(),
       verificationTokenExpires: Date.now() + 1000 * 60 * 60, // 1 hour
+      ...(phone && { phone }),
     });
 
     await user.save();
+
 
     if (referrer) {
       const referrerUser = await User.findOne({ referCode: referrer });
@@ -111,6 +132,7 @@ export async function register(formData:z.infer<typeof registerSchema>) {
     }
 
     const verificationLink = `${process.env.NEXT_PUBLIC_APP_URL}/verify?token=${user.verificationToken}`;
+
 
     await sendEmail({
       to: email,
@@ -128,13 +150,10 @@ export async function register(formData:z.infer<typeof registerSchema>) {
       success: true,
       message: "Profile created successfully. Please verify your email.",
     };
-  } catch (error) {
-    console.error("Error creating profile:", error);
+  } catch (error: any) {
+    return {
+      success: false,
+      message: `Error registering user ${error?.message}`,
+    };
   }
 }
-
-
-
-
-
-

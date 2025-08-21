@@ -24,10 +24,6 @@ try{
     }).populate("userId", "profileCompleted")
 
 
-    if(!profile){
-        return new Response(JSON.stringify({message: "You have not comppleted your profile"}), {status: 404})
-    }
-
     return NextResponse.json({
         success: true,
         message: "Profile fetched",

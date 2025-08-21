@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import './globals.css'
 import QueryProvider from './QueryProvider'
 import AuthProvider from '@/context/AuthProvider'
+import { Toaster } from '@/components/ui/toaster'
 
 export const metadata: Metadata = {
   title: 'ClgConfessions',
@@ -22,6 +23,7 @@ export default function RootLayout({
       <body>
         <AuthProvider>
           <QueryProvider>
+            <Toaster />
             {children}
           </QueryProvider>
         </AuthProvider>

@@ -54,7 +54,6 @@ export default function RegisterForm({ colleges = [] }: { colleges?: any }) {
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
-
     e.preventDefault();
     setGeneralError("");
 
@@ -70,23 +69,27 @@ export default function RegisterForm({ colleges = [] }: { colleges?: any }) {
       const result = await register({
         ...formData,
         gender: formData.gender.toUpperCase() as "MALE" | "FEMALE" | "OTHER",
-        relationshipStatus: formData.relationshipStatus.toUpperCase() as "SINGLE" | "IN A RELATIONSHIP" | "COMPLICATED",
+        relationshipStatus: formData.relationshipStatus.toUpperCase() as
+          | "SINGLE"
+          | "IN A RELATIONSHIP"
+          | "COMPLICATED",
         policyAccepted,
       });
+
 
       if (result?.success) {
         setIsSubmitted(true);
         toast({
           title: "Success",
-          description: "Profile created successfully. Please verify your email.",
+          description:
+            "Profile created successfully. Please verify your email.",
         });
-        router.push("/login");
       } else {
         setGeneralError(result?.message || "Something went wrong");
       }
     } catch {
       setGeneralError("Server error. Please try again later.");
-    }finally{
+    } finally {
       setIsLoading(false);
     }
   };
@@ -101,7 +104,8 @@ export default function RegisterForm({ colleges = [] }: { colleges?: any }) {
             </div>
             <h2 className="text-2xl font-bold text-gray-900">You're In! 🎉</h2>
             <p className="text-gray-600">
-              Welcome to the community! Check your inbox for a special welcome message.
+              Welcome to the community! Check your inbox for a special welcome
+              message.
             </p>
             <Button
               onClick={() => {
@@ -133,12 +137,6 @@ export default function RegisterForm({ colleges = [] }: { colleges?: any }) {
               Connect with your college community and discover your tribe
             </p>
           </div>
-
-          {generalError && (
-            <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-2 rounded mb-4 text-sm">
-              {generalError}
-            </div>
-          )}
 
           {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-6">
@@ -184,7 +182,7 @@ export default function RegisterForm({ colleges = [] }: { colleges?: any }) {
               </div>
             </div>
 
-           <div>
+            <div>
               <Label>
                 Gender <span className="text-red-500">*</span>
               </Label>
@@ -209,7 +207,9 @@ export default function RegisterForm({ colleges = [] }: { colleges?: any }) {
                   </label>
                 ))}
               </div>
-              {errors.gender && <p className="text-red-500 text-xs">{errors.gender}</p>}
+              {errors.gender && (
+                <p className="text-red-500 text-xs">{errors.gender}</p>
+              )}
             </div>
 
             <div>
@@ -217,28 +217,37 @@ export default function RegisterForm({ colleges = [] }: { colleges?: any }) {
                 Relationship Status <span className="text-red-500">*</span>
               </Label>
               <div className="grid grid-cols-3 gap-3 mt-2">
-                {["Single", "In a Relationship", "Complicated"].map((status) => (
-                  <label
-                    key={status}
-                    className={`h-12 flex items-center justify-center rounded border cursor-pointer ${
-                      formData.relationshipStatus === status
-                        ? "bg-purple-500 text-white border-purple-500"
-                        : "border-gray-200 hover:border-purple-300"
-                    }`}
-                  >
-                    <input
-                      type="radio"
-                      name="relationshipStatus" 
-                      value={status}
-                      className="hidden"
-                      onChange={() => setFormData({ ...formData, relationshipStatus: status })}
-                    />
-                    {status}
-                  </label>
-                ))}
+                {["Single", "In a Relationship", "Complicated"].map(
+                  (status) => (
+                    <label
+                      key={status}
+                      className={`h-12 flex items-center justify-center rounded border cursor-pointer ${
+                        formData.relationshipStatus === status
+                          ? "bg-purple-500 text-white border-purple-500"
+                          : "border-gray-200 hover:border-purple-300"
+                      }`}
+                    >
+                      <input
+                        type="radio"
+                        name="relationshipStatus"
+                        value={status}
+                        className="hidden"
+                        onChange={() =>
+                          setFormData({
+                            ...formData,
+                            relationshipStatus: status,
+                          })
+                        }
+                      />
+                      {status}
+                    </label>
+                  )
+                )}
               </div>
               {errors.relationshipStatus && (
-                <p className="text-red-500 text-xs">{errors.relationshipStatus}</p>
+                <p className="text-red-500 text-xs">
+                  {errors.relationshipStatus}
+                </p>
               )}
             </div>
 
@@ -340,9 +349,18 @@ export default function RegisterForm({ colleges = [] }: { colleges?: any }) {
                   : "bg-gray-200 text-gray-400 cursor-not-allowed"
               }`}
             >
-             {isLoading ? <Loader2 className="animate-spin" /> : " Join Your Campus Network"}
+              {isLoading ? (
+                <Loader2 className="animate-spin" />
+              ) : (
+                " Join Your Campus Network"
+              )}
             </Button>
           </form>
+          {generalError && (
+            <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-2 rounded mb-4 text-sm">
+              {generalError}
+            </div>
+          )}
         </CardContent>
       </Card>
     </div>

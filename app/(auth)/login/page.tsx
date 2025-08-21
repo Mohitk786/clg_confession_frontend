@@ -1,67 +1,67 @@
-"use client"
+"use client";
 
-import type React from "react"
-
-import { useState } from "react"
-import Link from "next/link"
-import { Card, CardContent } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { GraduationCap, Eye, EyeOff, Mail, Lock, Loader2 } from "lucide-react"
-import { useRouter } from "next/navigation"
-import { signIn } from "next-auth/react"
+import type React from "react";
+import { useState } from "react";
+import Link from "next/link";
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { GraduationCap, Eye, EyeOff, Mail, Lock, Loader2 } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { signIn } from "next-auth/react";
+import { useToast } from "@/hooks/use-toast";
 
 export default function LoginPage() {
-  const router = useRouter()
-  const [showPassword, setShowPassword] = useState(false)
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
-  const [rememberMe, setRememberMe] = useState(false)
-  const [error, setError] = useState("")
-  const [isLoading, setIsLoading] = useState(false)
+  const router = useRouter();
+  const { toast } = useToast();
+  const [showPassword, setShowPassword] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [rememberMe, setRememberMe] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setIsLoading(true)
-   try{
+    e.preventDefault();
+    setIsLoading(true);
+    try {
+      const result = await signIn("credentials", {
+        redirect: false,
+        email,
+        password,
+      });
 
-    console.log("login 1")
 
-    const credentials = {
-      email,
-      password,
+      if (result?.error) {
+        if (result.error === "CredentialsSignin") {
+          toast({
+            title: "Login Failed",
+            description: "Incorrect username or password",
+            variant: "destructive",
+          });
+        } else {
+          toast({
+            title: "Error",
+            description: result.error,
+            variant: "destructive",
+          });
+        }
+      }
+
+      if (result?.url) router.push("/");
+    } catch (err) {
+      toast({
+        title: "Error",
+        description: (err as Error).message || "Unknown error",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
     }
-
-    console.log("credentials", credentials)
-
-    const result = await signIn('credentials', credentials);
-
-    
-
-
-    console.log("result", result)
-
-    // if (result?.ok) {
-    //   router.push("/")
-    // } 
-
-    // if(result?.error) {
-    //   setError(result.error)
-    // }
-    
-  } catch (err) {
-      setError("An error occurred while logging in. Please try again.")
-      setError((err as Error).message || "Unknown error")
-    }
-   finally {
-      setIsLoading(false)
-    }
-  }
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-rose-50 flex items-center justify-center p-4">
-
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-20 left-10 w-32 h-32 bg-purple-200/20 rounded-full blur-xl"></div>
         <div className="absolute bottom-20 right-10 w-40 h-40 bg-pink-200/20 rounded-full blur-xl"></div>
@@ -75,7 +75,9 @@ export default function LoginPage() {
               <GraduationCap className="w-8 h-8 text-white" />
             </div>
             <div className="space-y-2">
-              <h1 className="text-2xl lg:text-3xl font-bold text-gray-900">Welcome Back</h1>
+              <h1 className="text-2xl lg:text-3xl font-bold text-gray-900">
+                Welcome Back
+              </h1>
               <p className="text-gray-600">Sign in to your campus network</p>
             </div>
           </div>
@@ -83,7 +85,10 @@ export default function LoginPage() {
           {/* Login Form */}
           <form onSubmit={handleLogin} className="space-y-6">
             <div className="space-y-2">
-              <Label htmlFor="email" className="text-sm font-medium text-gray-700">
+              <Label
+                htmlFor="email"
+                className="text-sm font-medium text-gray-700"
+              >
                 Email Address
               </Label>
               <div className="relative">
@@ -101,7 +106,10 @@ export default function LoginPage() {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="password" className="text-sm font-medium text-gray-700">
+              <Label
+                htmlFor="password"
+                className="text-sm font-medium text-gray-700"
+              >
                 Password
               </Label>
               <div className="relative">
@@ -120,7 +128,11 @@ export default function LoginPage() {
                   onClick={() => setShowPassword(!showPassword)}
                   className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
                 >
-                  {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                  {showPassword ? (
+                    <EyeOff className="w-5 h-5" />
+                  ) : (
+                    <Eye className="w-5 h-5" />
+                  )}
                 </button>
               </div>
             </div>
@@ -136,7 +148,10 @@ export default function LoginPage() {
                 />
                 <span className="text-gray-600">Remember me</span>
               </label>
-              <Link href="/forgot-password" className="text-sm text-purple-600 hover:text-purple-700 font-medium">
+              <Link
+                href="/forgot-password"
+                className="text-sm text-purple-600 hover:text-purple-700 font-medium"
+              >
                 Forgot password?
               </Link>
             </div>
@@ -146,7 +161,11 @@ export default function LoginPage() {
               type="submit"
               className="w-full h-12 text-base font-semibold rounded-lg bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700 text-white shadow-lg hover:shadow-xl transition-all duration-200"
             >
-              {isLoading ? <Loader2 className="animate-spin"/> : "Sign In to Campus"}
+              {isLoading ? (
+                <Loader2 className="animate-spin" />
+              ) : (
+                "Sign In to Campus"
+              )}
             </Button>
           </form>
 
@@ -156,7 +175,9 @@ export default function LoginPage() {
               <div className="w-full border-t border-gray-200"></div>
             </div>
             <div className="relative flex justify-center text-sm">
-              <span className="px-4 bg-white text-gray-500">New to campus?</span>
+              <span className="px-4 bg-white text-gray-500">
+                New to campus?
+              </span>
             </div>
           </div>
 
@@ -172,11 +193,15 @@ export default function LoginPage() {
 
           {/* Footer Quote */}
           <div className="text-center space-y-1 pt-6 border-t border-gray-100 mt-8">
-            <p className="text-sm text-gray-500 italic">"Your campus community awaits"</p>
-            <p className="text-xs text-gray-400">Connect with students from your college</p>
+            <p className="text-sm text-gray-500 italic">
+              "Your campus community awaits"
+            </p>
+            <p className="text-xs text-gray-400">
+              Connect with students from your college
+            </p>
           </div>
         </CardContent>
       </Card>
     </div>
-  )
+  );
 }

@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 const userSchema = new mongoose.Schema({
   phone: {
     type: String,
-    unique: true,
+    sparse: true,
   },
   profileCompleted: { type: Boolean, default: false },
   gender: {
@@ -22,7 +22,7 @@ const userSchema = new mongoose.Schema({
   },
   relationshipStatus: {
     type: String,
-    enum: ["SINGLE", "IN_A_RELATIONSHIP", "COMPLICATED"],
+    enum: ["SINGLE", "IN A RELATIONSHIP", "COMPLICATED"],
     default: "SINGLE",
   },
 

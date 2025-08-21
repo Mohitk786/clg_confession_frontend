@@ -17,7 +17,9 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 
         await dbConnect()
         const user = await User.findOne({ email: credentials.email }).populate("college")
-        if (!user) return null
+        if (!user) throw new Error("User not found")
+
+        if(!user.isVerified )throw new Error("Account not verified. Please check your email")
 
         const isValid = await bcrypt.compare(credentials.password as string, user.password)
         if (!isValid) return null

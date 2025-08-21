@@ -14,8 +14,6 @@ import { motion } from "framer-motion"
 export type Post = {
   tags: string[]
   content: string
-  isMidnight?: boolean
-  unlockText?: string
   image?: string
 }
 
@@ -87,10 +85,9 @@ export default function PostFeedPage({ type, title }: PostFeedPageProps) {
                       type={isConfession ? "confession" : "news"}
                       isLiked={post?.isLiked}
                       title={post?.title}
+                      createdBy={post?.createdBy}
                       tags={post?.tags}
                       content={post?.content}
-                      isMidnight={isConfession && post?.isMidnight}
-                      unlockText={post?.unlockText}
                       image={!isConfession ? post?.image : undefined}
                       hasTargetUser={post?.hasTargetUser ? post?.hasTargetUser : undefined}
                     />

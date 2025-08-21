@@ -5,20 +5,13 @@ import NewConfessionForm from "@/components/new/NewConfessionForm"
 import { getDashboardData } from "@/actions/getDashboardData"
 import { PostCard } from "@/components/PostFeed/PostCard";
 
-interface Confession {
-  _id: string
-  content: string
-  tags: string[]
-  likeCount?: number
-  commentCount?: number
-  likesCount?: number
-  reactionCount?: number
-}
-
-
 export default async function HomePage() {
 
-  const { confessions = [], news = [] }: { confessions: Confession[]; news: any } = await getDashboardData()
+  const { confessions = [], news = [], success, error } = await getDashboardData()
+
+  if (!success) {
+    return <div className="text-red-500">{error}</div>
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-indigo-100">
@@ -54,7 +47,7 @@ export default async function HomePage() {
                     <p className="text-gray-500 font-medium">No trending news found. Be the first to share one!</p>
                   </div>
                 ) : (
-                  news.map((data: any) => <PostCard key={data?._id} {...data} type="news" path="/" />)
+                  news.map((data) => <PostCard key={data?._id} {...data} type="news" path="/" />)
                 )}
 
                 <div className="flex justify-center pt-4">
@@ -98,7 +91,7 @@ export default async function HomePage() {
                     </p>
                   </div>
                 ) : (
-                  confessions.map((confession: any) => (
+                  confessions.map((confession) => (
                     <PostCard key={confession._id} type="confession" path="/" {...confession} />
                   ))
                 )}
