@@ -4,18 +4,18 @@ import { dbConnect } from "@/lib/dbConnect"
 import { auth } from "@/auth"
 
 
-export const GET = async (req) => {
+export async function GET() {
 try{
     const session = await auth();
 
     if (!session) {
-        return { success: false, message: "Not authenticated" };
+        return NextResponse.json({ success: false, message: "Not authenticated" }, { status: 401 });
     }
 
     const {user} = session;
 
     if(!user){
-        return { success: false, message: "Unauthorized" };
+        return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
     }
 
     await dbConnect()
@@ -32,6 +32,6 @@ try{
 
 
 }catch(er){
-    return new Response(JSON.stringify({message: "Error"}), {status: 500})
+    return NextResponse.json({success: false, message: "Error"}, {status: 500})
 }
 }
