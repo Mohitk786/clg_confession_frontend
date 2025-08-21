@@ -38,6 +38,8 @@ export const CommentModal: React.FC<CommentModalProps> = ({
   const { toast } = useToast()
   const [commentText, setCommentText] = useState("")
 
+  console.log("Post ID:", post)
+
   const { data, isLoading }: any = useComments(post._id)
   const { mutate: postComment } = usePostComment(post._id)
 
@@ -106,9 +108,9 @@ export const CommentModal: React.FC<CommentModalProps> = ({
                   </div>
                 </div>
               ) : !isLoading ? (
-                comments.map((comment: any) => (
+                comments.map((comment: any, index: number) => (
                   <div
-                    key={comment?._id}
+                    key={comment?._id || index}
                     className="p-3 hover:bg-purple-50/50 rounded-lg transition-colors flex items-start gap-3"
                   >
                     <Avatar className="h-8 w-8 rounded-full bg-gradient-to-br from-purple-400 to-pink-400 flex items-center justify-center text-white font-medium">

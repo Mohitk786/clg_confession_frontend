@@ -1,10 +1,9 @@
 
-import { verifySession } from "@/lib/dal";
 import { dbConnect } from "@/lib/dbConnect";
 import Notification from "@/models/Notification";
+import { auth } from "@/auth";
 
-
-export const getNotifications = async () => {
+export const getNotifications = async (): Promise<{success?: boolean, message?: string, data?: any}> => {
     try{
         const session = await auth();
 
@@ -18,9 +17,9 @@ export const getNotifications = async () => {
 
         const notifications = await Notification.find({to: user.userId}).sort({createdAt: -1});
 
-        return notifications;
+        return {success: true, data: notifications};
 
     }catch(err){
-        console.log(err);
+        return {success: false, message: "Error fetching notifications"};
     }
 }

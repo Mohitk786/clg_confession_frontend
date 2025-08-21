@@ -1,18 +1,17 @@
 "use server"
 
-import {verifySession} from "@/lib/dal"
 import {dbConnect} from "@/lib/dbConnect"
 import User from "@/models/User"
 import Confession from "@/models/Confession";
 import "@/models/College"
-
+import { auth } from "@/auth";
 
 export const getUnlockedConfessions = async () => {
   try {
     const session = await auth();
 
     if (!session) {
-      return { success: false, message: "Not authenticated" };
+      return { success: false, message: "UNAUTHORIZED" };
     }
 
     const {user} = session;
@@ -20,7 +19,7 @@ export const getUnlockedConfessions = async () => {
     if (!user || !user.userId) {
       return {
         success: false,
-        message: "UNAUTHORIZED",
+        message: "User not found",
       };
     }
 

@@ -30,7 +30,7 @@ export async function sendEmail({ to, subject, html }: SendEmailOptions) {
         message: "Email sent successfully",
     }
   } catch (error) {
-    console.error("❌ Error sending email:", error);
+    console.error("Error sending email:", error);
     return {
         success: false,
         message: "Failed to send email",

@@ -16,7 +16,6 @@ export async function GET() {
 
     const {user} = session;
 
-    console.log("user sessioend", user);
 
     await dbConnect();
     const dbUser =  await User.findById(user?.userId).select("sp referCode profileCompleted");

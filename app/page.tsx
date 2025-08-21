@@ -20,9 +20,6 @@ export default async function HomePage() {
 
   const { confessions = [], news = [] }: { confessions: Confession[]; news: any } = await getDashboardData()
 
-  console.log("confessions", confessions);
-  console.log("news", news);
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-indigo-100">
       <div className="container mx-auto px-4 py-8">

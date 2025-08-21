@@ -8,8 +8,12 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { GraduationCap, CheckCircle, Loader2 } from "lucide-react";
 import FormField from "@/components/custom-ui/form-field";
+import { useRouter } from "next/navigation";
+import { useToast } from "@/hooks/use-toast";
 
 export default function RegisterForm({ colleges = [] }: { colleges?: any }) {
+  const router = useRouter();
+  const { toast } = useToast();
   const [formData, setFormData] = useState({
     name: "",
     college: "",
@@ -72,6 +76,11 @@ export default function RegisterForm({ colleges = [] }: { colleges?: any }) {
 
       if (result?.success) {
         setIsSubmitted(true);
+        toast({
+          title: "Success",
+          description: "Profile created successfully. Please verify your email.",
+        });
+        router.push("/login");
       } else {
         setGeneralError(result?.message || "Something went wrong");
       }

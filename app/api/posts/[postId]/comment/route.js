@@ -17,8 +17,7 @@ export async function POST(req, { params }) {
 
     const {user} = session;
 
-    const { postId } = params;
-
+    
     if (!user || !user.userId) {
       return NextResponse.json(
         { success: false, message: "Unauthorized. User not authenticated" },
@@ -26,10 +25,11 @@ export async function POST(req, { params }) {
       );
     }
     
+    const { postId } = await params;
+    console.log("Post ID:", postId);
     const body = await req.json();
     const { content } = body;
 
-    console.log("Content:", content);
     
     if (!content || content.trim() === "") {
       return NextResponse.json(
@@ -95,7 +95,13 @@ export async function POST(req, { params }) {
 
 export async function GET(req, { params }) {
   try {
-    const {user} = await verifySession();
+    const session = await auth();
+
+    if (!session) {
+      return NextResponse.json({ success: false, message: "NOT AUTHENTICATED" }, { status: 401 });
+    }
+
+    const {user} = session;
     if (!user || !user.userId) {
       return NextResponse.json(
         { success: false, message: "Unauthorized. User not authenticated" },
@@ -103,7 +109,7 @@ export async function GET(req, { params }) {
       );
     }
 
-    const { postId } = params;
+    const { postId } = await params;
 
     if (!postId || postId.trim() === "") {
       return NextResponse.json(

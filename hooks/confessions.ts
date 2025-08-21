@@ -27,9 +27,7 @@ export const useCreateConfession = () => {
       queryClient.invalidateQueries({
         queryKey: [QUERY_KEYS.GET_ALL_CONFESSIONS],
       });
-      queryClient.refetchQueries({
-        queryKey: [QUERY_KEYS.GET_ALL_CONFESSIONS],
-      });
+      
     },
   });
 };
