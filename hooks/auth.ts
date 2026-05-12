@@ -4,7 +4,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 export const useSendOtp = () => {
     return useMutation({
-        mutationFn:  sendOtp,
+        mutationFn  sendOtp,
         mutationKey: [QUERY_KEYS.SEND_OTP],
 })
 }
