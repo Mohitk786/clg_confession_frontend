@@ -13,23 +13,20 @@ import "@/models/College";
 
 interface GenerateReferCodeProps {
   name: string;
-  phone?: string;
   collegeId: string;
 }
 
 async function generateReferCode({
   name,
-  phone,
   collegeId,
 }: GenerateReferCodeProps) {
   const usernamePart = name?.slice(0, 2).toUpperCase() || "XX";
-  const phonePart = phone?.slice(-2) || "00";
   const collegePart = collegeId?.slice(-2).toUpperCase() || "YY";
 
   let code;
   do {
     const randomPart = getRandomString(2);
-    code = `${usernamePart}${phonePart}${collegePart}${randomPart}`;
+    code = `${usernamePart}${collegePart}${randomPart}`;
   } while (await User.findOne({ referCode: code }));
 
   return code;
@@ -51,7 +48,6 @@ export async function register(formData: z.infer<typeof registerSchema>) {
     password,
     confirmPassword,
     referCode: referrer,
-    phone,
     policyAccepted,
   } = formData;
 
@@ -77,14 +73,9 @@ export async function register(formData: z.infer<typeof registerSchema>) {
     };
   }
 
-  const query: any = [{ email }];
-
-  if (phone) {
-    query.push({ phone });
-  }
-
+  
   const isUserExists = await User.findOne({
-    $or: query,
+    email
   });
 
   if (isUserExists) {
@@ -95,12 +86,10 @@ export async function register(formData: z.infer<typeof registerSchema>) {
   }
 
   try {
-    const referCode = await generateReferCode({
-      name,
-      phone,
-      collegeId: college,
-    });
+    const referCode = await generateReferCode(name, college);
     const hashedPassword = await bcrypt.hash(password, 10);
+
+    dbConnect();
 
     const user = new User({
       email,
@@ -112,8 +101,8 @@ export async function register(formData: z.infer<typeof registerSchema>) {
       referCode,
       isVerified: false,
       verificationToken: await generateToken(),
-      verificationTokenExpires: Date.now() + 1000 * 60 * 60, // 1 hour
-      ...(phone && { phone }),
+      verificationTokenExpires: Date.now() + 1000 * 60 * 60, // 1 hour,
+      policyAccepted
     });
 
     await user.save();
