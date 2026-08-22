@@ -22,7 +22,7 @@ async function generateReferCode({
   phone,
   collegeId,
 }: GenerateReferCodeProps) {
-  const usernamePart = name?.slice(0, 2).toUpperCase() || "XX";
+  const usernamePart = name?slice(0, 2).toUpperCase() || "XX";
   const phonePart = phone?.slice(-2) || "00";
   const collegePart = collegeId?.slice(-2).toUpperCase() || "YY";
 
