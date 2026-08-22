@@ -22,14 +22,13 @@ export default function RegisterForm({ colleges = [] }: { colleges?: any }) {
     gender: "",
     relationshipStatus: "",
     referCode: "",
-    phone: "",
     email: "",
     password: "",
     confirmPassword: "",
+    policyAccepted: true,
   });
 
   const [errors, setErrors] = useState<any>({});
-  const [policyAccepted, setPolicyAccepted] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [generalError, setGeneralError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -39,6 +38,7 @@ export default function RegisterForm({ colleges = [] }: { colleges?: any }) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setGeneralError("");
+
 
     const parsed = registerSchema.safeParse(formData);
 
@@ -54,17 +54,19 @@ export default function RegisterForm({ colleges = [] }: { colleges?: any }) {
     }
 
     setErrors({});
+    console.log(formData);
+
 
     try {
       setIsLoading(true);
 
       const result = await register({
         ...parsed.data,
-        gender: parsed.data.gender.toUpperCase() as "MALE" | "FEMALE" | "OTHER",
+        gender: parsed.data.gender as "Male" | "Female" | "Other",
         relationshipStatus: parsed.data.relationshipStatus.toUpperCase() as
-          | "SINGLE"
-          | "IN A RELATIONSHIP"
-          | "COMPLICATED",
+          | "Single"
+          | "In a Relationship"
+          | "Complicated",
       });
 
       if (result?.success) {
@@ -84,6 +86,7 @@ export default function RegisterForm({ colleges = [] }: { colleges?: any }) {
       setIsLoading(false);
     }
   };
+
 
   if (isSubmitted) {
     return (
@@ -113,6 +116,7 @@ export default function RegisterForm({ colleges = [] }: { colleges?: any }) {
       </div>
     );
   }
+
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-rose-50 flex items-center justify-center p-4">
@@ -254,18 +258,7 @@ export default function RegisterForm({ colleges = [] }: { colleges?: any }) {
               }
             />
 
-            {/* Phone */}
-            <FormField
-              label="Mobile Number"
-              name="phone"
-              type="tel"
-              placeholder="Enter your mobile number"
-              optionalText="optional"
-              value={formData.phone}
-              onChange={(e: any) =>
-                setFormData({ ...formData, phone: e.target.value })
-              }
-            />
+           
 
             {/* Email */}
             <FormField
@@ -293,6 +286,7 @@ export default function RegisterForm({ colleges = [] }: { colleges?: any }) {
               onChange={(e: any) =>
                 setFormData({ ...formData, password: e.target.value })
               }
+              autoComplete="password"
             />
 
             {/* Confirm Password */}
@@ -310,6 +304,7 @@ export default function RegisterForm({ colleges = [] }: { colleges?: any }) {
                   confirmPassword: e.target.value,
                 })
               }
+              autoComplete="confirmPassword"
             />
 
             {/* Policy Checkbox */}
@@ -318,9 +313,13 @@ export default function RegisterForm({ colleges = [] }: { colleges?: any }) {
                 <input
                   type="checkbox"
                   className="mt-0.5 w-4 h-4 text-purple-600 border-gray-300 rounded"
-                  checked={policyAccepted}
-                  onChange={() => setPolicyAccepted(!policyAccepted)}
-                  required
+                  checked={formData.policyAccepted}
+                  onChange={() =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      policyAccepted: !prev.policyAccepted,
+                    }))
+                  }
                 />
                 <span>
                   I agree to the{" "}
@@ -333,9 +332,9 @@ export default function RegisterForm({ colleges = [] }: { colleges?: any }) {
 
             <Button
               type="submit"
-              disabled={!policyAccepted}
+              disabled={!formData.policyAccepted}
               className={`w-full h-12 font-semibold ${
-                policyAccepted
+                formData.policyAccepted
                   ? "bg-gradient-to-r from-purple-500 to-pink-600 text-white hover:from-purple-600 hover:to-pink-700"
                   : "bg-gray-200 text-gray-400 cursor-not-allowed"
               }`}

@@ -1,10 +1,6 @@
 import mongoose from "mongoose";
 
 const userSchema = new mongoose.Schema({
-  phone: {
-    type: String,
-    sparse: true,
-  },
   profileCompleted: { type: Boolean, default: false },
   gender: {
     type: String,
@@ -22,8 +18,8 @@ const userSchema = new mongoose.Schema({
   },
   relationshipStatus: {
     type: String,
-    enum: ["SINGLE", "IN A RELATIONSHIP", "COMPLICATED"],
-    default: "SINGLE",
+    enum: ["Single", "In a Relationship", "Complicated"],
+    default: "Single",
   },
 
   sp: { type: Number, default: 75 },
@@ -37,7 +33,7 @@ const userSchema = new mongoose.Schema({
   },
   verificationToken: { type: String },
   verificationTokenExpires: { type: Date },
-  isVerified: { type: Boolean, default: false },
+  isVerified: { type: Boolean, default: true },
   joinedAt: { type: Date, default: Date.now },
 });
 
